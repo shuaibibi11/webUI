@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@ant-design/pro-components": "^2.8.10",
+    "socket.io-client": "^4.8.1"
+  }
+}
