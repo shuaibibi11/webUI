@@ -89,8 +89,19 @@ const getMessages = async (req, res) => {
         const [messages, total] = await Promise.all([
             prisma_1.prisma.message.findMany({
                 where: whereCondition,
-                orderBy: { createdAt: 'desc' }, // 倒序获取最新的消息
-                take: limit
+                orderBy: { createdAt: 'desc' },
+                take: limit,
+                select: {
+                    id: true,
+                    conversationId: true,
+                    role: true,
+                    content: true,
+                    status: true,
+                    createdAt: true,
+                    promptTokens: true,
+                    completionTokens: true,
+                    totalTokens: true,
+                }
             }),
             prisma_1.prisma.message.count({ where: { conversationId } })
         ]);

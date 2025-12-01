@@ -15,9 +15,9 @@ export default function AdminLogin() {
     }
     setLoading(true);
     try {
-      const res = await api.post<any>('/users/login', { username, password });
-      const token = res?.token as string;
-      const role = res?.user?.role as string;
+      const res = await api.post<{ token: string; user: { role: string } }>('/users/login', { username, password });
+      const token = res?.token;
+      const role = res?.user?.role;
       if (!token || role !== 'ADMIN') {
         toast({ variant: 'destructive', title: '权限不足', description: '需要管理员账号登录' });
         setLoading(false);
@@ -27,8 +27,9 @@ export default function AdminLogin() {
       localStorage.setItem('access_token', token);
       localStorage.setItem('user_info', JSON.stringify(res.user));
       window.location.href = '/admin';
-    } catch (e: any) {
-      toast({ variant: 'destructive', title: '登录失败', description: e?.message || '请稍后重试' });
+    } catch (e) {
+      const msg = (e as { message?: string })?.message || '请稍后重试';
+      toast({ variant: 'destructive', title: '登录失败', description: msg });
     } finally {
       setLoading(false);
     }

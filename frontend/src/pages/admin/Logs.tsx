@@ -20,12 +20,68 @@ export default function LogsAdmin() {
     try {
       const res = await api.get<{ logs: LogItem[] }>(`/admin/logs${query ? `?q=${encodeURIComponent(query)}` : ''}`);
       setLogs(res.logs);
-    } catch (e: any) {
-      toast({ variant: 'destructive', title: '加载失败', description: e.message || '无法获取日志' });
+    } catch (e) {
+      const msg = (e as { message?: string })?.message || '无法获取日志';
+      toast({ variant: 'destructive', title: '加载失败', description: msg });
     }
   };
 
-  useEffect(() => { load(); }, [query]);
+  useEffect(() => {
+    const timer = setTimeout(() => { load(); }, 0);
+    return () => clearTimeout(timer);
+  }, [query]);
+
+  const exportJson = () => {
+    const blob = new Blob([JSON.stringify({ items: logs }, null, 2)], { type: 'application/json;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `audit_logs.json`; a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const exportTxt = () => {
+    const lines = logs.map(l => `${new Date(l.createdAt).toLocaleString()} ${l.userId} ${l.action} ${l.ip || '-'} ${l.details || '-'}`);
+    const blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `audit_logs.txt`; a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const exportMd = () => {
+    const md = logs.map(l => `- 时间: ${new Date(l.createdAt).toLocaleString()}\n  - 用户: ${l.userId}\n  - 动作: ${l.action}\n  - IP: ${l.ip || '-'}\n  - 详情: ${l.details || '-'}`).join('\n\n');
+    const blob = new Blob([md], { type: 'text/markdown;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `audit_logs.md`; a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  // const exportJson = () => {
+  //   const blob = new Blob([JSON.stringify({ items: logs }, null, 2)], { type: 'application/json;charset=utf-8;' });
+  //   const url = URL.createObjectURL(blob);
+  //   const a = document.createElement('a');
+  //   a.href = url; a.download = `audit_logs.json`; a.click();
+  //   URL.revokeObjectURL(url);
+  // };
+
+  // const exportTxt = () => {
+  //   const lines = logs.map(l => `${new Date(l.createdAt).toLocaleString()} ${l.userId} ${l.action} ${l.ip || '-'} ${l.details || '-'}`);
+  //   const blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8;' });
+  //   const url = URL.createObjectURL(blob);
+  //   const a = document.createElement('a');
+  //   a.href = url; a.download = `audit_logs.txt`; a.click();
+  //   URL.revokeObjectURL(url);
+  // };
+
+  // const exportMd = () => {
+  //   const md = logs.map(l => `- 时间: ${new Date(l.createdAt).toLocaleString()}\n  - 用户: ${l.userId}\n  - 动作: ${l.action}\n  - IP: ${l.ip || '-'}\n  - 详情: ${l.details || '-'}`).join('\n\n');
+  //   const blob = new Blob([md], { type: 'text/markdown;charset=utf-8;' });
+  //   const url = URL.createObjectURL(blob);
+  //   const a = document.createElement('a');
+  //   a.href = url; a.download = `audit_logs.md`; a.click();
+  //   URL.revokeObjectURL(url);
+  // };
 
   return (
     <div className="p-6 space-y-4">
@@ -58,6 +114,16 @@ export default function LogsAdmin() {
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="flex items-center space-x-2">
+        <button className="btn btn-outline" onClick={exportJson}>导出JSON</button>
+        <button className="btn btn-outline" onClick={exportMd}>导出MD</button>
+        <button className="btn btn-outline" onClick={exportTxt}>导出TXT</button>
+      </div>
+      <div className="flex items-center space-x-2">
+        <button className="btn btn-outline" onClick={exportJson}>导出JSON</button>
+        <button className="btn btn-outline" onClick={exportMd}>导出MD</button>
+        <button className="btn btn-outline" onClick={exportTxt}>导出TXT</button>
       </div>
     </div>
   );

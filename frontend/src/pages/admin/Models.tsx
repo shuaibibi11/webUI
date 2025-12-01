@@ -13,6 +13,8 @@ interface ModelConfig {
   temperature: number;
   maxTokens: number;
   topP: number;
+  contextLength: number;
+  memoryEnabled: boolean;
   enabled: boolean;
   createdAt: string;
   updatedAt: string;
@@ -22,18 +24,22 @@ export default function ModelsAdmin() {
   const { toast } = useToast();
   const [models, setModels] = useState<ModelConfig[]>([]);
   const [editing, setEditing] = useState<ModelConfig | null>(null);
-  const [form, setForm] = useState<Partial<ModelConfig>>({ protocol: 'openai', temperature: 0.7, maxTokens: 8192, topP: 0.9, enabled: true, tag: '语言模型' });
+  const [form, setForm] = useState<Partial<ModelConfig>>({ protocol: 'openai', temperature: 0.7, maxTokens: 8192, topP: 0.9, contextLength: 4096, memoryEnabled: false, enabled: true, tag: '语言模型' });
 
   const load = async () => {
     try {
       const res = await api.get<{ models: ModelConfig[] }>('/admin/models');
       setModels(res.models);
-    } catch (e: any) {
-      toast({ variant: 'destructive', title: '加载失败', description: e.message || '无法获取模型配置' });
+    } catch (e) {
+      const msg = (e as { message?: string })?.message || '无法获取模型配置';
+      toast({ variant: 'destructive', title: '加载失败', description: msg });
     }
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    const timer = setTimeout(() => { load(); }, 0);
+    return () => clearTimeout(timer);
+  }, []);
 
   const save = async () => {
     try {
@@ -45,10 +51,11 @@ export default function ModelsAdmin() {
         toast({ title: '已保存', description: '模型配置已创建' });
       }
       setEditing(null);
-      setForm({ temperature: 0.7, maxTokens: 8192, topP: 0.9, enabled: true, tag: '语言模型' });
+      setForm({ protocol: 'openai', temperature: 0.7, maxTokens: 8192, topP: 0.9, contextLength: 4096, memoryEnabled: false, enabled: true, tag: '语言模型' });
       load();
-    } catch (e: any) {
-      toast({ variant: 'destructive', title: '保存失败', description: e.message || '请检查输入' });
+    } catch (e) {
+      const msg = (e as { message?: string })?.message || '请检查输入';
+      toast({ variant: 'destructive', title: '保存失败', description: msg });
     }
   };
 
@@ -58,12 +65,13 @@ export default function ModelsAdmin() {
       // 禁用其他模型
       const others = models.filter(m => m.id !== id && m.enabled);
       for (const o of others) {
-        try { await api.put(`/admin/models/${o.id}`, { enabled: false }); } catch {}
+        try { await api.put(`/admin/models/${o.id}`, { enabled: false }); } catch (err) { console.error('禁用其他模型失败', err); }
       }
       toast({ title: '已切换', description: '当前激活模型已更新' });
       load();
-    } catch (e: any) {
-      toast({ variant: 'destructive', title: '切换失败', description: e.message || '请稍后重试' });
+    } catch (e) {
+      const msg = (e as { message?: string })?.message || '请稍后重试';
+      toast({ variant: 'destructive', title: '切换失败', description: msg });
     }
   };
 
@@ -72,8 +80,9 @@ export default function ModelsAdmin() {
       await api.delete(`/admin/models/${id}`);
       toast({ title: '删除成功', description: '模型已删除' });
       load();
-    } catch (e: any) {
-      toast({ variant: 'destructive', title: '删除失败', description: e.message || '请稍后重试' });
+    } catch (e) {
+      const msg = (e as { message?: string })?.message || '请稍后重试';
+      toast({ variant: 'destructive', title: '删除失败', description: msg });
     }
   };
 
@@ -125,9 +134,17 @@ export default function ModelsAdmin() {
             <label className="form-label">Top P：{form.topP}</label>
             <input type="range" min={0} max={1} step={0.1} value={form.topP || 0} onChange={e => setForm({ ...form, topP: parseFloat(e.target.value) })} />
           </div>
+          <div>
+            <label className="form-label">上下文长度：{form.contextLength}</label>
+            <input type="range" min={1024} max={32768} step={1024} value={form.contextLength || 4096} onChange={e => setForm({ ...form, contextLength: parseInt(e.target.value) })} />
+          </div>
           <div className="flex items-center space-x-2">
             <input id="enabled" type="checkbox" checked={Boolean(form.enabled)} onChange={e => setForm({ ...form, enabled: e.target.checked })} />
             <label htmlFor="enabled" className="text-sm text-secondary-700">启用</label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <input id="memoryEnabled" type="checkbox" checked={Boolean(form.memoryEnabled)} onChange={e => setForm({ ...form, memoryEnabled: e.target.checked })} />
+            <label htmlFor="memoryEnabled" className="text-sm text-secondary-700">启用模型记忆</label>
           </div>
         </div>
         <div className="mt-4 flex items-center space-x-2">

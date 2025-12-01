@@ -17,9 +17,10 @@ export default function PasswordReset() {
       const token = req.token;
       await api.post(`/users/password-reset/confirm`, { token, newPassword: data.newPassword });
       toast({ title: '密码已重置', description: '请使用新密码登录' });
-    } catch (e: any) {
-      toast({ variant: 'destructive', title: '重置失败', description: e?.message || '请稍后重试' });
-    }
+  } catch (e) {
+    const msg = (e as { message?: string })?.message || '请稍后重试';
+    toast({ variant: 'destructive', title: '失败', description: msg });
+  }
   };
   return (
     <div className="min-h-screen bg-secondary-50 flex items-center justify-center p-6">

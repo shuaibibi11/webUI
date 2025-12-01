@@ -8,9 +8,12 @@ export type ModelInvokeResult = {
   totalTokens: number
 }
 
-export async function invokeModel(prompt: string): Promise<ModelInvokeResult> {
+type ChatMessage = { role: 'user' | 'assistant' | 'system'; content: string }
+
+export async function invokeModel(promptOrMessages: string | ChatMessage[], opts?: { contextLengthOverride?: number }): Promise<ModelInvokeResult> {
   const activeModel = await prisma.modelConfig.findFirst({ where: { enabled: true }, orderBy: { updatedAt: 'desc' } })
-  let content = `这是AI对"${prompt}"的回复。`
+  const prompt = Array.isArray(promptOrMessages) ? promptOrMessages.map(m => `${m.role}: ${m.content}`).join('\n\n') : promptOrMessages
+  let content = `这是AI对"${typeof prompt === 'string' ? prompt : ''}"的回复。`
   let promptTokens = 0
   let completionTokens = 0
   let totalTokens = 0
@@ -22,9 +25,12 @@ export async function invokeModel(prompt: string): Promise<ModelInvokeResult> {
     if (activeModel.apiKey) headers['Authorization'] = `Bearer ${activeModel.apiKey}`
     let resp: any
     if (activeModel.protocol === 'openai') {
+      const messages = Array.isArray(promptOrMessages)
+        ? promptOrMessages.map(m => ({ role: m.role, content: m.content }))
+        : [{ role: 'user', content: prompt }]
       const body: any = {
         model: activeModel.modelName,
-        messages: [{ role: 'user', content: prompt }],
+        messages,
         temperature: activeModel.temperature,
         max_tokens: activeModel.maxTokens,
         top_p: activeModel.topP,
@@ -40,7 +46,10 @@ export async function invokeModel(prompt: string): Promise<ModelInvokeResult> {
       content = resp.data?.response || resp.data?.output || content
       totalTokens = resp.data?.eval_count || 0
     } else if (activeModel.protocol === 'siliconflow') {
-      const body: any = { model: activeModel.modelName, messages: [{ role: 'user', content: prompt }], temperature: activeModel.temperature, top_p: activeModel.topP }
+      const messages = Array.isArray(promptOrMessages)
+        ? promptOrMessages.map(m => ({ role: m.role, content: m.content }))
+        : [{ role: 'user', content: prompt }]
+      const body: any = { model: activeModel.modelName, messages, temperature: activeModel.temperature, top_p: activeModel.topP }
       resp = await axios.post(activeModel.endpoint, body, { headers, timeout: 15000 })
       content = resp.data?.choices?.[0]?.message?.content || content
       promptTokens = resp.data?.usage?.prompt_tokens || 0
@@ -58,4 +67,3 @@ export async function invokeModel(prompt: string): Promise<ModelInvokeResult> {
   }
   return { content, promptTokens, completionTokens, totalTokens }
 }
-

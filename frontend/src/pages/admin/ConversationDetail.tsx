@@ -29,7 +29,10 @@ export default function ConversationDetail() {
     setMessages(res.messages);
   };
 
-  useEffect(() => { load(); }, [id, page, limit]);
+  useEffect(() => {
+    const timer = setTimeout(() => { load(); }, 0);
+    return () => clearTimeout(timer);
+  }, [id, page, limit]);
 
   const exportCsv = () => {
     const rows = messages.map(m => `${m.id},${m.role},${JSON.stringify(m.content).replace(/,/g,';')},${m.createdAt}`);
@@ -40,12 +43,71 @@ export default function ConversationDetail() {
     URL.revokeObjectURL(url);
   };
 
+  const fetchAllMessages = async (): Promise<Msg[]> => {
+    if (!id) return messages;
+    const limitAll = 200;
+    let all: Msg[] = [];
+    let before: string | undefined = undefined;
+    // 按时间从早到晚拼接
+    for (let i = 0; i < 1000; i++) {
+      const qs = new URLSearchParams();
+      qs.set('limit', String(limitAll));
+      if (before) qs.set('before', before);
+      const res = await api.get<{ messages: Msg[] }>(`/admin/conversations/${id}/messages?${qs.toString()}`);
+      const batch = res.messages || [];
+      if (batch.length === 0) break;
+      all = all.concat(batch);
+      before = batch[0].createdAt;
+      if (batch.length < limitAll) break;
+    }
+    return all.length ? all : messages;
+  };
+
+  const exportJson = () => {
+    fetchAllMessages().then(all => {
+      const payload = {
+        conversationId: id,
+        messages: all.map(m => ({ id: m.id, role: m.role, content: m.content, createdAt: m.createdAt }))
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = `conversation_${id}.json`; a.click();
+      URL.revokeObjectURL(url);
+    });
+  };
+
+  const exportTxt = () => {
+    fetchAllMessages().then(all => {
+      const lines = all.map(m => `${new Date(m.createdAt).toLocaleString()} [${m.role}]\n${m.content}\n`);
+      const blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = `conversation_${id}.txt`; a.click();
+      URL.revokeObjectURL(url);
+    });
+  };
+
+  const exportMd = () => {
+    fetchAllMessages().then(all => {
+      const md = all.map(m => `**${m.role.toUpperCase()}** (${new Date(m.createdAt).toLocaleString()})\n\n${m.content}\n`).join('\n---\n');
+      const blob = new Blob([md], { type: 'text/markdown;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = `conversation_${id}.md`; a.click();
+      URL.revokeObjectURL(url);
+    });
+  };
+
   return (
     <div>
       <div className="flex items-center space-x-2 mb-3">
         <input className="input" placeholder="搜索消息" value={q} onChange={e => setQ(e.target.value)} />
         <button className="btn btn-primary" onClick={search}>搜索</button>
         <button className="btn btn-outline" onClick={exportCsv}>导出CSV</button>
+        <button className="btn btn-outline" onClick={exportJson}>导出JSON</button>
+        <button className="btn btn-outline" onClick={exportMd}>导出MD</button>
+        <button className="btn btn-outline" onClick={exportTxt}>导出TXT</button>
       </div>
       <div className="bg-white border border-secondary-200 rounded-lg p-4 space-y-3">
         {messages.map(m => (

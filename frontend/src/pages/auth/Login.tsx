@@ -66,8 +66,8 @@ export default function Login() {
           window.location.href = '/chat';
         }
       }
-    } catch (error: any) {
-      const msg = error?.message || '用户名或密码错误，请重试。';
+    } catch (error) {
+      const msg = (error as { message?: string })?.message || '用户名或密码错误，请重试。';
       if (msg.includes('账号未审批')) {
         toast({ variant: 'destructive', title: '待审批', description: '您的账号尚未通过审核，请联系管理员或稍后重试。' });
       } else {

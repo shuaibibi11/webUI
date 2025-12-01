@@ -123,40 +123,28 @@ class ApiService {
     const formData = new FormData();
     formData.append('file', file);
     
-    try {
-      const response = await this.instance.post<ApiResponse<T>>(url, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-        onUploadProgress: (progressEvent) => {
-          if (onProgress && progressEvent.total) {
-            const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-            onProgress(progress);
-          }
-        },
-      });
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
+    const response = await this.instance.post<ApiResponse<T>>(url, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      onUploadProgress: (progressEvent) => {
+        if (onProgress && progressEvent.total) {
+          const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          onProgress(progress);
+        }
+      },
+    });
+    return response.data;
   }
   
   // 设置token
   setToken(token: string): void {
-    try {
-      localStorage.setItem('access_token', token);
-    } catch (error) {
-      console.error('Error setting token:', error);
-    }
+    localStorage.setItem('access_token', token);
   }
   
   // 清除token
   clearToken(): void {
-    try {
-      localStorage.removeItem('access_token');
-    } catch (error) {
-      console.error('Error clearing token:', error);
-    }
+    localStorage.removeItem('access_token');
   }
   
   // 获取当前token

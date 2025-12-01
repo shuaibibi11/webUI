@@ -24,11 +24,22 @@ const chatHandler = async (req, res) => {
             });
         }
         const userId = req.user.userId;
+        // 校验用户状态
+        const user = await prisma_1.prisma.user.findUnique({ where: { id: userId }, select: { banned: true, isVerified: true } });
+        if (!user) {
+            return res.status(404).json({ error: '用户不存在' });
+        }
+        if (user.banned) {
+            return res.status(403).json({ error: '账号已封禁，无法对话' });
+        }
+        if (!user.isVerified) {
+            return res.status(403).json({ error: '账号未审批，无法对话' });
+        }
         let { conversationId, content } = req.body;
         let conversation;
-        // 如果提供了 conversationId，验证其存在性
+        // 如果提供了 conversationId，验证其存在性（且属于当前用户）
         if (conversationId) {
-            conversation = await prisma_1.prisma.conversation.findUnique({
+            conversation = await prisma_1.prisma.conversation.findFirst({
                 where: { id: conversationId, userId }
             });
             if (!conversation) {
@@ -54,9 +65,39 @@ const chatHandler = async (req, res) => {
                 role: 'user',
                 content,
                 status: 'sent'
+            },
+            select: {
+                id: true,
+                conversationId: true,
+                role: true,
+                content: true,
+                status: true,
+                createdAt: true,
             }
         });
-        const { content: aiContent, promptTokens, completionTokens, totalTokens } = await (0, modelService_1.invokeModel)(content);
+        const activeModel = await prisma_1.prisma.modelConfig.findFirst({ where: { enabled: true }, orderBy: { updatedAt: 'desc' }, select: { memoryEnabled: true, contextLength: true } });
+        let messages;
+        if (!activeModel || !activeModel.memoryEnabled) {
+            messages = [{ role: 'user', content }];
+        }
+        else {
+            const history = await prisma_1.prisma.message.findMany({ where: { conversationId }, orderBy: { createdAt: 'asc' }, select: { role: true, content: true } });
+            let total = 0;
+            const picked = [];
+            for (let i = history.length - 1; i >= 0; i--) {
+                const h = history[i];
+                const len = h.content.length;
+                if (total + len > (activeModel.contextLength || 4096))
+                    break;
+                picked.unshift({ role: h.role, content: h.content });
+                total += len;
+            }
+            messages = picked;
+            if (messages.length === 0 || messages[messages.length - 1].role !== 'user') {
+                messages = messages.concat([{ role: 'user', content }]);
+            }
+        }
+        const { content: aiContent, promptTokens, completionTokens, totalTokens } = await (0, modelService_1.invokeModel)(messages);
         const aiMessage = await prisma_1.prisma.message.create({
             data: {
                 conversationId,
@@ -66,6 +107,17 @@ const chatHandler = async (req, res) => {
                 promptTokens,
                 completionTokens,
                 totalTokens
+            },
+            select: {
+                id: true,
+                conversationId: true,
+                role: true,
+                content: true,
+                status: true,
+                createdAt: true,
+                promptTokens: true,
+                completionTokens: true,
+                totalTokens: true,
             }
         });
         // 更新对话的更新时间

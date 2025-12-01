@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { Eye, EyeOff, Loader2, UserPlus } from 'lucide-react';
+import { Eye, EyeOff, Loader2, UserPlus, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -12,7 +12,7 @@ import { authService } from '../../services/auth';
 import { useAppStore } from '../../stores';
 
 // 密码强度验证正则
-const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/;
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&_]{8,20}$/;
 
 const registerSchema = z.object({
   username: z.string()
@@ -25,7 +25,7 @@ const registerSchema = z.object({
     .min(2, '请输入真实姓名')
     .max(50, '姓名长度不超过50'),
   idCard: z.string().regex(/^[0-9Xx]{15,18}$/i, '请输入有效的身份证号码'),
-  password: z.string().regex(passwordRegex, '密码需包含大小写字母、数字及特殊字符，长度8-20位'),
+  password: z.string().regex(passwordRegex, '密码需包含大小写字母、数字及特殊字符（@$!%*?&_），长度8-20位'),
   confirmPassword: z.string(),
   agreeTerms: z.boolean().refine((val) => val === true, '请阅读并同意服务条款'),
   agreePrivacy: z.boolean().refine((val) => val === true, '请阅读并同意隐私政策'),
@@ -75,7 +75,7 @@ export default function Register() {
     if (/[A-Z]/.test(password)) strength += 1;
     if (/[a-z]/.test(password)) strength += 1;
     if (/\d/.test(password)) strength += 1;
-    if (/[@$!%*?&]/.test(password)) strength += 1;
+    if (/[@$!%*?&_]/.test(password)) strength += 1;
     setPasswordStrength(strength);
   }, [password]);
 
@@ -113,11 +113,12 @@ export default function Register() {
         navigate('/login');
         return;
       }
-    } catch (error: any) {
+    } catch (error) {
+      const msg = (error as { message?: string })?.message || '请检查填写信息是否符合要求';
       toast({
         variant: 'destructive',
         title: '注册失败',
-        description: error?.message || '请检查填写信息是否符合要求',
+        description: msg,
       });
     } finally {
       setIsLoading(false);
@@ -140,6 +141,15 @@ export default function Register() {
 
   return (
     <div className="container-auth">
+        {/* 添加返回按钮 */}
+      <button
+        type="button"
+        onClick={() => navigate('/login')}
+        className="absolute top-4 left-4 flex items-center text-primary-600 hover:text-primary-700 transition-colors"
+      >
+        <ArrowLeft className="h-5 w-5 mr-1" />
+        <span className="text-sm font-medium">返回</span>
+      </button>
       <div className="w-full max-w-lg space-y-8">
         <div className="text-center">
           <div className="mx-auto h-12 w-12 rounded bg-primary-600 flex items-center justify-center text-white">

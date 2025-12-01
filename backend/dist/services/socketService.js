@@ -12,9 +12,12 @@ const prisma = new client_1.PrismaClient();
 class SocketService {
     constructor(server) {
         this.connectedUsers = new Map(); // userId -> socketId
+        const origins = (process.env.FRONTEND_URLS || process.env.FRONTEND_URL || 'http://localhost:11004,http://localhost:11010')
+            .split(',')
+            .map((s) => s.trim());
         this.io = new socket_io_1.Server(server, {
             cors: {
-                origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+                origin: origins,
                 credentials: true
             },
             transports: ['websocket', 'polling']
@@ -106,9 +109,36 @@ class SocketService {
                             content,
                             status: 'sent',
                             createdAt: new Date()
+                        },
+                        select: {
+                            id: true,
+                            conversationId: true,
+                            role: true,
+                            content: true,
+                            status: true,
+                            createdAt: true
                         }
                     });
-                    const ai = await (0, modelService_1.invokeModel)(content);
+                    const activeModel = await prisma.modelConfig.findFirst({ where: { enabled: true }, orderBy: { updatedAt: 'desc' }, select: { memoryEnabled: true, contextLength: true } });
+                    let messages;
+                    if (!activeModel || !activeModel.memoryEnabled) {
+                        messages = [{ role: 'user', content }];
+                    }
+                    else {
+                        const history = await prisma.message.findMany({ where: { conversationId }, orderBy: { createdAt: 'asc' }, select: { role: true, content: true } });
+                        let total = 0;
+                        const picked = [];
+                        for (let i = history.length - 1; i >= 0; i--) {
+                            const h = history[i];
+                            const len = h.content.length;
+                            if (total + len > (activeModel.contextLength || 4096))
+                                break;
+                            picked.unshift({ role: h.role, content: h.content });
+                            total += len;
+                        }
+                        messages = picked.concat([{ role: 'user', content }]);
+                    }
+                    const ai = await (0, modelService_1.invokeModel)(messages);
                     const aiMessage = await prisma.message.create({
                         data: {
                             conversationId,
@@ -119,6 +149,17 @@ class SocketService {
                             promptTokens: ai.promptTokens,
                             completionTokens: ai.completionTokens,
                             totalTokens: ai.totalTokens,
+                        },
+                        select: {
+                            id: true,
+                            conversationId: true,
+                            role: true,
+                            content: true,
+                            status: true,
+                            createdAt: true,
+                            promptTokens: true,
+                            completionTokens: true,
+                            totalTokens: true,
                         }
                     });
                     // 更新会话时间
@@ -130,6 +171,7 @@ class SocketService {
                     this.io.to(`conversation_${conversationId}`).emit('new_message', {
                         id: userMessage.id,
                         conversationId: userMessage.conversationId,
+                        role: 'user',
                         senderId: socket.userId,
                         content: userMessage.content,
                         messageType: messageType,
@@ -144,6 +186,7 @@ class SocketService {
                         this.io.to(`conversation_${conversationId}`).emit('new_message', {
                             id: aiMessage.id,
                             conversationId: aiMessage.conversationId,
+                            role: 'assistant',
                             senderId: 'ai',
                             content: aiMessage.content,
                             messageType: 'text',

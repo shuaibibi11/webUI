@@ -1,3 +1,4 @@
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, Link } from 'react-router-dom';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
@@ -17,9 +18,11 @@ import { Toaster } from './components/ui/Toaster';
 
 function App() {
   const isAdminPort = typeof window !== 'undefined' && window.location.port === '11010';
-  if (typeof document !== 'undefined') {
-    document.title = isAdminPort ? '和元智擎政易大模型管理后台' : '和元智擎';
-  }
+  React.useEffect(() => {
+    if (typeof document !== 'undefined') {
+      document.title = isAdminPort ? '和元智擎政易大模型管理后台' : '和元智擎';
+    }
+  }, [isAdminPort]);
   return (
     <Router>
       <div className="min-h-screen bg-secondary-50">

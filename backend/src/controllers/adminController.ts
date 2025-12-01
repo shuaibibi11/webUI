@@ -48,7 +48,7 @@ export const verifyUser = async (req: any, res: Response) => {
       }
     });
 
-    await prisma.auditLog.create({ data: { userId: id, action: Boolean(isVerified) ? 'user_verify' : 'user_unverify', details: Boolean(isVerified) ? '审批通过' : '审批取消' } });
+    await prisma.auditLog.create({ data: { userId: id, action: Boolean(isVerified) ? 'user_verify' : 'user_unverify', ip: (req.headers['x-forwarded-for'] as string) || req.ip, details: Boolean(isVerified) ? '审批通过' : '审批取消' } });
     res.json({ message: isVerified ? '用户审批通过' : '用户审批已拒绝', user });
   } catch (error) {
     console.error('审批用户失败:', error);
@@ -102,11 +102,11 @@ export const getModels = async (req: any, res: Response) => {
 export const createModel = async (req: any, res: Response) => {
   try {
     const userId = req.user.userId;
-    const { provider, endpoint, apiKey, modelName, tag, protocol, temperature, maxTokens, topP, enabled } = req.body;
+    const { provider, endpoint, apiKey, modelName, tag, protocol, temperature, maxTokens, topP, contextLength, memoryEnabled, enabled } = req.body;
     const model = await prisma.modelConfig.create({
-      data: { provider, endpoint, apiKey, modelName, tag, protocol, temperature, maxTokens, topP, enabled, createdBy: userId }
+      data: { provider, endpoint, apiKey, modelName, tag, protocol, temperature, maxTokens, topP, contextLength, memoryEnabled, enabled, createdBy: userId }
     });
-    await prisma.auditLog.create({ data: { userId: userId, action: 'model_create', details: `${provider}/${modelName}` } });
+    await prisma.auditLog.create({ data: { userId: userId, action: 'model_create', ip: (req.headers['x-forwarded-for'] as string) || req.ip, details: `${provider}/${modelName}` } });
     res.status(201).json({ message: '模型创建成功', model });
   } catch (error) {
     console.error('创建模型失败:', error);
@@ -117,7 +117,7 @@ export const createModel = async (req: any, res: Response) => {
 export const updateModel = async (req: any, res: Response) => {
   try {
     const { id } = req.params;
-    const { provider, endpoint, apiKey, modelName, tag, protocol, temperature, maxTokens, topP, enabled } = req.body;
+    const { provider, endpoint, apiKey, modelName, tag, protocol, temperature, maxTokens, topP, contextLength, memoryEnabled, enabled } = req.body;
     const data: any = {};
     if (typeof provider !== 'undefined') data.provider = provider;
     if (typeof endpoint !== 'undefined') data.endpoint = endpoint;
@@ -128,10 +128,12 @@ export const updateModel = async (req: any, res: Response) => {
     if (typeof temperature !== 'undefined') data.temperature = temperature;
     if (typeof maxTokens !== 'undefined') data.maxTokens = maxTokens;
     if (typeof topP !== 'undefined') data.topP = topP;
+    if (typeof contextLength !== 'undefined') data.contextLength = contextLength;
+    if (typeof memoryEnabled !== 'undefined') data.memoryEnabled = Boolean(memoryEnabled);
     if (typeof enabled !== 'undefined') data.enabled = enabled;
 
     const model = await prisma.modelConfig.update({ where: { id }, data });
-    await prisma.auditLog.create({ data: { userId: req.user.userId, action: 'model_update', details: `${model.provider}/${model.modelName}` } });
+    await prisma.auditLog.create({ data: { userId: req.user.userId, action: 'model_update', ip: (req.headers['x-forwarded-for'] as string) || req.ip, details: `${model.provider}/${model.modelName}` } });
     res.json({ message: '模型更新成功', model });
   } catch (error) {
     console.error('更新模型失败:', error);
@@ -143,7 +145,7 @@ export const deleteModel = async (req: any, res: Response) => {
   try {
     const { id } = req.params;
     await prisma.modelConfig.delete({ where: { id } });
-    await prisma.auditLog.create({ data: { userId: req.user.userId, action: 'model_delete', details: id } });
+    await prisma.auditLog.create({ data: { userId: req.user.userId, action: 'model_delete', ip: (req.headers['x-forwarded-for'] as string) || req.ip, details: id } });
     res.json({ message: '模型删除成功' });
   } catch (error) {
     console.error('删除模型失败:', error);
@@ -156,7 +158,7 @@ export const banUser = async (req: any, res: Response) => {
     const { id } = req.params;
     const { banned } = req.body;
     const user = await prisma.user.update({ where: { id }, data: { banned: Boolean(banned) } });
-    await prisma.auditLog.create({ data: { userId: id, action: banned ? 'ban' : 'unban', details: banned ? '封禁账号' : '解除封禁' } });
+    await prisma.auditLog.create({ data: { userId: id, action: banned ? 'ban' : 'unban', ip: (req.headers['x-forwarded-for'] as string) || req.ip, details: banned ? '封禁账号' : '解除封禁' } });
     res.json({ message: banned ? '用户已封禁' : '用户已解封', user });
   } catch (error) {
     console.error('封禁/解封失败:', error);
@@ -171,7 +173,7 @@ export const adminResetPassword = async (req: any, res: Response) => {
     const bcryptRounds = parseInt(process.env.BCRYPT_ROUNDS || '12');
     const hashed = await bcrypt.hash(newPassword, bcryptRounds);
     const user = await prisma.user.update({ where: { id }, data: { password: hashed } });
-    await prisma.auditLog.create({ data: { userId: req.user.userId, action: 'admin_reset_password', details: `reset:${id}` } });
+    await prisma.auditLog.create({ data: { userId: req.user.userId, action: 'admin_reset_password', ip: (req.headers['x-forwarded-for'] as string) || req.ip, details: `reset:${id}` } });
     res.json({ message: '密码已重置', user: { id: user.id, username: user.username } });
   } catch (error) {
     console.error('管理员重置密码失败:', error);
@@ -286,7 +288,7 @@ export const updateUserFields = async (req: any, res: Response) => {
         id: true, username: true, email: true, phone: true, realName: true, idCard: true, role: true, isVerified: true, banned: true
       }
     });
-    await prisma.auditLog.create({ data: { userId: id, action: 'user_update', details: '管理员更新用户资料' } });
+    await prisma.auditLog.create({ data: { userId: id, action: 'user_update', ip: (req.headers['x-forwarded-for'] as string) || req.ip, details: '管理员更新用户资料' } });
     res.json({ message: '用户信息更新成功', user });
   } catch (error) {
     console.error('更新用户失败:', error);
@@ -326,7 +328,7 @@ export const updateFeedbackStatus = async (req: any, res: Response) => {
       data: { status, resolution, handlerId: req.user.userId, handledAt: new Date() },
       include: { user: { select: { id: true, username: true } } }
     });
-    await prisma.auditLog.create({ data: { userId: req.user.userId, action: 'feedback_update', details: `${id}:${status}` } });
+    await prisma.auditLog.create({ data: { userId: req.user.userId, action: 'feedback_update', ip: (req.headers['x-forwarded-for'] as string) || req.ip, details: `${id}:${status}` } });
     res.json({ message: '反馈更新成功', feedback: fb });
   } catch (error) {
     console.error('更新反馈失败:', error);

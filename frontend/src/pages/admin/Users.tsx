@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useEffectEvent, useState } from 'react';
 import api from '@/services/api';
 import { useToast } from '@/hooks/use-toast';
 import { AlertCircle } from 'lucide-react';
@@ -21,16 +21,31 @@ export default function UsersAdmin() {
   const [editing, setEditing] = useState<User | null>(null);
   const [form, setForm] = useState<Partial<User>>({});
 
-  const load = async () => {
-    try {
-      const res = await api.get<{ users: User[] }>('/admin/users');
-      setUsers(res.users);
-    } catch (e: any) {
-      toast({ variant: 'destructive', title: '加载失败', description: e.message || '无法获取用户列表' });
-    }
-  };
+  const onUsersLoaded = useEffectEvent((list: User[]) => {
+    setUsers(list);
+  });
+  const onLoadError = useEffectEvent((msg: string) => {
+    toast({ variant: 'destructive', title: '加载失败', description: msg });
+  });
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    let cancelled = false;
+    const fetchUsers = async () => {
+      try {
+        const res = await api.get<{ users: User[] }>(
+          '/admin/users'
+        );
+        if (!cancelled) onUsersLoaded(res.users);
+      } catch (e) {
+        if (!cancelled) {
+          const msg = (e as { message?: string })?.message || '无法获取用户列表';
+          onLoadError(msg);
+        }
+      }
+    };
+    fetchUsers();
+    return () => { cancelled = true; };
+  }, []);
 
   const save = async () => {
     if (!editing) return;
@@ -52,8 +67,9 @@ export default function UsersAdmin() {
       } : u));
       setEditing(null);
       setForm({});
-    } catch (e: any) {
-      toast({ variant: 'destructive', title: '保存失败', description: e.message || '请稍后重试' });
+    } catch (e) {
+      const msg = (e as { message?: string })?.message || '请稍后重试';
+      toast({ variant: 'destructive', title: '保存失败', description: msg });
     }
   };
 
@@ -61,9 +77,11 @@ export default function UsersAdmin() {
     try {
       await api.put(`/admin/users/${u.id}/ban`, { banned: !u.banned });
       toast({ title: !u.banned ? '已封禁' : '已解封', description: !u.banned ? '用户将无法登录' : '用户可正常登录' });
-      load();
-    } catch (e: any) {
-      toast({ variant: 'destructive', title: '操作失败', description: e.message || '请稍后重试' });
+      const res = await api.get<{ users: User[] }>(`/admin/users`);
+      setUsers(res.users);
+    } catch (e) {
+      const msg = (e as { message?: string })?.message || '请稍后重试';
+      toast({ variant: 'destructive', title: '操作失败', description: msg });
     }
   };
 
@@ -72,8 +90,9 @@ export default function UsersAdmin() {
       await api.put(`/admin/users/${u.id}`, { isVerified: true });
       toast({ title: '审批通过', description: '用户已具备登录权限' });
       setUsers(prev => prev.map(x => x.id === u.id ? { ...x, isVerified: true } : x));
-    } catch (e: any) {
-      toast({ variant: 'destructive', title: '审批失败', description: e.message || '请稍后重试' });
+    } catch (e) {
+      const msg = (e as { message?: string })?.message || '请稍后重试';
+      toast({ variant: 'destructive', title: '审批失败', description: msg });
     }
   };
 
@@ -83,23 +102,26 @@ export default function UsersAdmin() {
     try {
       await api.put(`/admin/users/${u.id}/password`, { newPassword: np });
       toast({ title: '已重置密码', description: '用户可使用新密码登录' });
-    } catch (e: any) {
-      toast({ variant: 'destructive', title: '重置失败', description: e.message || '请稍后重试' });
+    } catch (e) {
+      const msg = (e as { message?: string })?.message || '请稍后重试';
+      toast({ variant: 'destructive', title: '重置失败', description: msg });
     }
   };
 
   const inspectConversations = async (u: User) => {
     try {
-      const res = await api.get<{ conversations: any[] }>(`/admin/users/${u.id}/conversations`);
+      const res = await api.get<{ conversations: { id: string }[] }>(`/admin/users/${u.id}/conversations`);
       if (res.conversations.length === 0) {
         toast({ title: '用户会话', description: '暂无会话' });
         return;
       }
       // 打开第一个会话详情页；后续可以弹窗选择
       const convId = res.conversations[0].id;
-      window.location.href = `/admin/conversations/${convId}`;
-    } catch (e: any) {
-      toast({ variant: 'destructive', title: '获取会话失败', description: e.message || '请稍后重试' });
+      // 使用可导航路由避免直接修改全局对象
+      window.location.assign(`/admin/conversations/${convId}`);
+    } catch (e) {
+      const msg = (e as { message?: string })?.message || '请稍后重试';
+      toast({ variant: 'destructive', title: '获取会话失败', description: msg });
     }
   };
 

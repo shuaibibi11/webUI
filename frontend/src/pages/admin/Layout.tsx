@@ -9,7 +9,7 @@ export default function AdminLayout() {
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
       role = payload?.role || '';
-    } catch {}
+    } catch (e) { console.error('解析令牌失败', e); }
   }
   const isAdmin = Boolean(token && role === 'ADMIN');
   if (!isAdmin) {

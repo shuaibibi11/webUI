@@ -138,7 +138,24 @@ export class SocketService {
             }
           });
 
-          const ai = await invokeModel(content);
+          const activeModel = await prisma.modelConfig.findFirst({ where: { enabled: true }, orderBy: { updatedAt: 'desc' }, select: { memoryEnabled: true, contextLength: true } })
+          let messages: { role: 'user' | 'assistant' | 'system'; content: string }[]
+          if (!activeModel || !activeModel.memoryEnabled) {
+            messages = [{ role: 'user', content }]
+          } else {
+            const history = await prisma.message.findMany({ where: { conversationId }, orderBy: { createdAt: 'asc' }, select: { role: true, content: true } })
+            let total = 0
+            const picked: { role: 'user' | 'assistant' | 'system'; content: string }[] = []
+            for (let i = history.length - 1; i >= 0; i--) {
+              const h = history[i]
+              const len = h.content.length
+              if (total + len > (activeModel.contextLength || 4096)) break
+              picked.unshift({ role: h.role as any, content: h.content })
+              total += len
+            }
+            messages = picked.concat([{ role: 'user', content }])
+          }
+          const ai = await invokeModel(messages)
           const aiMessage = await prisma.message.create({
             data: {
               conversationId,

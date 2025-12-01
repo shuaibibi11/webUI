@@ -146,6 +146,10 @@ const login = async (req, res) => {
         if (!isPasswordValid) {
             return res.status(401).json({ error: '密码错误' });
         }
+        // 封禁用户不可登录
+        if (user.banned) {
+            return res.status(403).json({ error: '账号已封禁，请联系管理员' });
+        }
         // 审批后方可登录
         if (!user.isVerified) {
             return res.status(403).json({ error: '账号未审批，请等待管理员审核' });

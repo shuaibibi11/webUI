@@ -259,7 +259,7 @@ export const sessionStorage = {
     }
   },
   
-  set(key: string, value: any): void {
+  set<T>(key: string, value: T): void {
     try {
       window.sessionStorage.setItem(key, JSON.stringify(value));
     } catch (error) {

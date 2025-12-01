@@ -27,12 +27,16 @@ export default function FeedbacksAdmin() {
     try {
       const res = await api.get<{ feedbacks: FeedbackItem[] }>(`/admin/feedbacks`);
       setItems(res.feedbacks);
-    } catch (e: any) {
-      toast({ variant: 'destructive', title: '加载失败', description: e.message || '无法获取反馈列表' });
+    } catch (e) {
+      const msg = (e as { message?: string })?.message || '无法获取反馈列表';
+      toast({ variant: 'destructive', title: '加载失败', description: msg });
     }
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    const timer = setTimeout(() => { load(); }, 0);
+    return () => clearTimeout(timer);
+  }, []);
 
   const startEdit = (item: FeedbackItem) => {
     setEditingId(item.id);
@@ -47,8 +51,9 @@ export default function FeedbacksAdmin() {
       setItems(prev => prev.map(i => i.id === editingId ? { ...i, status, resolution, handledAt: new Date().toISOString() } : i));
       setEditingId(null);
       toast({ title: '已更新' });
-    } catch (e: any) {
-      toast({ variant: 'destructive', title: '更新失败', description: e.message || '请稍后重试' });
+    } catch (e) {
+      const msg = (e as { message?: string })?.message || '请稍后重试';
+      toast({ variant: 'destructive', title: '更新失败', description: msg });
     }
   };
 

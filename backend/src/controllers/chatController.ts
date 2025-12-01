@@ -25,13 +25,25 @@ export const chatHandler = async (req: any, res: Response) => {
     }
 
     const userId = req.user.userId;
+
+    // 校验用户状态
+    const user = await prisma.user.findUnique({ where: { id: userId }, select: { banned: true, isVerified: true } });
+    if (!user) {
+      return res.status(404).json({ error: '用户不存在' });
+    }
+    if (user.banned) {
+      return res.status(403).json({ error: '账号已封禁，无法对话' });
+    }
+    if (!user.isVerified) {
+      return res.status(403).json({ error: '账号未审批，无法对话' });
+    }
     let { conversationId, content } = req.body;
 
     let conversation;
 
-    // 如果提供了 conversationId，验证其存在性
+    // 如果提供了 conversationId，验证其存在性（且属于当前用户）
     if (conversationId) {
-      conversation = await prisma.conversation.findUnique({
+      conversation = await prisma.conversation.findFirst({
         where: { id: conversationId, userId }
       });
 
@@ -69,7 +81,27 @@ export const chatHandler = async (req: any, res: Response) => {
       }
     });
 
-    const { content: aiContent, promptTokens, completionTokens, totalTokens } = await invokeModel(content);
+    const activeModel = await prisma.modelConfig.findFirst({ where: { enabled: true }, orderBy: { updatedAt: 'desc' }, select: { memoryEnabled: true, contextLength: true } })
+    let messages: { role: 'user' | 'assistant' | 'system'; content: string }[]
+    if (!activeModel || !activeModel.memoryEnabled) {
+      messages = [{ role: 'user', content }]
+    } else {
+      const history = await prisma.message.findMany({ where: { conversationId }, orderBy: { createdAt: 'asc' }, select: { role: true, content: true } })
+      let total = 0
+      const picked: { role: 'user' | 'assistant' | 'system'; content: string }[] = []
+      for (let i = history.length - 1; i >= 0; i--) {
+        const h = history[i]
+        const len = h.content.length
+        if (total + len > (activeModel.contextLength || 4096)) break
+        picked.unshift({ role: h.role as any, content: h.content })
+        total += len
+      }
+      messages = picked
+      if (messages.length === 0 || messages[messages.length - 1].role !== 'user') {
+        messages = messages.concat([{ role: 'user', content }])
+      }
+    }
+    const { content: aiContent, promptTokens, completionTokens, totalTokens } = await invokeModel(messages)
 
     const aiMessage = await prisma.message.create({
       data: {

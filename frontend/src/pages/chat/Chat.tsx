@@ -32,6 +32,28 @@ export default function Chat() {
   const messages = currentConversation ? (messagesMap[currentConversation.id] || []) : [];
   const [activeModel, setActiveModel] = useState<{ modelName: string; provider: string; tag: string } | null>(null);
 
+  // 选择会话（提前声明）
+  const handleSelectConversation = React.useCallback(async (conv: Conversation) => {
+    if (currentConversation?.id === conv.id) return;
+    if (currentConversation) {
+      webSocketService.leaveConversation(currentConversation.id);
+    }
+    setCurrentConversation(conv);
+    webSocketService.joinConversation(conv.id);
+    try {
+      const res = await chatService.getMessages(conv.id);
+      setMessages(conv.id, res.items);
+      const unreadMessages = res.items
+        .filter(msg => msg.role !== 'user' && msg.status !== 'read')
+        .map(msg => msg.id);
+      if (unreadMessages.length > 0) {
+        webSocketService.markAsRead(conv.id, unreadMessages);
+      }
+    } catch (err) {
+      console.error("Failed to fetch messages", err);
+    }
+  }, [currentConversation, setCurrentConversation, setMessages]);
+
   // 初始化检查和数据获取
   useEffect(() => {
     const init = async () => {
@@ -52,14 +74,34 @@ export default function Chat() {
         setConversations(res.items);
 
         try {
-          const m = await api.get<{ model: any }>("/models/active");
+          const m = await api.get<{ model: { modelName: string; provider: string; tag: string } | null }>("/models/active");
           setActiveModel(m.model ? { modelName: m.model.modelName, provider: m.model.provider, tag: m.model.tag } : null);
-        } catch {}
+        } catch {
+          setActiveModel(null);
+        }
         const params = new URLSearchParams(window.location.search);
         const convId = params.get('conv');
-        if (!currentConversation && res.items.length > 0) {
-          const target = convId ? res.items.find(c => c.id === convId) || res.items[0] : res.items[0];
-          handleSelectConversation(target);
+        if (!currentConversation) {
+          if (res.items.length > 0) {
+            const target = convId ? res.items.find(c => c.id === convId) || res.items[0] : res.items[0];
+            handleSelectConversation(target);
+          } else {
+            const conv = await chatService.createConversation({ title: '新对话', type: 'private' });
+            setConversations([conv]);
+            setCurrentConversation(conv);
+            webSocketService.joinConversation(conv.id);
+            setMessages(conv.id, [
+              {
+                id: `sys_${Date.now()}`,
+                conversationId: conv.id,
+                senderId: 'system',
+                content: '已为你创建新会话，输入内容开始与AI助手交流。',
+                type: 'text',
+                status: 'sent',
+                createdAt: new Date().toISOString(),
+              } as Message,
+            ]);
+          }
         }
       } catch (err) {
         console.error("Failed to fetch conversations", err);
@@ -74,7 +116,7 @@ export default function Chat() {
       // 这里我们移除监听器
       webSocketService.removeListeners();
     };
-  }, []);
+  }, [navigate, currentConversation, handleSelectConversation, setConversations, setCurrentConversation, setMessages]);
 
   // WebSocket 监听设置
   useEffect(() => {
@@ -118,54 +160,29 @@ export default function Chat() {
   // 自动滚动到底部
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+  }, [messagesEndRef, messages.length]);
 
-  // 选择会话
-  const handleSelectConversation = async (conv: Conversation) => {
-    // 如果已经在当前会话，不做处理
-    if (currentConversation?.id === conv.id) return;
-
-    // 离开旧会话房间
-    if (currentConversation) {
-      webSocketService.leaveConversation(currentConversation.id);
-    }
-
-    setCurrentConversation(conv);
-    
-    // 加入新会话房间
-    webSocketService.joinConversation(conv.id);
-    
-    // 获取消息记录
-    try {
-      const res = await chatService.getMessages(conv.id);
-      setMessages(conv.id, res.items);
-      
-      // 标记未读消息为已读
-      const unreadMessages = res.items
-        .filter(msg => msg.role !== 'user' && msg.status !== 'read')
-        .map(msg => msg.id);
-        
-      if (unreadMessages.length > 0) {
-        webSocketService.markAsRead(conv.id, unreadMessages);
-      }
-    } catch (err) {
-      console.error("Failed to fetch messages", err);
-    }
-  };
+  // handleSelectConversation 已提前声明
 
   // 发送消息
   const handleSendMessage = async () => {
-    if (!inputText.trim() || !currentConversation) return;
-    
+    if (!inputText.trim()) return;
     const content = inputText;
-    setInputText(''); // 立即清空输入框
-    
+    setInputText('');
     try {
-      // 1. 生成临时ID和消息对象
+      let targetConversation = currentConversation;
+      if (!targetConversation) {
+        const title = content.slice(0, 20) || '新对话';
+        const conv = await chatService.createConversation({ title, type: 'private' });
+        setConversations([conv, ...conversations]);
+        setCurrentConversation(conv);
+        webSocketService.joinConversation(conv.id);
+        targetConversation = conv;
+      }
       const tempId = `temp_${Date.now()}`;
       const tempMessage: Message = {
         id: tempId,
-        conversationId: currentConversation.id,
+        conversationId: targetConversation.id,
         role: 'user',
         senderId: user?.id || '',
         content,
@@ -174,19 +191,11 @@ export default function Chat() {
         createdAt: new Date().toISOString(),
         sender: user || undefined
       };
-
-      // 2. 立即在UI显示
-      addMessage(currentConversation.id, tempMessage);
-
-      // 3. 通过WebSocket发送
-      webSocketService.sendMessage(currentConversation.id, content);
-      
-      // 注意：这里我们不手动将状态改为sent，而是等待WebSocket的'new_message'广播
-      // 或者如果后端返回了ack，可以在那里更新状态。
-      // 为了更好的体验，我们可以在收到自己的消息广播时，替换掉临时消息或者更新状态
+      addMessage(targetConversation.id, tempMessage);
+      const res = await chatService.chatUnified(content, targetConversation.id);
+      res.messages.forEach(m => addMessage(res.conversationId, m));
     } catch (error) {
-      console.error("Failed to send message", error);
-      // TODO: 显示错误提示，并将消息状态改为failed
+      console.error('Failed to send message', error);
     }
   };
 

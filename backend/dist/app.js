@@ -11,6 +11,7 @@ const userRoutes_1 = __importDefault(require("./routes/userRoutes"));
 const conversationRoutes_1 = __importDefault(require("./routes/conversationRoutes"));
 const messageRoutes_1 = __importDefault(require("./routes/messageRoutes"));
 const chatRoutes_1 = __importDefault(require("./routes/chatRoutes"));
+const modelRoutes_1 = __importDefault(require("./routes/modelRoutes"));
 const feedbackRoutes_1 = __importDefault(require("./routes/feedbackRoutes"));
 const adminRoutes_1 = __importDefault(require("./routes/adminRoutes"));
 const app = (0, express_1.default)();
@@ -44,6 +45,7 @@ app.use('/api/users', authLimiter, userRoutes_1.default);
 app.use('/api/conversations', conversationRoutes_1.default);
 app.use('/api/messages', messageRoutes_1.default);
 app.use('/api/chat', chatRoutes_1.default);
+app.use('/api/models', modelRoutes_1.default);
 app.use('/api/feedbacks', feedbackRoutes_1.default);
 app.use('/api/admin', adminRoutes_1.default);
 // 健康检查路由
