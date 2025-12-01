@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
 import { prisma } from '../models/prisma';
-import axios from 'axios';
+import { invokeModel } from '../services/modelService';
 
 export const chatValidation = [
   body('content')
@@ -58,56 +58,18 @@ export const chatHandler = async (req: any, res: Response) => {
         role: 'user',
         content,
         status: 'sent'
+      },
+      select: {
+        id: true,
+        conversationId: true,
+        role: true,
+        content: true,
+        status: true,
+        createdAt: true,
       }
     });
 
-    // 调用模型配置
-    const activeModel = await prisma.modelConfig.findFirst({ where: { enabled: true }, orderBy: { updatedAt: 'desc' } });
-    let aiContent = `这是AI对"${content}"的回复。`;
-    let promptTokens = 0, completionTokens = 0, totalTokens = 0;
-    if (activeModel?.endpoint && activeModel?.modelName) {
-      try {
-        const headers: any = { 'Content-Type': 'application/json' };
-        if (activeModel.apiKey) headers['Authorization'] = `Bearer ${activeModel.apiKey}`;
-        let resp;
-        if (activeModel.protocol === 'openai') {
-          const reqBody: any = {
-            model: activeModel.modelName,
-            messages: [{ role: 'user', content }],
-            temperature: activeModel.temperature,
-            max_tokens: activeModel.maxTokens,
-            top_p: activeModel.topP,
-          };
-          resp = await axios.post(activeModel.endpoint, reqBody, { headers, timeout: 15000 });
-          aiContent = resp.data?.choices?.[0]?.message?.content || aiContent;
-          promptTokens = resp.data?.usage?.prompt_tokens || 0;
-          completionTokens = resp.data?.usage?.completion_tokens || 0;
-          totalTokens = resp.data?.usage?.total_tokens || promptTokens + completionTokens;
-        } else if (activeModel.protocol === 'ollama') {
-          const reqBody: any = { model: activeModel.modelName, prompt: content, stream: false, options: { temperature: activeModel.temperature } };
-          resp = await axios.post(activeModel.endpoint, reqBody, { headers, timeout: 15000 });
-          aiContent = resp.data?.response || resp.data?.output || aiContent;
-          totalTokens = resp.data?.eval_count || 0;
-        } else if (activeModel.protocol === 'siliconflow') {
-          const reqBody: any = { model: activeModel.modelName, messages: [{ role: 'user', content }], temperature: activeModel.temperature, top_p: activeModel.topP };
-          resp = await axios.post(activeModel.endpoint, reqBody, { headers, timeout: 15000 });
-          aiContent = resp.data?.choices?.[0]?.message?.content || aiContent;
-          promptTokens = resp.data?.usage?.prompt_tokens || 0;
-          completionTokens = resp.data?.usage?.completion_tokens || 0;
-          totalTokens = resp.data?.usage?.total_tokens || promptTokens + completionTokens;
-        } else {
-          // 自定义：兼容简单 text/choices[0].text/output
-          const reqBody: any = { model: activeModel.modelName, prompt: content, temperature: activeModel.temperature, max_tokens: activeModel.maxTokens, top_p: activeModel.topP };
-          resp = await axios.post(activeModel.endpoint, reqBody, { headers, timeout: 15000 });
-          aiContent = resp.data?.choices?.[0]?.text || resp.data?.output || resp.data?.text || aiContent;
-          promptTokens = resp.data?.usage?.prompt_tokens || 0;
-          completionTokens = resp.data?.usage?.completion_tokens || 0;
-          totalTokens = resp.data?.usage?.total_tokens || promptTokens + completionTokens;
-        }
-      } catch (e) {
-        console.error('模型调用失败:', (e as any)?.message);
-      }
-    }
+    const { content: aiContent, promptTokens, completionTokens, totalTokens } = await invokeModel(content);
 
     const aiMessage = await prisma.message.create({
       data: {
@@ -118,6 +80,17 @@ export const chatHandler = async (req: any, res: Response) => {
         promptTokens,
         completionTokens,
         totalTokens
+      },
+      select: {
+        id: true,
+        conversationId: true,
+        role: true,
+        content: true,
+        status: true,
+        createdAt: true,
+        promptTokens: true,
+        completionTokens: true,
+        totalTokens: true,
       }
     });
 

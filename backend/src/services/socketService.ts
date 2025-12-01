@@ -2,6 +2,7 @@ import { Server as SocketIOServer, Socket } from 'socket.io';
 import { Server as HTTPServer } from 'http';
 import jwt from 'jsonwebtoken';
 import { PrismaClient } from '@prisma/client';
+import { invokeModel } from './modelService';
 
 const prisma = new PrismaClient();
 
@@ -15,9 +16,12 @@ export class SocketService {
   private connectedUsers: Map<string, string> = new Map(); // userId -> socketId
 
   constructor(server: HTTPServer) {
+    const origins = (process.env.FRONTEND_URLS || process.env.FRONTEND_URL || 'http://localhost:11004,http://localhost:11010')
+      .split(',')
+      .map((s) => s.trim());
     this.io = new SocketIOServer(server, {
       cors: {
-        origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+        origin: origins,
         credentials: true
       },
       transports: ['websocket', 'polling']
@@ -123,17 +127,39 @@ export class SocketService {
               content,
               status: 'sent',
               createdAt: new Date()
+            },
+            select: {
+              id: true,
+              conversationId: true,
+              role: true,
+              content: true,
+              status: true,
+              createdAt: true
             }
           });
 
-          // 创建AI回复消息
+          const ai = await invokeModel(content);
           const aiMessage = await prisma.message.create({
             data: {
               conversationId,
               role: 'assistant',
-              content: '收到您的消息，这是AI助手的回复。',
+              content: ai.content,
               status: 'sent',
-              createdAt: new Date()
+              createdAt: new Date(),
+              promptTokens: ai.promptTokens,
+              completionTokens: ai.completionTokens,
+              totalTokens: ai.totalTokens,
+            },
+            select: {
+              id: true,
+              conversationId: true,
+              role: true,
+              content: true,
+              status: true,
+              createdAt: true,
+              promptTokens: true,
+              completionTokens: true,
+              totalTokens: true,
             }
           });
 
@@ -147,6 +173,7 @@ export class SocketService {
           this.io.to(`conversation_${conversationId}`).emit('new_message', {
             id: userMessage.id,
             conversationId: userMessage.conversationId,
+            role: 'user',
             senderId: socket.userId,
             content: userMessage.content,
             messageType: messageType,
@@ -162,6 +189,7 @@ export class SocketService {
             this.io.to(`conversation_${conversationId}`).emit('new_message', {
               id: aiMessage.id,
               conversationId: aiMessage.conversationId,
+              role: 'assistant',
               senderId: 'ai',
               content: aiMessage.content,
               messageType: 'text',

@@ -28,15 +28,15 @@ app.use(limiter);
 // 更严格的速率限制用于认证接口
 const authLimiter = (0, express_rate_limit_1.default)({
     windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || '900000'),
-    max: parseInt(process.env.AUTH_RATE_LIMIT_MAX || '5'), // 限制每个IP最多5次认证请求
-    message: '认证请求过于频繁，请15分钟后再试',
-    skipSuccessfulRequests: true, // 成功的请求不计入限制
+    max: parseInt(process.env.AUTH_RATE_LIMIT_MAX || '100000'),
+    message: '认证请求过于频繁，请稍后再试',
+    skipSuccessfulRequests: true,
 });
 // 中间件配置
-app.use((0, cors_1.default)({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-    credentials: true
-}));
+const origins = (process.env.FRONTEND_URLS || process.env.FRONTEND_URL || 'http://localhost:11004,http://localhost:11010')
+    .split(',')
+    .map((s) => s.trim());
+app.use((0, cors_1.default)({ origin: origins, credentials: true }));
 app.use(express_1.default.json({ limit: '10mb' }));
 app.use(express_1.default.urlencoded({ extended: true, limit: '10mb' }));
 // 路由配置

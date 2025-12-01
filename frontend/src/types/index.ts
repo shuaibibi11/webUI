@@ -55,12 +55,13 @@ export interface Conversation {
 export interface Message {
   id: string;
   conversationId: string;
-  senderId: string;
+  role: 'user' | 'assistant' | 'system';
+  senderId?: string;
   content: string;
   type: 'text' | 'image' | 'file';
   status: 'sending' | 'sent' | 'delivered' | 'read';
   createdAt: string;
-  sender?: User;
+  sender?: { id: string; username: string };
 }
 
 export interface CreateMessageRequest {
@@ -75,14 +76,15 @@ export interface CreateConversationRequest {
 }
 
 // API响应类型
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   success: boolean;
   message: string;
   data?: T;
   errorCode?: string;
+  error?: string;
 }
 
-export interface PaginatedResponse<T = any> {
+export interface PaginatedResponse<T = unknown> {
   items: T[];
   pagination: {
     page: number;
@@ -95,13 +97,20 @@ export interface PaginatedResponse<T = any> {
 // WebSocket事件类型
 export interface WebSocketEvent {
   event: string;
-  data: any;
+  data: unknown;
 }
 
 export interface NewMessageEvent extends WebSocketEvent {
   event: 'newMessage';
   data: {
-    message: Message;
+    id: string;
+    conversationId: string;
+    role?: 'user' | 'assistant' | 'system';
+    senderId?: string;
+    content: string;
+    messageType?: Message['type'];
+    createdAt: string;
+    sender?: { id: string; username: string };
   };
 }
 
@@ -134,7 +143,7 @@ export interface MessageQueryParams extends PaginationParams {
 }
 
 // 会话列表查询参数
-export interface ConversationQueryParams extends PaginationParams {}
+export type ConversationQueryParams = PaginationParams;
 
 // 错误码定义
 export const ERROR_CODES = {

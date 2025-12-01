@@ -6,6 +6,7 @@ import userRoutes from './routes/userRoutes';
 import conversationRoutes from './routes/conversationRoutes';
 import messageRoutes from './routes/messageRoutes';
 import chatRoutes from './routes/chatRoutes';
+import modelRoutes from './routes/modelRoutes';
 import feedbackRoutes from './routes/feedbackRoutes';
 import adminRoutes from './routes/adminRoutes';
 
@@ -45,6 +46,7 @@ app.use('/api/users', authLimiter, userRoutes);
 app.use('/api/conversations', conversationRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/models', modelRoutes);
 app.use('/api/feedbacks', feedbackRoutes);
 app.use('/api/admin', adminRoutes);
 

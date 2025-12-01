@@ -23,7 +23,7 @@ export default function Feedback() {
 
   const onSubmit = async (data: FeedbackFormData) => {
     try {
-      const res = await api.post<{ message?: string; feedback?: any }>(
+      const res = await api.post<{ message?: string; feedback?: { id: string } }>(
         '/feedbacks',
         data
       );
@@ -32,11 +32,12 @@ export default function Feedback() {
         description: res?.message || '感谢您的反馈，我们将尽快处理。',
       });
       navigate(-1);
-    } catch (err: any) {
+    } catch (err) {
+      const msg = (err as { message?: string })?.message || '请稍后重试';
       toast({
         variant: 'destructive',
         title: '提交失败',
-        description: err?.message || '请稍后重试',
+        description: msg,
       });
     }
   };

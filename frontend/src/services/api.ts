@@ -2,7 +2,7 @@ import axios, { type AxiosInstance, type AxiosRequestConfig, type AxiosResponse,
 import { ERROR_CODES, type ApiResponse } from '../types';
 
 const API_CONFIG = {
-  baseURL: (import.meta as any).env?.VITE_API_BASE_URL ?? ((import.meta as any).env?.DEV ? '/api' : 'http://localhost:3013/api'),
+  baseURL: (import.meta as unknown as { env?: Record<string, string> }).env?.VITE_API_BASE_URL ?? ((import.meta as unknown as { env?: Record<string, string> }).env?.DEV ? '/api' : 'http://localhost:3003/api'),
   timeout: 10000,
   headers: { 'Content-Type': 'application/json' },
 };
@@ -61,8 +61,8 @@ class ApiService {
     if (error.response) {
       // 服务器响应错误
       const { status, data } = error.response;
-      
-      const msg = (data as any)?.error || (data as any)?.message || `HTTP ${status}`;
+      const payload = data as ApiResponse | undefined;
+      const msg = payload?.error || payload?.message || `HTTP ${status}`;
       if (status === 401) this.handleTokenExpired();
       console.error('API Error:', msg);
       return Promise.reject({ success: false, message: msg, errorCode: ERROR_CODES.INTERNAL_ERROR });
@@ -95,47 +95,31 @@ class ApiService {
   }
   
   // GET请求
-  async get<T = any>(url: string, config?: AxiosRequestConfig): Promise<T> {
-    try {
-      const response = await this.instance.get<T>(url, config);
-      return response.data as T;
-    } catch (error) {
-      throw error;
-    }
+  async get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
+    const response = await this.instance.get<T>(url, config);
+    return response.data as T;
   }
   
   // POST请求
-  async post<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
-    try {
-      const response = await this.instance.post<T>(url, data, config);
-      return response.data as T;
-    } catch (error) {
-      throw error;
-    }
+  async post<T>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> {
+    const response = await this.instance.post<T>(url, data, config);
+    return response.data as T;
   }
   
   // PUT请求
-  async put<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
-    try {
-      const response = await this.instance.put<T>(url, data, config);
-      return response.data as T;
-    } catch (error) {
-      throw error;
-    }
+  async put<T>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> {
+    const response = await this.instance.put<T>(url, data, config);
+    return response.data as T;
   }
   
   // DELETE请求
-  async delete<T = any>(url: string, config?: AxiosRequestConfig): Promise<T> {
-    try {
-      const response = await this.instance.delete<T>(url, config);
-      return response.data as T;
-    } catch (error) {
-      throw error;
-    }
+  async delete<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
+    const response = await this.instance.delete<T>(url, config);
+    return response.data as T;
   }
   
   // 上传文件
-  async upload<T = any>(url: string, file: File, onProgress?: (progress: number) => void): Promise<ApiResponse<T>> {
+  async upload<T>(url: string, file: File, onProgress?: (progress: number) => void): Promise<ApiResponse<T>> {
     const formData = new FormData();
     formData.append('file', file);
     

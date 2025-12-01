@@ -52,6 +52,21 @@ export default function ModelsAdmin() {
     }
   };
 
+  const setActive = async (id: string) => {
+    try {
+      await api.put(`/admin/models/${id}`, { enabled: true });
+      // 禁用其他模型
+      const others = models.filter(m => m.id !== id && m.enabled);
+      for (const o of others) {
+        try { await api.put(`/admin/models/${o.id}`, { enabled: false }); } catch {}
+      }
+      toast({ title: '已切换', description: '当前激活模型已更新' });
+      load();
+    } catch (e: any) {
+      toast({ variant: 'destructive', title: '切换失败', description: e.message || '请稍后重试' });
+    }
+  };
+
   const remove = async (id: string) => {
     try {
       await api.delete(`/admin/models/${id}`);
@@ -76,12 +91,13 @@ export default function ModelsAdmin() {
               <div className="text-sm font-medium text-secondary-900">{m.modelName}</div>
               <div className="text-xs text-secondary-500">{m.provider} · {m.endpoint}</div>
             </div>
-            <div className="flex items-center space-x-2">
-              <button className="btn btn-outline" onClick={() => { setEditing(m); setForm(m); }}>编辑</button>
-              <button className="btn btn-secondary" onClick={() => remove(m.id)}>删除</button>
-            </div>
+          <div className="flex items-center space-x-2">
+            <button className="btn btn-outline" onClick={() => { setEditing(m); setForm(m); }}>编辑</button>
+            <button className="btn btn-secondary" onClick={() => remove(m.id)}>删除</button>
+            <button className="btn btn-primary" disabled={m.enabled} onClick={() => setActive(m.id)}>{m.enabled ? '已启用' : '设为当前'}</button>
           </div>
-        ))}
+        </div>
+      ))}
       </div>
 
       <div className="mt-6 bg-white border border-secondary-200 rounded-lg p-4">

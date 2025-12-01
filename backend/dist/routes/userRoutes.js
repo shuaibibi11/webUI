@@ -8,6 +8,9 @@ const router = (0, express_1.Router)();
 router.post('/register', userController_1.registerValidation, userController_1.register);
 // 登录路由
 router.post('/login', userController_1.loginValidation, userController_1.login);
+// 密码重置
+router.post('/password-reset/request', userController_1.requestPasswordReset);
+router.post('/password-reset/confirm', userController_1.confirmPasswordReset);
 // 获取用户信息路由（需要认证）
 router.get('/info', auth_1.authMiddleware, userController_1.getUserInfo);
 exports.default = router;

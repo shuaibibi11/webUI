@@ -3,21 +3,36 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.authMiddleware = void 0;
+exports.adminGuard = exports.authMiddleware = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+function getTokenFromCookies(req) {
+    const cookieHeader = req.headers.cookie;
+    if (!cookieHeader)
+        return null;
+    const parts = cookieHeader.split(';').map((s) => s.trim());
+    const tokenPart = parts.find((p) => p.startsWith('access_token='));
+    if (!tokenPart)
+        return null;
+    try {
+        const value = tokenPart.split('=')[1] || '';
+        return decodeURIComponent(value);
+    }
+    catch {
+        return null;
+    }
+}
 const authMiddleware = (req, res, next) => {
     try {
         const authHeader = req.header('Authorization');
-        if (!authHeader) {
-            return res.status(401).json({ error: '未提供认证令牌' });
+        let token = null;
+        if (authHeader && authHeader.startsWith('Bearer ')) {
+            token = authHeader.replace('Bearer ', '');
         }
-        // 验证Bearer格式
-        if (!authHeader.startsWith('Bearer ')) {
-            return res.status(401).json({ error: '认证令牌格式错误' });
+        else {
+            token = getTokenFromCookies(req);
         }
-        const token = authHeader.replace('Bearer ', '');
         if (!token) {
-            return res.status(401).json({ error: '认证令牌为空' });
+            return res.status(401).json({ error: '未提供认证令牌' });
         }
         const secret = process.env.JWT_SECRET;
         if (!secret) {
@@ -45,3 +60,11 @@ const authMiddleware = (req, res, next) => {
     }
 };
 exports.authMiddleware = authMiddleware;
+const adminGuard = (req, res, next) => {
+    const role = req.user?.role;
+    if (role !== 'ADMIN') {
+        return res.status(403).json({ error: '权限不足' });
+    }
+    next();
+};
+exports.adminGuard = adminGuard;

@@ -7,6 +7,7 @@ exports.SocketService = void 0;
 const socket_io_1 = require("socket.io");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const client_1 = require("@prisma/client");
+const modelService_1 = require("./modelService");
 const prisma = new client_1.PrismaClient();
 class SocketService {
     constructor(server) {
@@ -107,14 +108,17 @@ class SocketService {
                             createdAt: new Date()
                         }
                     });
-                    // 创建AI回复消息
+                    const ai = await (0, modelService_1.invokeModel)(content);
                     const aiMessage = await prisma.message.create({
                         data: {
                             conversationId,
                             role: 'assistant',
-                            content: '收到您的消息，这是AI助手的回复。',
+                            content: ai.content,
                             status: 'sent',
-                            createdAt: new Date()
+                            createdAt: new Date(),
+                            promptTokens: ai.promptTokens,
+                            completionTokens: ai.completionTokens,
+                            totalTokens: ai.totalTokens,
                         }
                     });
                     // 更新会话时间

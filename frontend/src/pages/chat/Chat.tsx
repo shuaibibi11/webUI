@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import api from '@/services/api';
 import { useNavigate } from 'react-router-dom';
 import { Send, Smile, MoreHorizontal, FileText, Check, CheckCheck, Copy, ThumbsUp, ThumbsDown, Share2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -7,7 +8,7 @@ import { webSocketService } from '@/services/websocket';
 import { chatService } from '@/services/chat';
 import { authService } from '@/services/auth';
 import { useToast } from '@/hooks/use-toast';
-import type { Message, Conversation } from '@/types';
+import type { Message, Conversation, NewMessageEvent } from '@/types';
 
 export default function Chat() {
   const navigate = useNavigate();
@@ -29,6 +30,7 @@ export default function Chat() {
   const updateMessage = useAppStore(state => state.updateMessage);
 
   const messages = currentConversation ? (messagesMap[currentConversation.id] || []) : [];
+  const [activeModel, setActiveModel] = useState<{ modelName: string; provider: string; tag: string } | null>(null);
 
   // 初始化检查和数据获取
   useEffect(() => {
@@ -48,6 +50,11 @@ export default function Chat() {
       try {
         const res = await chatService.getConversations();
         setConversations(res.items);
+
+        try {
+          const m = await api.get<{ model: any }>("/models/active");
+          setActiveModel(m.model ? { modelName: m.model.modelName, provider: m.model.provider, tag: m.model.tag } : null);
+        } catch {}
         const params = new URLSearchParams(window.location.search);
         const convId = params.get('conv');
         if (!currentConversation && res.items.length > 0) {
@@ -72,14 +79,16 @@ export default function Chat() {
   // WebSocket 监听设置
   useEffect(() => {
     webSocketService.setListeners({
-      onNewMessage: (data: any) => {
+      onNewMessage: (data: NewMessageEvent['data']) => {
         // 转换后端消息格式到前端格式
+        const role: Message['role'] = data.role ?? (data.senderId && data.senderId === user?.id ? 'user' : 'assistant');
         const newMessage: Message = {
           id: data.id,
           conversationId: data.conversationId,
+          role,
           senderId: data.senderId,
           content: data.content,
-          type: (data.messageType as any) || 'text',
+          type: (data.messageType as Message['type']) || 'text',
           status: 'sent',
           createdAt: data.createdAt,
           sender: data.sender
@@ -88,7 +97,7 @@ export default function Chat() {
         addMessage(data.conversationId, newMessage);
         
         // 如果是当前会话且消息不是自己发的，标记为已读
-        if (currentConversation?.id === data.conversationId && data.senderId !== user?.id) {
+        if (currentConversation?.id === data.conversationId && role !== 'user') {
           webSocketService.markAsRead(data.conversationId, [data.id]);
         }
       },
@@ -133,7 +142,7 @@ export default function Chat() {
       
       // 标记未读消息为已读
       const unreadMessages = res.items
-        .filter(msg => msg.senderId !== user?.id && msg.status !== 'read')
+        .filter(msg => msg.role !== 'user' && msg.status !== 'read')
         .map(msg => msg.id);
         
       if (unreadMessages.length > 0) {
@@ -157,6 +166,7 @@ export default function Chat() {
       const tempMessage: Message = {
         id: tempId,
         conversationId: currentConversation.id,
+        role: 'user',
         senderId: user?.id || '',
         content,
         type: 'text',
@@ -205,7 +215,7 @@ export default function Chat() {
 
   // 渲染消息状态图标
   const renderMessageStatus = (msg: Message) => {
-    if (msg.senderId !== user?.id) return null;
+    if (msg.role !== 'user') return null;
 
     switch (msg.status) {
       case 'sending':
@@ -298,7 +308,7 @@ export default function Chat() {
                     type: 'text',
                     status: 'sent',
                     createdAt: new Date().toISOString(),
-                  } as any,
+                  } as Message,
                 ]);
               } catch (e) {
                 console.error('创建会话失败', e);
@@ -381,6 +391,11 @@ export default function Chat() {
                 <h1 className="text-lg font-medium text-secondary-900">
                   {currentConversation.title}
                 </h1>
+                {activeModel && (
+                  <span className="text-xs text-secondary-600 border border-secondary-300 rounded-md px-2 py-0.5 bg-white">
+                    {activeModel.provider} / {activeModel.modelName}
+                  </span>
+                )}
               </div>
               <div className="flex items-center space-x-4">
                 <div className="flex items-center space-x-2">
@@ -393,20 +408,20 @@ export default function Chat() {
             </div>
 
             {/* 消息展示区域 */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-secondary-50/30 scrollbar-thin">
+            <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-secondary-50 scrollbar-thin">
               {messages.map((msg) => (
                 <div
                   key={msg.id}
                   className={cn(
                     "flex w-full",
-                    msg.senderId === user?.id ? "justify-end" : "justify-start"
+                    msg.role === 'user' ? "justify-end" : "justify-start"
                   )}
                 >
-                  <div className={cn("flex flex-col max-w-[70%]", msg.senderId === user?.id ? "items-end" : "items-start")}>
+                  <div className={cn("flex flex-col max-w-[70%]", msg.role === 'user' ? "items-end" : "items-start")}> 
                     <div
                       className={cn(
-                        "rounded-2xl px-5 py-3.5 shadow-sm text-sm leading-relaxed",
-                        msg.senderId === user?.id
+                        "rounded-lg px-5 py-3.5 shadow-sm text-sm leading-relaxed",
+                        msg.role === 'user'
                           ? "bg-primary-50 text-secondary-900 rounded-br-none border border-primary-100"
                           : "bg-white text-secondary-900 rounded-bl-none border border-secondary-200"
                       )}
@@ -417,9 +432,9 @@ export default function Chat() {
                       <span className="text-xs text-secondary-400">
                         {formatTime(msg.createdAt)}
                       </span>
-                      {msg.senderId === user?.id && renderMessageStatus(msg)}
+                      {msg.role === 'user' && renderMessageStatus(msg)}
                     </div>
-                    {msg.senderId !== user?.id && (
+                    {msg.role !== 'user' && (
                       <div className="flex items-center space-x-2 mt-2 px-1">
                         <button
                           className="px-2 py-1 text-xs text-secondary-600 hover:text-secondary-900 border border-secondary-300 rounded-md bg-white"
@@ -504,7 +519,7 @@ export default function Chat() {
           </>
         ) : (
           <div className="flex-1 flex flex-col items-center justify-center text-secondary-400">
-            <div className="w-16 h-16 bg-secondary-100 rounded-full flex items-center justify-center mb-4">
+            <div className="w-16 h-16 bg-secondary-100 rounded-lg flex items-center justify-center mb-4">
               <Smile className="w-8 h-8" />
             </div>
             <p>选择一个会话开始聊天</p>

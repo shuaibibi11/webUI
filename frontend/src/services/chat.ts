@@ -12,53 +12,39 @@ import type {
 class ChatService {
   // 获取会话列表
   async getConversations(params?: ConversationQueryParams): Promise<PaginatedResponse<Conversation>> {
-    try {
-      const queryParams = new URLSearchParams();
-      if (params?.page) queryParams.append('page', params.page.toString());
-      if (params?.limit) queryParams.append('limit', params.limit.toString());
-      
-      const response = await api.get<{ conversations: Conversation[]; pagination: any }>(
-        `/conversations?${queryParams.toString()}`
-      );
-      return {
-        items: response.conversations,
-        pagination: response.pagination
-      };
-    } catch (error) {
-      throw error;
-    }
+    const queryParams = new URLSearchParams();
+    if (params?.page) queryParams.append('page', params.page.toString());
+    if (params?.limit) queryParams.append('limit', params.limit.toString());
+    const response = await api.get<{ conversations: Conversation[]; pagination: any }>(
+      `/conversations?${queryParams.toString()}`
+    );
+    return {
+      items: response.conversations,
+      pagination: response.pagination
+    };
   }
   
   // 创建新会话
   async createConversation(data: CreateConversationRequest): Promise<Conversation> {
-    try {
-      const response = await api.post<{ conversation: Conversation }>(
-        '/conversations', data
-      );
-      return response.conversation;
-    } catch (error) {
-      throw error;
-    }
+    const response = await api.post<{ conversation: Conversation }>(
+      '/conversations', data
+    );
+    return response.conversation;
   }
   
   // 获取会话消息
   async getMessages(conversationId: string, params?: MessageQueryParams): Promise<PaginatedResponse<Message>> {
-    try {
-      const queryParams = new URLSearchParams();
-      if (params?.page) queryParams.append('page', params.page.toString());
-      if (params?.limit) queryParams.append('limit', params.limit.toString());
-      if (params?.before) queryParams.append('before', params.before);
-      
-      const response = await api.get<{ messages: Message[]; pagination: any }>(
-        `/messages/${conversationId}?${queryParams.toString()}`
-      );
-      return {
-        items: response.messages,
-        pagination: response.pagination
-      };
-    } catch (error) {
-      throw error;
-    }
+    const queryParams = new URLSearchParams();
+    if (params?.page) queryParams.append('page', params.page.toString());
+    if (params?.limit) queryParams.append('limit', params.limit.toString());
+    if (params?.before) queryParams.append('before', params.before);
+    const response = await api.get<{ messages: Message[]; pagination: any }>(
+      `/messages/${conversationId}?${queryParams.toString()}`
+    );
+    return {
+      items: response.messages,
+      pagination: response.pagination
+    };
   }
   
   // 发送消息

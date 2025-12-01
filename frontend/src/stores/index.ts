@@ -109,17 +109,26 @@ export const useAppStore = create<AppState>()(
           }
         })),
         addMessage: (conversationId, message) => set((state) => {
-          const existingMessages = state.messages[conversationId] || [];
-          const isDuplicate = existingMessages.some(msg => msg.id === message.id);
-          
-          if (isDuplicate) {
-            return state; // 避免重复消息
+          const existing = state.messages[conversationId] || [];
+          const sameId = existing.findIndex(m => m.id === message.id);
+          if (sameId >= 0) {
+            const next = existing.slice();
+            next[sameId] = { ...existing[sameId], ...message };
+            return { messages: { ...state.messages, [conversationId]: next } };
           }
-          
+
+          // 替换本地临时消息：同内容且角色为 user，并处于 sending
+          const tempIdx = existing.findIndex(m => m.status === 'sending' && (m.role === 'user') && m.content === message.content);
+          if (tempIdx >= 0) {
+            const next = existing.slice();
+            next[tempIdx] = { ...next[tempIdx], ...message, status: 'sent' };
+            return { messages: { ...state.messages, [conversationId]: next } };
+          }
+
           return {
             messages: {
               ...state.messages,
-              [conversationId]: [...existingMessages, message]
+              [conversationId]: [...existing, message]
             }
           };
         }),

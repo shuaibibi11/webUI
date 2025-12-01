@@ -1,12 +1,22 @@
 import { io, Socket } from 'socket.io-client';
 import type { 
-  NewMessageEvent, 
   MessageStatusEvent, 
   Conversation 
 } from '../types';
 
+type WsNewMessagePayload = {
+  id: string;
+  conversationId: string;
+  role?: 'user' | 'assistant' | 'system';
+  senderId?: string;
+  content: string;
+  messageType?: 'text' | 'image' | 'file';
+  createdAt: string;
+  sender?: { id: string; username: string };
+};
+
 interface WebSocketListeners {
-  onNewMessage?: (data: NewMessageEvent['data']) => void;
+  onNewMessage?: (data: WsNewMessagePayload) => void;
   onMessageStatus?: (data: MessageStatusEvent['data']) => void;
   onUserOnline?: (data: { userId: string; status: 'online' | 'offline' }) => void;
   onConversationUpdate?: (data: { conversation: Conversation }) => void;
@@ -61,7 +71,7 @@ class WebSocketService {
     
     this.isIntentionallyDisconnected = false;
     
-    const wsUrl = import.meta.env.VITE_WS_URL || 'http://localhost:3013';
+    const wsUrl = import.meta.env.VITE_WS_URL || 'http://localhost:3003';
     
     this.socket = io(wsUrl, {
       auth: {
@@ -158,19 +168,19 @@ class WebSocketService {
     });
     
     // 监听新消息
-    this.socket.on('new_message', (data: any) => {
+    this.socket.on('new_message', (data: WsNewMessagePayload) => {
       console.log('Received new message:', data);
       this.listeners.onNewMessage?.(data);
     });
 
     // 监听正在输入
-    this.socket.on('user_typing', (data: any) => {
+    this.socket.on('user_typing', (data: { userId: string; username: string; conversationId: string; isTyping: boolean }) => {
       console.log('User typing:', data);
       // TODO: 实现typing状态回调
     });
 
     // 监听消息已读
-    this.socket.on('messages_read', (data: any) => {
+    this.socket.on('messages_read', (data: { conversationId: string; messageIds: string[]; readBy: string }) => {
       // 转换格式以匹配 MessageStatusEvent
       if (this.listeners.onMessageStatus) {
         // 对于批量已读，目前简化为只通知第一个，实际应用可能需要优化

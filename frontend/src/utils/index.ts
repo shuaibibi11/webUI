@@ -141,7 +141,7 @@ export function generateRandomString(length: number = 8): string {
 }
 
 // 防抖函数
-export function debounce<T extends (...args: any[]) => any>(
+export function debounce<T extends (...args: unknown[]) => unknown>(
   func: T,
   wait: number
 ): (...args: Parameters<T>) => void {
@@ -153,7 +153,7 @@ export function debounce<T extends (...args: any[]) => any>(
 }
 
 // 节流函数
-export function throttle<T extends (...args: any[]) => any>(
+export function throttle<T extends (...args: unknown[]) => unknown>(
   func: T,
   limit: number
 ): (...args: Parameters<T>) => void {
@@ -173,13 +173,13 @@ export function deepClone<T>(obj: T): T {
   if (obj instanceof Date) return new Date(obj.getTime()) as unknown as T;
   if (obj instanceof Array) return obj.map(item => deepClone(item)) as unknown as T;
   if (typeof obj === 'object') {
-    const clonedObj = {} as T;
-    for (const key in obj) {
-      if (obj.hasOwnProperty(key)) {
-        clonedObj[key] = deepClone(obj[key]);
+    const clonedObj = Array.isArray(obj) ? [] : ({} as Record<string, unknown>);
+    for (const key in obj as Record<string, unknown>) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        (clonedObj as Record<string, unknown>)[key] = deepClone((obj as Record<string, unknown>)[key]);
       }
     }
-    return clonedObj;
+    return clonedObj as unknown as T;
   }
   return obj;
 }
@@ -215,14 +215,14 @@ export const storage = {
   get<T>(key: string): T | null {
     try {
       const item = localStorage.getItem(key);
-      return item ? JSON.parse(item) : null;
+      return item ? (JSON.parse(item) as T) : null;
     } catch (error) {
       console.error('Error reading from localStorage:', error);
       return null;
     }
   },
   
-  set(key: string, value: any): void {
+  set<T>(key: string, value: T): void {
     try {
       localStorage.setItem(key, JSON.stringify(value));
     } catch (error) {
@@ -252,7 +252,7 @@ export const sessionStorage = {
   get<T>(key: string): T | null {
     try {
       const item = window.sessionStorage.getItem(key);
-      return item ? JSON.parse(item) : null;
+      return item ? (JSON.parse(item) as T) : null;
     } catch (error) {
       console.error('Error reading from sessionStorage:', error);
       return null;

@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.chatHandler = exports.chatValidation = void 0;
 const express_validator_1 = require("express-validator");
 const prisma_1 = require("../models/prisma");
+const modelService_1 = require("../services/modelService");
 exports.chatValidation = [
     (0, express_validator_1.body)('content')
         .isLength({ min: 1, max: 10000 })
@@ -55,13 +56,16 @@ const chatHandler = async (req, res) => {
                 status: 'sent'
             }
         });
-        // 模拟AI回复（实际项目中这里会调用大模型API）
+        const { content: aiContent, promptTokens, completionTokens, totalTokens } = await (0, modelService_1.invokeModel)(content);
         const aiMessage = await prisma_1.prisma.message.create({
             data: {
                 conversationId,
                 role: 'assistant',
-                content: `这是AI对"${content}"的回复。`,
-                status: 'sent'
+                content: aiContent,
+                status: 'sent',
+                promptTokens,
+                completionTokens,
+                totalTokens
             }
         });
         // 更新对话的更新时间
@@ -69,11 +73,7 @@ const chatHandler = async (req, res) => {
             where: { id: conversationId },
             data: { updatedAt: new Date() }
         });
-        res.status(201).json({
-            message: '消息发送成功',
-            conversationId,
-            messages: [userMessage, aiMessage]
-        });
+        res.status(201).json({ message: '消息发送成功', conversationId, messages: [userMessage, aiMessage] });
     }
     catch (error) {
         console.error('聊天请求失败:', error);
