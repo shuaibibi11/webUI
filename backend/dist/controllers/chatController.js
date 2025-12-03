@@ -75,7 +75,7 @@ const chatHandler = async (req, res) => {
                 createdAt: true,
             }
         });
-        const activeModel = await prisma_1.prisma.modelConfig.findFirst({ where: { enabled: true }, orderBy: { updatedAt: 'desc' }, select: { memoryEnabled: true, contextLength: true } });
+        const activeModel = await prisma_1.prisma.modelConfig.findFirst({ where: { enabled: true }, orderBy: { updatedAt: 'desc' }, select: { memoryEnabled: true, contextLength: true, provider: true, modelName: true } });
         let messages;
         if (!activeModel || !activeModel.memoryEnabled) {
             messages = [{ role: 'user', content }];
@@ -98,6 +98,14 @@ const chatHandler = async (req, res) => {
             }
         }
         const { content: aiContent, promptTokens, completionTokens, totalTokens } = await (0, modelService_1.invokeModel)(messages);
+        await prisma_1.prisma.auditLog.create({
+            data: {
+                userId,
+                action: 'model_invoke',
+                ip: req.headers['x-forwarded-for'] || req.ip,
+                details: JSON.stringify({ conversationId, provider: activeModel?.provider, modelName: activeModel?.modelName })
+            }
+        });
         const aiMessage = await prisma_1.prisma.message.create({
             data: {
                 conversationId,

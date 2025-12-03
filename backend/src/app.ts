@@ -9,26 +9,36 @@ import chatRoutes from './routes/chatRoutes';
 import modelRoutes from './routes/modelRoutes';
 import feedbackRoutes from './routes/feedbackRoutes';
 import adminRoutes from './routes/adminRoutes';
+import bishengRoutes from './routes/bishengRoutes';
+import workflowRoutes from './routes/workflowRoutes';
 
 const app = express();
 
 // 安全配置
 app.use(helmet());
 
-// 速率限制
+// 速率限制 - 开发环境放宽限制
 const limiter = rateLimit({
   windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || '900000'), // 15分钟
-  max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || '100'), // 限制每个IP最多100个请求
+  max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || '1000'), // 限制每个IP最多1000个请求（开发环境）
   message: '请求过于频繁，请稍后再试',
   standardHeaders: true,
   legacyHeaders: false,
+  skip: (req) => {
+    // 跳过 bisheng 和 workflow 相关的接口
+    const url = req.originalUrl || req.path || '';
+    if (url.startsWith('/api/bisheng') || url.startsWith('/api/v2/workflow')) {
+      return true;
+    }
+    return false;
+  }
 });
 app.use(limiter);
 
 // 更严格的速率限制用于认证接口
 const authLimiter = rateLimit({
   windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || '900000'),
-  max: parseInt(process.env.AUTH_RATE_LIMIT_MAX || '100000'),
+  max: parseInt(process.env.AUTH_RATE_LIMIT_MAX || '50'), // 认证接口限制50次/15分钟（防止暴力破解）
   message: '认证请求过于频繁，请稍后再试',
   skipSuccessfulRequests: true,
 });
@@ -49,6 +59,8 @@ app.use('/api/chat', chatRoutes);
 app.use('/api/models', modelRoutes);
 app.use('/api/feedbacks', feedbackRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/bisheng', bishengRoutes);
+app.use('/api/v2/workflow', workflowRoutes);
 
 // 健康检查路由
 app.get('/api/health', (req, res) => {

@@ -158,4 +158,47 @@
   .scrollbar-thin::-webkit-scrollbar-thumb:hover {
     background: #94a3b8;
   }
+  
+  /* 打字机光标动画 */
+  @keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+  
+  .animate-blink {
+    animation: blink 1s infinite;
+  }
+  
+  /* 消息淡入动画 */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .animate-fadeInUp {
+    animation: fadeInUp 0.3s ease-out;
+  }
+  
+  /* Prose 样式覆盖 */
+  .prose pre {
+    @apply bg-secondary-900 text-secondary-100 rounded-lg overflow-x-auto;
+  }
+  
+  .prose code {
+    @apply text-sm;
+  }
+  
+  .prose p:first-child {
+    @apply mt-0;
+  }
+  
+  .prose p:last-child {
+    @apply mb-0;
+  }
 }

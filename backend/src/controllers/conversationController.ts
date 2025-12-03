@@ -63,10 +63,14 @@ export const getConversations = async (req: any, res: Response) => {
     ]);
 
     // 格式化返回数据，提取最后一条消息
-    const formattedConversations = conversations.map((conv: any) => ({
-      ...conv,
-      lastMessage: conv.messages[0] || null
-    }));
+    const formattedConversations = conversations.map((conv: any) => {
+      // 安全处理 lastMessage
+      const lastMessage = conv.messages && conv.messages.length > 0 ? conv.messages[0] : null;
+      return {
+        ...conv,
+        lastMessage
+      };
+    });
 
     res.json({
       conversations: formattedConversations,

@@ -28,6 +28,13 @@ export default function AdminLayout() {
             )}
           >模型配置</NavLink>
           <NavLink
+            to="/admin/bisheng-configs"
+            className={({ isActive }) => cn(
+              'block px-3 py-2 rounded-md text-sm',
+              isActive ? 'bg-secondary-100 text-secondary-900' : 'text-secondary-700 hover:bg-secondary-100'
+            )}
+          >bisheng配置</NavLink>
+          <NavLink
             to="/admin/users"
             className={({ isActive }) => cn(
               'block px-3 py-2 rounded-md text-sm',

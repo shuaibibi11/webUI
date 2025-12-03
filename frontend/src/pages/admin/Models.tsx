@@ -25,6 +25,7 @@ export default function ModelsAdmin() {
   const [models, setModels] = useState<ModelConfig[]>([]);
   const [editing, setEditing] = useState<ModelConfig | null>(null);
   const [form, setForm] = useState<Partial<ModelConfig>>({ protocol: 'openai', temperature: 0.7, maxTokens: 8192, topP: 0.9, contextLength: 4096, memoryEnabled: false, enabled: true, tag: '语言模型' });
+  const [activeProvider, setActiveProvider] = useState<'bisheng' | 'model' | 'none'>('none');
 
   const load = async () => {
     try {
@@ -38,6 +39,16 @@ export default function ModelsAdmin() {
 
   useEffect(() => {
     const timer = setTimeout(() => { load(); }, 0);
+    const loadActiveProvider = async () => {
+      try {
+        const res = await api.get<{ model: { provider: string } | null }>('/models/active');
+        const p = res.model?.provider?.toLowerCase() || '';
+        setActiveProvider(p === 'bisheng' ? 'bisheng' : (p ? 'model' : 'none'));
+      } catch {
+        setActiveProvider('none');
+      }
+    };
+    loadActiveProvider();
     return () => clearTimeout(timer);
   }, []);
 
@@ -91,6 +102,11 @@ export default function ModelsAdmin() {
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-xl font-semibold text-secondary-900">模型配置</h1>
         <button className="btn btn-primary" onClick={() => setEditing(null)}>添加模型</button>
+      </div>
+
+      <div className="mb-4">
+        <span className="text-sm font-medium text-secondary-900">当前激活的API: </span>
+        <span className="text-sm text-primary-600">{activeProvider === 'bisheng' ? 'bisheng工作流' : (activeProvider === 'model' ? '大模型API' : '未激活')}</span>
       </div>
 
       <div className="space-y-3">

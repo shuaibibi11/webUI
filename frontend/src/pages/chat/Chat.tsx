@@ -8,6 +8,7 @@ import { webSocketService } from '@/services/websocket';
 import { chatService } from '@/services/chat';
 import { authService } from '@/services/auth';
 import { useToast } from '@/hooks/use-toast';
+import { MessageContent, TypingIndicator } from '@/components/chat/MessageContent';
 import type { Message, Conversation, NewMessageEvent } from '@/types';
 
 export default function Chat() {
@@ -16,6 +17,7 @@ export default function Chat() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [inputText, setInputText] = useState('');
   const [reactions, setReactions] = useState<Record<string, 'like' | 'dislike' | undefined>>({});
+  const [streamingMessageId, setStreamingMessageId] = useState<string | null>(null);
   
   // Store hooks
   const user = useAppStore(state => state.user);
@@ -192,8 +194,471 @@ export default function Chat() {
         sender: user || undefined
       };
       addMessage(targetConversation.id, tempMessage);
-      const res = await chatService.chatUnified(content, targetConversation.id);
-      res.messages.forEach(m => addMessage(res.conversationId, m));
+      let provider = activeModel?.provider?.toLowerCase() || '';
+      if (!provider) {
+        try {
+          const m = await api.get<{ model: { modelName: string; provider: string; tag: string } | null }>("/models/active");
+          if (m.model) {
+            setActiveModel({ modelName: m.model.modelName, provider: m.model.provider, tag: m.model.tag });
+            provider = m.model.provider.toLowerCase();
+          }
+        } catch { void 0; }
+      }
+      if (provider === 'bisheng') {
+        updateMessage(targetConversation.id, tempId, { status: 'sent' });
+        const controller = new AbortController();
+        const tempAssistantId = `temp_ai_${Date.now()}`;
+        addMessage(targetConversation.id, {
+          id: tempAssistantId,
+          conversationId: targetConversation.id,
+          role: 'assistant',
+          senderId: 'ai',
+          content: '',
+          type: 'text',
+          status: 'sent',
+          createdAt: new Date().toISOString(),
+        } as Message);
+        setStreamingMessageId(tempAssistantId);
+        const timeoutId = setTimeout(() => {
+          controller.abort();
+          setStreamingMessageId(null);
+          updateMessage(targetConversation.id, tempAssistantId, { content: '响应超时，请稍后重试' });
+        }, 60000); // 增加到 60 秒
+        try {
+          const base = (import.meta as unknown as { env?: Record<string, string> }).env?.VITE_API_BASE_URL ?? ((import.meta as unknown as { env?: Record<string, string> }).env?.DEV ? '/api' : 'http://localhost:3003/api');
+          // 多轮对话：传递 session_id, node_id, message_id
+          const existingSessionId = targetConversation.bishengSessionId;
+          const existingNodeId = targetConversation.bishengNodeId;
+          const existingMessageId = targetConversation.bishengMessageId;
+          
+          console.log('[Chat] 发送消息，会话信息:', {
+            conversationId: targetConversation.id,
+            sessionId: existingSessionId,
+            nodeId: existingNodeId,
+            messageId: existingMessageId
+          });
+          
+          let invokePayload: Record<string, unknown>;
+          
+          // 如果有 node_id，使用 { [node_id]: { user_input: value } } 格式
+          if (existingSessionId && existingNodeId) {
+            const nodeInput: Record<string, unknown> = {};
+            nodeInput[existingNodeId] = { user_input: content };
+            invokePayload = {
+              input: nodeInput,
+              stream: true,
+              conversationId: targetConversation.id,
+              session_id: existingSessionId,
+              node_id: existingNodeId,
+              message_id: existingMessageId,
+            };
+          } else {
+            invokePayload = {
+              input: { text: content, user_input: content },
+              stream: true,
+              conversationId: targetConversation.id,
+            };
+            if (existingSessionId) {
+              invokePayload.session_id = existingSessionId;
+            }
+            if (existingNodeId) {
+              invokePayload.node_id = existingNodeId;
+            }
+            if (existingMessageId) {
+              invokePayload.message_id = existingMessageId;
+            }
+          }
+          
+          console.log('[Chat] 发送到 bisheng 的 payload:', invokePayload);
+          const resp = await fetch(base.replace(/\/$/, '') + '/bisheng/invoke', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'text/event-stream', 'Authorization': `Bearer ${authService.getToken() || ''}` },
+            body: JSON.stringify(invokePayload),
+            signal: controller.signal,
+            credentials: 'include',
+          });
+          if (!resp.ok) {
+            let txt = '';
+            try { txt = await resp.text(); } catch (e) { void e; }
+            updateMessage(targetConversation.id, tempAssistantId, { content: `工作流调用失败(${resp.status}) ${txt || ''}`.trim() });
+            updateMessage(targetConversation.id, tempId, { status: 'sent' });
+            return;
+          }
+          clearTimeout(timeoutId);
+          const reader = resp.body?.getReader();
+          const decoder = new TextDecoder('utf-8');
+          if (!reader) throw new Error('stream not available');
+          updateMessage(targetConversation.id, tempId, { status: 'sent' });
+          let buffer = '';
+          let acc = '';
+          let hasContent = false;
+          let receivedEvent = false;
+          let pendingEvent = '';
+          let pendingDataLines: string[] = [];
+          let autoContinueTriggered = false;
+          const continueInvoke = async (sessId?: string, nodeId?: string, msgId?: string) => {
+            if (!nodeId) return;
+            try {
+              const nodeInput: Record<string, unknown> = {};
+              nodeInput[nodeId] = { user_input: content };
+              const payload: Record<string, unknown> = {
+                input: nodeInput,
+                stream: true,
+                conversationId: targetConversation.id,
+              };
+              if (sessId) payload.session_id = sessId;
+              if (nodeId) payload.node_id = nodeId;
+              if (msgId) payload.message_id = msgId;
+              setStreamingMessageId(tempAssistantId);
+              const ctrl2 = new AbortController();
+              const to2 = setTimeout(() => {
+                ctrl2.abort();
+                setStreamingMessageId(null);
+                updateMessage(targetConversation.id, tempAssistantId, { content: '响应超时，请稍后重试' });
+              }, 60000);
+              const resp2 = await fetch(base.replace(/\/$/, '') + '/bisheng/invoke', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'text/event-stream', 'Authorization': `Bearer ${authService.getToken() || ''}` },
+                body: JSON.stringify(payload),
+                signal: ctrl2.signal,
+                credentials: 'include',
+              });
+              if (!resp2.ok) {
+                let t = '';
+                try { t = await resp2.text(); } catch (e) { void e; }
+                updateMessage(targetConversation.id, tempAssistantId, { content: `工作流调用失败(${resp2.status}) ${t || ''}`.trim() });
+                return;
+              }
+              clearTimeout(to2);
+              const reader2 = resp2.body?.getReader();
+              const decoder2 = new TextDecoder('utf-8');
+              if (!reader2) return;
+              let buffer2 = '';
+              let acc2 = '';
+              let pendingDataLines2: string[] = [];
+              const flush2 = async () => {
+                if (pendingDataLines2.length === 0) return;
+                const raw2 = pendingDataLines2.join('\n').trim();
+                let parsedUnknown2: unknown = null;
+                try { parsedUnknown2 = JSON.parse(raw2); } catch (e) { void e; }
+                if (parsedUnknown2 && typeof parsedUnknown2 === 'object') {
+                  const p = parsedUnknown2 as Record<string, unknown>;
+                  const d = p['data'] as unknown as Record<string, unknown> | undefined;
+                  const dataOutputSchema2 = d?.output_schema as { message?: string | string[] } | undefined;
+                  let chunk2 = '' as string;
+                  if (dataOutputSchema2?.message) {
+                    const out = dataOutputSchema2.message;
+                    chunk2 = typeof out === 'string' ? out : (Array.isArray(out) ? out.filter(x => typeof x === 'string').join('\n') : '');
+                  }
+                  if (!chunk2) {
+                    const tryStr = (key: string) => {
+                      const v = (p as Record<string, unknown>)[key];
+                      return typeof v === 'string' ? v : '';
+                    };
+                    chunk2 = tryStr('delta') || tryStr('content') || tryStr('text') || tryStr('message') || tryStr('msg') || tryStr('result');
+                  }
+                  if (!chunk2 && d) {
+                    const o = d as Record<string, unknown>;
+                    chunk2 = typeof o['text'] === 'string' ? (o['text'] as string) : (typeof o['content'] === 'string' ? (o['content'] as string) : '');
+                  }
+                  if (chunk2) {
+                    acc2 += chunk2;
+                    updateMessage(targetConversation.id, tempAssistantId, { content: acc2 });
+                  }
+                } else {
+                  const t = raw2;
+                  if (t) {
+                    acc2 += t;
+                    updateMessage(targetConversation.id, tempAssistantId, { content: acc2 });
+                  }
+                }
+                pendingDataLines2 = [];
+              };
+              while (true) {
+                const { done, value } = await reader2.read();
+                if (done) break;
+                buffer2 += decoder2.decode(value, { stream: true });
+                const lines2 = buffer2.split(/\r?\n/);
+                buffer2 = lines2.pop() || '';
+                for (const line of lines2) {
+                  const trimmed2 = line.trim();
+                  if (trimmed2 === '') {
+                    await flush2();
+                    continue;
+                  }
+                  if (trimmed2.startsWith('data:')) {
+                    pendingDataLines2.push(trimmed2.slice(5).trim());
+                    continue;
+                  }
+                  pendingDataLines2.push(trimmed2);
+                }
+              }
+              await flush2();
+            } catch {
+              updateMessage(targetConversation.id, tempAssistantId, { content: '网络错误，请检查连接后重试' });
+            }
+          };
+          
+          type WorkflowOutput = { value?: string; text?: string; content?: string; data?: string };
+          type WorkflowEvent = {
+            event?: string; type?: string;
+            delta?: string; content?: string; text?: string; message?: string; msg?: string; result?: string;
+            data?: Record<string, unknown>;
+            choices?: Array<Record<string, unknown>>;
+            outputs?: WorkflowOutput[] | WorkflowOutput;
+            output?: WorkflowOutput[] | WorkflowOutput;
+            summary?: string; final?: string;
+            session_id?: string; sessionId?: string; session?: string;
+          };
+          const pickText = (obj: unknown): string => {
+            if (!obj || typeof obj !== 'object') return '';
+            const o = obj as Record<string, unknown>;
+            const keys = ['delta', 'content', 'text', 'message', 'msg', 'result'];
+            for (const k of keys) {
+              const v = o[k];
+              if (typeof v === 'string') return v;
+            }
+            return '';
+          };
+          const fromOutputs = (outputs: unknown): string => {
+            if (!outputs) return '';
+            if (Array.isArray(outputs)) {
+              const parts = outputs.map((o) => {
+                const oo = o as WorkflowOutput;
+                return oo.value || oo.text || oo.content || oo.data || '';
+              }).filter(Boolean);
+              return parts.join('');
+            }
+            if (typeof outputs === 'object') {
+              const oo = outputs as WorkflowOutput;
+              return oo.value || oo.text || oo.content || oo.data || '';
+            }
+            return '';
+          };
+          const fromChoices = (choices: unknown): string => {
+            if (!Array.isArray(choices) || choices.length === 0) return '';
+            const c0 = choices[0];
+            if (typeof c0 !== 'object' || !c0) return '';
+            const co = c0 as Record<string, unknown>;
+            const delta = co['delta'];
+            if (delta && typeof delta === 'object') {
+              const dc = (delta as Record<string, unknown>)['content'];
+              if (typeof dc === 'string') return dc;
+            }
+            const text = co['text'];
+            if (typeof text === 'string') return text;
+            const msg = co['message'];
+            if (msg && typeof msg === 'object') {
+              const mc = (msg as Record<string, unknown>)['content'];
+              if (typeof mc === 'string') return mc;
+            }
+            return '';
+          };
+
+          const flushEvent = async () => {
+            if (pendingDataLines.length === 0) return;
+            const raw = pendingDataLines.join('\n').trim();
+            let parsedUnknown: unknown = null;
+            try { parsedUnknown = JSON.parse(raw); } catch (e) { void e; }
+            if (parsedUnknown && typeof parsedUnknown === 'object') {
+              const parsed = parsedUnknown as WorkflowEvent & { output_schema?: { message?: string | string[] }; input_schema?: Record<string, unknown>; node_id?: string; message_id?: string };
+              // bisheng 响应格式: { session_id, data: { event, status, node_id, message_id, output_schema: { message } } }
+              const dataObj = parsed.data as Record<string, unknown> | undefined;
+              const dataEvent = dataObj?.event as string | undefined;
+              const dataStatus = dataObj?.status as string | undefined;
+              const dataOutputSchema = dataObj?.output_schema as { message?: string | string[]; output_key?: string } | undefined;
+              const dataNodeId = dataObj?.node_id as string | undefined;
+              const dataMessageId = dataObj?.message_id as string | undefined;
+              
+              // 获取事件类型：优先从 data.event 获取，然后是顶层 event
+              const evType = dataEvent || parsed.event || parsed.type || pendingEvent;
+              if (evType) receivedEvent = true;
+              
+              // 获取 session_id（顶层字段）
+              const sess = parsed.session_id || parsed.sessionId || parsed.session || '';
+              
+              // 处理 input 事件：初始化阶段，保存 session_id, node_id, message_id
+              if (dataEvent === 'input' && sess && dataStatus !== 'stream') {
+                receivedEvent = true;
+                if (!autoContinueTriggered) {
+                  autoContinueTriggered = true;
+                  continueInvoke(sess, dataNodeId, dataMessageId);
+                }
+              }
+              // 处理流式消息：data.status === 'stream'
+              else if (dataStatus === 'stream') {
+                receivedEvent = true;
+                let chunk = '';
+                if (dataOutputSchema?.message) {
+                  const out = dataOutputSchema.message;
+                  chunk = typeof out === 'string' ? out : (Array.isArray(out) ? out.filter(x => typeof x === 'string').join('\n') : '');
+                }
+                if (chunk) {
+                  hasContent = true;
+                  acc += chunk;
+                  updateMessage(targetConversation.id, tempAssistantId, { content: acc });
+                }
+              }
+              // 处理流结束：data.status === 'end'
+              else if (dataStatus === 'end') {
+                receivedEvent = true;
+                let finalMsg = '';
+                if (dataOutputSchema?.message) {
+                  const out = dataOutputSchema.message;
+                  finalMsg = typeof out === 'string' ? out : (Array.isArray(out) ? out.filter(x => typeof x === 'string').join('\n') : '');
+                }
+                if (finalMsg) {
+                  hasContent = true;
+                  acc = finalMsg;
+                  updateMessage(targetConversation.id, tempAssistantId, { content: acc });
+                }
+              }
+              // 兼容旧格式：顶层字段处理
+              else {
+                let chunk = '' as string;
+                chunk = typeof parsed === 'string' ? String(parsed) : (
+                  parsed.delta || parsed.content || parsed.text || parsed.message || parsed.msg || parsed.result || ''
+                );
+                if (!chunk && parsed.output_schema?.message) {
+                  const out = parsed.output_schema.message;
+                  chunk = typeof out === 'string' ? out : (Array.isArray(out) ? out.filter(x => typeof x === 'string').join('\n') : '');
+                }
+                if (!chunk && dataObj) chunk = pickText(dataObj);
+                if (!chunk) chunk = fromChoices(parsed.choices);
+                const outputs = parsed.outputs || parsed.output || (dataObj ? dataObj['outputs'] : undefined);
+                if (!chunk && outputs) chunk = fromOutputs(outputs);
+                
+                if (evType === 'guide_word' || evType === 'guide_question' || evType === 'input') {
+                  const msgId = parsed.message_id || (dataObj ? (dataObj['message_id'] as string) : undefined);
+                  const nodeId = parsed.node_id || (dataObj ? (dataObj['node_id'] as string) : undefined);
+                  if (!autoContinueTriggered) {
+                    autoContinueTriggered = true;
+                    continueInvoke(sess || targetConversation.bishengSessionId, nodeId, msgId);
+                  }
+                  
+                } else if (chunk) {
+                  hasContent = true;
+                  acc += chunk;
+                  updateMessage(targetConversation.id, tempAssistantId, { content: acc });
+                } else if (evType === 'close' || evType === 'finish' || evType === 'done') {
+                  const finalText = parsed.summary || (dataObj ? (dataObj['summary'] as string) : '') || parsed.final || (dataObj ? (dataObj['final'] as string) : '');
+                  if (finalText) {
+                    hasContent = true;
+                    acc = finalText;
+                    updateMessage(targetConversation.id, tempAssistantId, { content: acc });
+                  }
+                }
+              }
+              
+              // 保存 session_id, node_id, message_id 并更新前端 conversation 对象
+              if (sess || dataNodeId || dataMessageId) {
+                console.log('[Chat] 收到 bisheng 会话信息:', { sess, dataNodeId, dataMessageId });
+                try {
+                  if (sess && !targetConversation.bishengSessionId) {
+                    await api.post('/bisheng/session', { conversationId: targetConversation.id, sessionId: sess });
+                    console.log('[Chat] 保存 session_id 到数据库成功');
+                  }
+                  // 更新前端的 conversation 对象，以便下次请求使用
+                  if (sess) targetConversation.bishengSessionId = sess;
+                  if (dataNodeId) targetConversation.bishengNodeId = dataNodeId;
+                  if (dataMessageId) targetConversation.bishengMessageId = dataMessageId;
+                  
+                  // 同时更新 store 中的 conversation
+                  const updatedConv = { 
+                    ...targetConversation, 
+                    bishengSessionId: sess || targetConversation.bishengSessionId,
+                    bishengNodeId: dataNodeId || targetConversation.bishengNodeId,
+                    bishengMessageId: dataMessageId || targetConversation.bishengMessageId,
+                  };
+                  setCurrentConversation(updatedConv);
+                  console.log('[Chat] 更新会话状态:', {
+                    sessionId: updatedConv.bishengSessionId,
+                    nodeId: updatedConv.bishengNodeId,
+                    messageId: updatedConv.bishengMessageId
+                  });
+                } catch (e) { 
+                  console.error('[Chat] 保存会话信息失败:', e);
+                }
+              }
+            } else {
+              const evType = pendingEvent;
+              if (evType) receivedEvent = true;
+              const textChunk = raw;
+              if (evType === 'guide_word' || evType === 'guide_question' || evType === 'input') {
+                const mSess = raw.match(/"?session[_-]?id"?\s*[:=]\s*"?([A-Za-z0-9\-_.:]+)"?/i) || raw.match(/"?sessionId"?\s*[:=]\s*"?([A-Za-z0-9\-_.:]+)"?/i);
+                const mNode = raw.match(/"?node[_-]?id"?\s*[:=]\s*"?([A-Za-z0-9\-_.:]+)"?/i) || raw.match(/"?nodeId"?\s*[:=]\s*"?([A-Za-z0-9\-_.:]+)"?/i);
+                const mMsg = raw.match(/"?message[_-]?id"?\s*[:=]\s*"?([A-Za-z0-9\-_.:]+)"?/i) || raw.match(/"?messageId"?\s*[:=]\s*"?([A-Za-z0-9\-_.:]+)"?/i);
+                const sess2 = mSess?.[1] || targetConversation.bishengSessionId;
+                const node2 = mNode?.[1];
+                const msg2 = mMsg?.[1];
+                if (!autoContinueTriggered) {
+                  autoContinueTriggered = true;
+                  continueInvoke(sess2, node2, msg2);
+                }
+              } else if (textChunk) {
+                hasContent = true;
+                acc += textChunk;
+                updateMessage(targetConversation.id, tempAssistantId, { content: acc });
+              }
+              const m = raw.match(/"?session[_-]?id"?\s*[:=]\s*"?([A-Za-z0-9\-_.:]+)"?/i) || raw.match(/"?sessionId"?\s*[:=]\s*"?([A-Za-z0-9\-_.:]+)"?/i);
+              const sess = m?.[1];
+              if (sess && !targetConversation.bishengSessionId) {
+                try {
+                  await api.post('/bisheng/session', { conversationId: targetConversation.id, sessionId: sess });
+                  targetConversation.bishengSessionId = sess;
+                  const updatedConv = { ...targetConversation, bishengSessionId: sess };
+                  setCurrentConversation(updatedConv);
+                } catch (e) { void e; }
+              }
+            }
+            pendingEvent = '';
+            pendingDataLines = [];
+          };
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split(/\r?\n/);
+            buffer = lines.pop() || '';
+            for (const line of lines) {
+              const trimmed = line.trim();
+              if (trimmed === '') {
+                await flushEvent();
+                continue;
+              }
+              if (trimmed.startsWith('event:')) {
+                pendingEvent = trimmed.slice(6).trim();
+                continue;
+              }
+              if (trimmed.startsWith('data:')) {
+                pendingDataLines.push(trimmed.slice(5).trim());
+                continue;
+              }
+              pendingDataLines.push(trimmed);
+            }
+          }
+          await flushEvent();
+          setStreamingMessageId(null);
+          clearTimeout(timeoutId);
+          if (!hasContent && !receivedEvent) {
+            updateMessage(targetConversation.id, tempAssistantId, { content: '未收到回复内容，请重新发送' });
+            updateMessage(targetConversation.id, tempId, { status: 'sent' });
+          }
+        } catch (e) {
+          clearTimeout(timeoutId);
+          setStreamingMessageId(null);
+          console.error('bisheng stream failed', e);
+          const errMsg = e instanceof Error && e.name === 'AbortError' 
+            ? '请求已取消' 
+            : '网络错误，请检查连接后重试';
+          updateMessage(targetConversation.id, tempAssistantId, { content: errMsg });
+          updateMessage(targetConversation.id, tempId, { status: 'sent' });
+        }
+      } else {
+        const res = await chatService.chatUnified(content, targetConversation.id);
+        res.messages.forEach(m => addMessage(res.conversationId, m));
+        updateMessage(targetConversation.id, tempId, { status: 'sent' });
+      }
     } catch (error) {
       console.error('Failed to send message', error);
     }
@@ -422,20 +887,28 @@ export default function Chat() {
                 <div
                   key={msg.id}
                   className={cn(
-                    "flex w-full",
+                    "flex w-full animate-fadeInUp",
                     msg.role === 'user' ? "justify-end" : "justify-start"
                   )}
                 >
                   <div className={cn("flex flex-col max-w-[70%]", msg.role === 'user' ? "items-end" : "items-start")}> 
                     <div
                       className={cn(
-                        "rounded-lg px-5 py-3.5 shadow-sm text-sm leading-relaxed",
+                        "rounded-2xl px-5 py-3.5 shadow-sm text-sm leading-relaxed transition-all duration-200",
                         msg.role === 'user'
-                          ? "bg-primary-50 text-secondary-900 rounded-br-none border border-primary-100"
-                          : "bg-white text-secondary-900 rounded-bl-none border border-secondary-200"
+                          ? "bg-gradient-to-br from-primary-500 to-primary-600 text-white rounded-br-md"
+                          : "bg-white text-secondary-900 rounded-bl-md border border-secondary-100"
                       )}
                     >
-                      {msg.content}
+                      {msg.role === 'assistant' && msg.content === '' && streamingMessageId === msg.id ? (
+                        <TypingIndicator />
+                      ) : (
+                        <MessageContent 
+                          content={msg.content} 
+                          role={msg.role}
+                          isStreaming={streamingMessageId === msg.id}
+                        />
+                      )}
                     </div>
                     <div className="flex items-center space-x-1 mt-1 px-1">
                       <span className="text-xs text-secondary-400">

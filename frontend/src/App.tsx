@@ -7,6 +7,7 @@ import ModelsAdmin from './pages/admin/Models';
 import UsersAdmin from './pages/admin/Users';
 import LogsAdmin from './pages/admin/Logs';
 import AdminLayout from './pages/admin/Layout';
+import BishengConfigs from './pages/admin/BishengConfigs';
 import ConversationDetail from './pages/admin/ConversationDetail';
 import AdminLogin from './pages/admin/AdminLogin';
 import FeedbacksAdmin from './pages/admin/Feedbacks';
@@ -34,6 +35,7 @@ function App() {
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<AdminLayout />}>
             <Route path="models" element={<ModelsAdmin />} />
+            <Route path="bisheng-configs" element={<BishengConfigs />} />
             <Route path="users" element={<UsersAdmin />} />
             <Route path="conversations/:id" element={<ConversationDetail />} />
             <Route path="logs" element={<LogsAdmin />} />

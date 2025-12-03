@@ -50,6 +50,9 @@ export interface Conversation {
   unreadCount: number;
   createdAt: string;
   updatedAt: string;
+  bishengSessionId?: string;
+  bishengNodeId?: string;
+  bishengMessageId?: string;
 }
 
 export interface Message {
