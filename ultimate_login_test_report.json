@@ -1,0 +1,39 @@
+{
+  "timestamp": 1764652655.1269495,
+  "results": {
+    "user_api": {
+      "success": true,
+      "message": null,
+      "error": null,
+      "current_url": null,
+      "page_title": null
+    },
+    "admin_api": {
+      "success": false,
+      "message": null,
+      "error": "API返回 403",
+      "current_url": null,
+      "page_title": null
+    },
+    "user_frontend": {
+      "success": false,
+      "message": null,
+      "error": "所有重试尝试均失败",
+      "current_url": null,
+      "page_title": null
+    },
+    "admin_frontend": {
+      "success": false,
+      "message": null,
+      "error": "所有重试尝试均失败",
+      "current_url": null,
+      "page_title": null
+    }
+  },
+  "summary": {
+    "user_api_success": true,
+    "admin_api_success": false,
+    "user_frontend_success": false,
+    "admin_frontend_success": false
+  }
+}

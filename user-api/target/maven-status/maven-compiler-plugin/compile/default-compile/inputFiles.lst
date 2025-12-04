@@ -1,0 +1,16 @@
+/data/webUI-java/user-api/src/main/java/com/example/webui/userapi/controller/UserController.java
+/data/webUI-java/user-api/src/main/java/com/example/webui/userapi/controller/ConversationController.java
+/data/webUI-java/user-api/src/main/java/com/example/webui/userapi/service/ModelService.java
+/data/webUI-java/user-api/src/main/java/com/example/webui/userapi/config/BootstrapAdmin.java
+/data/webUI-java/user-api/src/main/java/com/example/webui/userapi/controller/FeedbackController.java
+/data/webUI-java/user-api/src/main/java/com/example/webui/userapi/controller/HomeController.java
+/data/webUI-java/user-api/src/main/java/com/example/webui/userapi/config/CorsConfig.java
+/data/webUI-java/user-api/src/main/java/com/example/webui/userapi/WebUiUserApplication.java
+/data/webUI-java/user-api/src/main/java/com/example/webui/userapi/controller/TestController.java
+/data/webUI-java/user-api/src/main/java/com/example/webui/userapi/controller/ModelController.java
+/data/webUI-java/user-api/src/main/java/com/example/webui/userapi/model/Model.java
+/data/webUI-java/user-api/src/main/java/com/example/webui/userapi/config/WebMvcConfig.java
+/data/webUI-java/user-api/src/main/java/com/example/webui/userapi/controller/MessageController.java
+/data/webUI-java/user-api/src/main/java/com/example/webui/userapi/controller/HealthController.java
+/data/webUI-java/user-api/src/main/java/com/example/webui/userapi/controller/ChatController.java
+/data/webUI-java/user-api/src/main/java/com/example/webui/userapi/config/SecurityConfig.java

@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>后台管理</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root { --primary:#1E40AF; --border:#e5e7eb; --bg:#f3f4f6; --text:#111827; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto; margin:0; color:var(--text); }
+    header { padding:16px 24px; border-bottom:1px solid var(--border); }
+    header h1 { margin:0; font-size:20px; color:var(--primary); }
+    main { max-width:1100px; margin:0 auto; padding:24px; }
+    .card { background:#fff; border:1px solid var(--border); border-radius:8px; padding:20px; }
+    label { display:block; margin-top:12px; }
+    input { width:100%; border:1px solid var(--border); border-radius:6px; padding:10px; }
+    button { border:1px solid var(--primary); background:var(--primary); color:#fff; padding:10px 14px; border-radius:6px; cursor:pointer; }
+    button.secondary { background:#fff; color:var(--primary); }
+    table { width:100%; border-collapse:collapse; }
+    th, td { border:1px solid var(--border); padding:8px; text-align:left; }
+    .hint { color:#6b7280; font-size:12px; }
+    .error { color:#b91c1c; margin-top:10px; }
+  </style>
+  <script src="https://unpkg.com/vue@3.4.21/dist/vue.global.prod.js"></script>
+</head>
+<body>
+  <header><h1>后台管理</h1></header>
+  <main id="app">
+    <div class="card" v-if="!state.token">
+      <h2 style="margin:0 0 10px">管理员登录</h2>
+      <label>用户名/邮箱/手机号
+        <input v-model="state.username" placeholder="admin" />
+      </label>
+      <label>密码
+        <input v-model="state.password" type="password" placeholder="Abcdef1!" />
+      </label>
+      <div style="margin-top:12px; display:flex; gap:8px;">
+        <button @click="login">登录</button>
+        <span class="hint">API: /api/users/login</span>
+      </div>
+      <div class="error" v-if="state.error">{{ state.error }}</div>
+    </div>
+
+    <div v-else class="card">
+      <div style="display:flex; gap:8px; margin-bottom:12px;">
+        <button @click="loadStats">统计</button>
+        <button class="secondary" @click="loadUsers">用户</button>
+        <button class="secondary" @click="loadModels">模型</button>
+        <button class="secondary" @click="loadLogs">日志</button>
+      </div>
+      <div v-if="state.tab==='stats'">
+        <pre>{{ pretty(state.stats) }}</pre>
+      </div>
+      <div v-else-if="state.tab==='users'">
+        <table>
+          <thead><tr><th>用户名</th><th>邮箱</th><th>已审批</th><th>操作</th></tr></thead>
+          <tbody>
+            <tr v-for="u in state.users" :key="u.id">
+              <td>{{ u.username }}</td><td>{{ u.email }}</td><td>{{ u.isVerified ? '是' : '否' }}</td>
+              <td>
+                <button @click="verifyUser(u.id)">审批</button>
+                <button class="secondary" @click="banUser(u.id,false)">解封</button>
+                <button class="secondary" @click="banUser(u.id,true)">封禁</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div v-else-if="state.tab==='models'">
+        <pre>{{ pretty(state.models) }}</pre>
+      </div>
+      <div v-else-if="state.tab==='logs'">
+        <pre>{{ pretty(state.logs) }}</pre>
+      </div>
+      <div class="error" v-if="state.error">{{ state.error }}</div>
+    </div>
+  </main>
+
+  <script>
+    const API_BASE = '/api';
+    const USER_API_ORIGIN = (() => {
+      const origin = location.origin;
+      const m = origin.match(/:\d+$/);
+      if (!m) return origin;
+      const port = Number(m[0].slice(1));
+      const map = { 11025: 11031, 12025: 11031, 13085: 11031, 13089: 11031 };
+      const newPort = map[port];
+      return newPort ? origin.replace(/:\d+$/, ':' + newPort) : origin;
+    })();
+    const app = Vue.createApp({
+      data(){ return { state: { username:'admin', password:'Abcdef1!', token:null, error:'', tab:'stats', stats:null, users:[], models:[], logs:[] } } },
+      mounted(){ const t = sessionStorage.getItem('access_token'); if (t){ this.state.token=t; this.loadStats(); } },
+      methods:{
+        pretty(o){ try { return JSON.stringify(o,null,2);} catch(e){ return String(o) } },
+        async req(path,opt={}){ const h=Object.assign({'Content-Type':'application/json'},opt.headers||{}); if(this.state.token) h['Authorization']='Bearer '+this.state.token; const url = /^https?:\/\//.test(path) ? path : (API_BASE+path); const r=await fetch(url,Object.assign({},opt,{headers:h})); let b={}; try{ b=await r.json(); }catch(e){} if(!r.ok) throw new Error(b.error||('HTTP '+r.status)); return b; },
+        async login(){ this.state.error=''; try{ const b=await this.req(USER_API_ORIGIN+'/api/users/login',{method:'POST',body:JSON.stringify({username:this.state.username,password:this.state.password})}); this.state.token=b.token; sessionStorage.setItem('access_token',b.token); this.loadStats(); }catch(e){ this.state.error=e.message; } },
+        async loadStats(){ this.state.tab='stats'; try{ this.state.stats=await this.req('/admin/stats'); }catch(e){ this.state.error=e.message; } },
+        async loadUsers(){ this.state.tab='users'; try{ const r=await this.req('/admin/users'); this.state.users=r.users||[]; }catch(e){ this.state.error=e.message; } },
+        async verifyUser(id){ try{ await this.req('/admin/users/'+id+'/verify',{method:'PUT'}); this.loadUsers(); }catch(e){ this.state.error=e.message; } },
+        async banUser(id,b){ try{ await this.req('/admin/users/'+id+'/ban',{method:'PUT',body:JSON.stringify({banned:b})}); this.loadUsers(); }catch(e){ this.state.error=e.message; } },
+        async loadModels(){ this.state.tab='models'; try{ const r=await this.req('/admin/models'); this.state.models=r.models||[]; }catch(e){ this.state.error=e.message; } },
+        async loadLogs(){ this.state.tab='logs'; try{ const r=await this.req('/admin/logs'); this.state.logs=r.logs||[]; }catch(e){ this.state.error=e.message; } },
+      }
+    });
+    app.mount('#app');
+  </script>
+</body>
+</html>

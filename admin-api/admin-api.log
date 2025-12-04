@@ -1,0 +1,4873 @@
+nohup: 忽略输入
+[[1;34mINFO[m] Scanning for projects...
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--------------------< [0;36mcom.example.webui:admin-api[0;1m >---------------------[m
+[[1;34mINFO[m] [1mBuilding admin-api 1.0.0[m
+[[1;34mINFO[m] [1m--------------------------------[ jar ]---------------------------------[m
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m>>> [0;32mspring-boot-maven-plugin:3.2.1:run[m [1m(default-cli)[0;1m > [0;1mtest-compile[m @ [36madmin-api[0;1m >>>[m
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-resources-plugin:2.6:resources[m [1m(default-resources)[m @ [36madmin-api[0;1m ---[m
+[[1;33mWARNING[m] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+[[1;34mINFO[m] Copying 2 resources
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-compiler-plugin:3.11.0:compile[m [1m(default-compile)[m @ [36madmin-api[0;1m ---[m
+[[1;34mINFO[m] Nothing to compile - all classes are up to date
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-resources-plugin:2.6:testResources[m [1m(default-testResources)[m @ [36madmin-api[0;1m ---[m
+[[1;33mWARNING[m] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+[[1;34mINFO[m] skip non existing resourceDirectory /data/webUI-java/admin-api/src/test/resources
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-compiler-plugin:3.11.0:testCompile[m [1m(default-testCompile)[m @ [36madmin-api[0;1m ---[m
+[[1;34mINFO[m] No sources to compile
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m<<< [0;32mspring-boot-maven-plugin:3.2.1:run[m [1m(default-cli)[0;1m < [0;1mtest-compile[m @ [36madmin-api[0;1m <<<[m
+[[1;34mINFO[m] 
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mspring-boot-maven-plugin:3.2.1:run[m [1m(default-cli)[m @ [36madmin-api[0;1m ---[m
+[[1;34mINFO[m] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v3.2.1)
+
+2025-12-04T15:09:05.632+08:00  INFO 2845628 --- [           main] c.e.w.adminapi.WebUiAdminApplication     : Starting WebUiAdminApplication using Java 17.0.17 with PID 2845628 (/data/webUI-java/admin-api/target/classes started by tvi in /data/webUI-java/admin-api)
+2025-12-04T15:09:05.635+08:00  INFO 2845628 --- [           main] c.e.w.adminapi.WebUiAdminApplication     : No active profile set, falling back to 1 default profile: "default"
+2025-12-04T15:09:06.367+08:00  INFO 2845628 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-12-04T15:09:06.562+08:00  INFO 2845628 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 187 ms. Found 9 JPA repository interfaces.
+2025-12-04T15:09:07.537+08:00 ERROR 2845628 --- [           main] o.a.catalina.core.AprLifecycleListener   : An incompatible version [1.2.31] of the Apache Tomcat Native library is installed, while Tomcat requires version [1.2.34]
+2025-12-04T15:09:07.875+08:00  INFO 2845628 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 11025 (http)
+2025-12-04T15:09:07.888+08:00  INFO 2845628 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-12-04T15:09:07.889+08:00  INFO 2845628 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.17]
+2025-12-04T15:09:07.948+08:00  INFO 2845628 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring embedded WebApplicationContext
+2025-12-04T15:09:07.950+08:00  INFO 2845628 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2248 ms
+2025-12-04T15:09:08.341+08:00  INFO 2845628 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-12-04T15:09:08.397+08:00  INFO 2845628 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.4.1.Final
+2025-12-04T15:09:08.429+08:00  INFO 2845628 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-12-04T15:09:08.649+08:00  INFO 2845628 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-12-04T15:09:08.676+08:00  INFO 2845628 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-12-04T15:09:08.831+08:00  INFO 2845628 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@146add7b
+2025-12-04T15:09:08.833+08:00  INFO 2845628 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-12-04T15:09:08.884+08:00  WARN 2845628 --- [           main] org.hibernate.orm.deprecation            : HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-12-04T15:09:08.886+08:00  WARN 2845628 --- [           main] org.hibernate.orm.deprecation            : HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2025-12-04T15:09:10.011+08:00  INFO 2845628 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-12-04T15:09:10.169+08:00  INFO 2845628 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-12-04T15:09:10.606+08:00  INFO 2845628 --- [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-12-04T15:09:11.275+08:00  WARN 2845628 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-12-04T15:09:11.344+08:00  WARN 2845628 --- [           main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: e1dda201-93f0-4902-9eec-f942cdbde335
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2025-12-04T15:09:11.452+08:00  INFO 2845628 --- [           main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page: class path resource [static/index.html]
+2025-12-04T15:09:11.978+08:00  INFO 2845628 --- [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 14 endpoint(s) beneath base path '/actuator'
+2025-12-04T15:09:12.078+08:00  INFO 2845628 --- [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@4a9e6ea7, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@6f8af186, org.springframework.security.web.context.SecurityContextHolderFilter@48c42253, org.springframework.security.web.header.HeaderWriterFilter@73032867, org.springframework.web.filter.CorsFilter@2c8ff67, org.springframework.security.web.authentication.logout.LogoutFilter@ecd3a9b, com.example.webui.adminapi.config.SecurityConfig$JwtFilter@5aaecd25, org.springframework.web.filter.CorsFilter@239fdf8f, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@5ca9a6a8, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@4f3d49e4, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@1acd660d, org.springframework.security.web.session.SessionManagementFilter@3e6a55fb, org.springframework.security.web.access.ExceptionTranslationFilter@dd3d0a6, org.springframework.security.web.access.intercept.AuthorizationFilter@5f04449a]
+2025-12-04T15:09:12.873+08:00  INFO 2845628 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 11025 (http) with context path '/api'
+2025-12-04T15:09:12.893+08:00  INFO 2845628 --- [           main] c.e.w.adminapi.WebUiAdminApplication     : Started WebUiAdminApplication in 7.686 seconds (process running for 7.999)
+2025-12-04T15:09:37.399+08:00  INFO 2845628 --- [io-11025-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-12-04T15:09:37.399+08:00  INFO 2845628 --- [io-11025-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-12-04T15:09:37.401+08:00  INFO 2845628 --- [io-11025-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.username,
+        u1_0.phone,
+        u1_0.email,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.created_at 
+    from
+        users u1_0
+Hibernate: 
+    select
+        count(*) 
+    from
+        users u1_0
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        mc1_0.id,
+        mc1_0.api_key,
+        mc1_0.created_at,
+        mc1_0.enabled,
+        mc1_0.endpoint,
+        mc1_0.max_tokens,
+        mc1_0.model_name,
+        mc1_0.protocol,
+        mc1_0.provider,
+        mc1_0.tag,
+        mc1_0.temperature,
+        mc1_0.topp,
+        mc1_0.updated_at,
+        mc1_0.created_by 
+    from
+        model_configs mc1_0
+Hibernate: 
+    select
+        wc1_0.id,
+        wc1_0.api_key,
+        wc1_0.config_json,
+        wc1_0.created_at,
+        wc1_0.description,
+        wc1_0.enabled,
+        wc1_0.endpoint,
+        wc1_0.name,
+        wc1_0.updated_at,
+        wc1_0.workflow_id 
+    from
+        workflow_configs wc1_0
+Hibernate: 
+    select
+        al1_0.id,
+        al1_0.action,
+        al1_0.created_at,
+        al1_0.details,
+        al1_0.ip,
+        al1_0.user_id 
+    from
+        audit_logs al1_0 
+    limit
+        ?, ?
+Hibernate: 
+    select
+        count(al1_0.id) 
+    from
+        audit_logs al1_0
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        mc1_0.id,
+        mc1_0.api_key,
+        mc1_0.created_at,
+        mc1_0.enabled,
+        mc1_0.endpoint,
+        mc1_0.max_tokens,
+        mc1_0.model_name,
+        mc1_0.protocol,
+        mc1_0.provider,
+        mc1_0.tag,
+        mc1_0.temperature,
+        mc1_0.topp,
+        mc1_0.updated_at,
+        mc1_0.created_by 
+    from
+        model_configs mc1_0
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.username,
+        u1_0.phone,
+        u1_0.email,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.created_at 
+    from
+        users u1_0
+Hibernate: 
+    select
+        count(*) 
+    from
+        users u1_0
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        wc1_0.id,
+        wc1_0.api_key,
+        wc1_0.config_json,
+        wc1_0.created_at,
+        wc1_0.description,
+        wc1_0.enabled,
+        wc1_0.endpoint,
+        wc1_0.name,
+        wc1_0.updated_at,
+        wc1_0.workflow_id 
+    from
+        workflow_configs wc1_0
+Hibernate: 
+    select
+        al1_0.id,
+        al1_0.action,
+        al1_0.created_at,
+        al1_0.details,
+        al1_0.ip,
+        al1_0.user_id 
+    from
+        audit_logs al1_0 
+    limit
+        ?, ?
+Hibernate: 
+    select
+        count(al1_0.id) 
+    from
+        audit_logs al1_0
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.contact,
+        f1_0.content,
+        f1_0.created_at,
+        f1_0.handled_at,
+        f1_0.handler_id,
+        f1_0.resolution,
+        f1_0.status,
+        f1_0.type,
+        f1_0.user_id 
+    from
+        feedbacks f1_0 
+    limit
+        ?, ?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.contact,
+        f1_0.content,
+        f1_0.created_at,
+        f1_0.handled_at,
+        f1_0.handler_id,
+        f1_0.resolution,
+        f1_0.status,
+        f1_0.type,
+        f1_0.user_id 
+    from
+        feedbacks f1_0 
+    limit
+        ?, ?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.contact,
+        f1_0.content,
+        f1_0.created_at,
+        f1_0.handled_at,
+        f1_0.handler_id,
+        f1_0.resolution,
+        f1_0.status,
+        f1_0.type,
+        f1_0.user_id 
+    from
+        feedbacks f1_0 
+    limit
+        ?, ?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.username,
+        u1_0.phone,
+        u1_0.email,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.created_at 
+    from
+        users u1_0
+Hibernate: 
+    select
+        count(*) 
+    from
+        users u1_0
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        mc1_0.id,
+        mc1_0.api_key,
+        mc1_0.created_at,
+        mc1_0.enabled,
+        mc1_0.endpoint,
+        mc1_0.max_tokens,
+        mc1_0.model_name,
+        mc1_0.protocol,
+        mc1_0.provider,
+        mc1_0.tag,
+        mc1_0.temperature,
+        mc1_0.topp,
+        mc1_0.updated_at,
+        mc1_0.created_by 
+    from
+        model_configs mc1_0
+Hibernate: 
+    select
+        wc1_0.id,
+        wc1_0.api_key,
+        wc1_0.config_json,
+        wc1_0.created_at,
+        wc1_0.description,
+        wc1_0.enabled,
+        wc1_0.endpoint,
+        wc1_0.name,
+        wc1_0.updated_at,
+        wc1_0.workflow_id 
+    from
+        workflow_configs wc1_0
+Hibernate: 
+    select
+        mc1_0.id,
+        mc1_0.api_key,
+        mc1_0.created_at,
+        mc1_0.enabled,
+        mc1_0.endpoint,
+        mc1_0.max_tokens,
+        mc1_0.model_name,
+        mc1_0.protocol,
+        mc1_0.provider,
+        mc1_0.tag,
+        mc1_0.temperature,
+        mc1_0.topp,
+        mc1_0.updated_at,
+        mc1_0.created_by 
+    from
+        model_configs mc1_0
+Hibernate: 
+    select
+        mc1_0.id,
+        mc1_0.api_key,
+        mc1_0.created_at,
+        mc1_0.enabled,
+        mc1_0.endpoint,
+        mc1_0.max_tokens,
+        mc1_0.model_name,
+        mc1_0.protocol,
+        mc1_0.provider,
+        mc1_0.tag,
+        mc1_0.temperature,
+        mc1_0.topp,
+        mc1_0.updated_at,
+        mc1_0.created_by 
+    from
+        model_configs mc1_0
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.username,
+        u1_0.phone,
+        u1_0.email,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.created_at 
+    from
+        users u1_0
+Hibernate: 
+    select
+        count(*) 
+    from
+        users u1_0
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        mc1_0.id,
+        mc1_0.api_key,
+        mc1_0.created_at,
+        mc1_0.enabled,
+        mc1_0.endpoint,
+        mc1_0.max_tokens,
+        mc1_0.model_name,
+        mc1_0.protocol,
+        mc1_0.provider,
+        mc1_0.tag,
+        mc1_0.temperature,
+        mc1_0.topp,
+        mc1_0.updated_at,
+        mc1_0.created_by 
+    from
+        model_configs mc1_0
+Hibernate: 
+    select
+        wc1_0.id,
+        wc1_0.api_key,
+        wc1_0.config_json,
+        wc1_0.created_at,
+        wc1_0.description,
+        wc1_0.enabled,
+        wc1_0.endpoint,
+        wc1_0.name,
+        wc1_0.updated_at,
+        wc1_0.workflow_id 
+    from
+        workflow_configs wc1_0
+Hibernate: 
+    select
+        al1_0.id,
+        al1_0.action,
+        al1_0.created_at,
+        al1_0.details,
+        al1_0.ip,
+        al1_0.user_id 
+    from
+        audit_logs al1_0 
+    limit
+        ?, ?
+Hibernate: 
+    select
+        count(al1_0.id) 
+    from
+        audit_logs al1_0
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.contact,
+        f1_0.content,
+        f1_0.created_at,
+        f1_0.handled_at,
+        f1_0.handler_id,
+        f1_0.resolution,
+        f1_0.status,
+        f1_0.type,
+        f1_0.user_id 
+    from
+        feedbacks f1_0 
+    limit
+        ?, ?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        al1_0.id,
+        al1_0.action,
+        al1_0.created_at,
+        al1_0.details,
+        al1_0.ip,
+        al1_0.user_id 
+    from
+        audit_logs al1_0 
+    limit
+        ?, ?
+Hibernate: 
+    select
+        count(al1_0.id) 
+    from
+        audit_logs al1_0
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        mc1_0.id,
+        mc1_0.api_key,
+        mc1_0.created_at,
+        mc1_0.enabled,
+        mc1_0.endpoint,
+        mc1_0.max_tokens,
+        mc1_0.model_name,
+        mc1_0.protocol,
+        mc1_0.provider,
+        mc1_0.tag,
+        mc1_0.temperature,
+        mc1_0.topp,
+        mc1_0.updated_at,
+        mc1_0.created_by 
+    from
+        model_configs mc1_0
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.username,
+        u1_0.phone,
+        u1_0.email,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.created_at 
+    from
+        users u1_0
+Hibernate: 
+    select
+        count(*) 
+    from
+        users u1_0
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.username,
+        u1_0.phone,
+        u1_0.email,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.created_at 
+    from
+        users u1_0
+Hibernate: 
+    select
+        count(*) 
+    from
+        users u1_0
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.username,
+        u1_0.phone,
+        u1_0.email,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.created_at 
+    from
+        users u1_0
+Hibernate: 
+    select
+        count(*) 
+    from
+        users u1_0
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        mc1_0.id,
+        mc1_0.api_key,
+        mc1_0.created_at,
+        mc1_0.enabled,
+        mc1_0.endpoint,
+        mc1_0.max_tokens,
+        mc1_0.model_name,
+        mc1_0.protocol,
+        mc1_0.provider,
+        mc1_0.tag,
+        mc1_0.temperature,
+        mc1_0.topp,
+        mc1_0.updated_at,
+        mc1_0.created_by 
+    from
+        model_configs mc1_0
+Hibernate: 
+    select
+        wc1_0.id,
+        wc1_0.api_key,
+        wc1_0.config_json,
+        wc1_0.created_at,
+        wc1_0.description,
+        wc1_0.enabled,
+        wc1_0.endpoint,
+        wc1_0.name,
+        wc1_0.updated_at,
+        wc1_0.workflow_id 
+    from
+        workflow_configs wc1_0
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.contact,
+        f1_0.content,
+        f1_0.created_at,
+        f1_0.handled_at,
+        f1_0.handler_id,
+        f1_0.resolution,
+        f1_0.status,
+        f1_0.type,
+        f1_0.user_id 
+    from
+        feedbacks f1_0 
+    limit
+        ?, ?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.contact,
+        f1_0.content,
+        f1_0.created_at,
+        f1_0.handled_at,
+        f1_0.handler_id,
+        f1_0.resolution,
+        f1_0.status,
+        f1_0.type,
+        f1_0.user_id 
+    from
+        feedbacks f1_0 
+    limit
+        ?, ?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.username,
+        u1_0.phone,
+        u1_0.email,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.created_at 
+    from
+        users u1_0
+Hibernate: 
+    select
+        count(*) 
+    from
+        users u1_0
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.username,
+        u1_0.phone,
+        u1_0.email,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.created_at 
+    from
+        users u1_0
+Hibernate: 
+    select
+        count(*) 
+    from
+        users u1_0
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        mc1_0.id,
+        mc1_0.api_key,
+        mc1_0.created_at,
+        mc1_0.enabled,
+        mc1_0.endpoint,
+        mc1_0.max_tokens,
+        mc1_0.model_name,
+        mc1_0.protocol,
+        mc1_0.provider,
+        mc1_0.tag,
+        mc1_0.temperature,
+        mc1_0.topp,
+        mc1_0.updated_at,
+        mc1_0.created_by 
+    from
+        model_configs mc1_0
+Hibernate: 
+    select
+        wc1_0.id,
+        wc1_0.api_key,
+        wc1_0.config_json,
+        wc1_0.created_at,
+        wc1_0.description,
+        wc1_0.enabled,
+        wc1_0.endpoint,
+        wc1_0.name,
+        wc1_0.updated_at,
+        wc1_0.workflow_id 
+    from
+        workflow_configs wc1_0
+Hibernate: 
+    select
+        wc1_0.id,
+        wc1_0.api_key,
+        wc1_0.config_json,
+        wc1_0.created_at,
+        wc1_0.description,
+        wc1_0.enabled,
+        wc1_0.endpoint,
+        wc1_0.name,
+        wc1_0.updated_at,
+        wc1_0.workflow_id 
+    from
+        workflow_configs wc1_0
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.username,
+        u1_0.phone,
+        u1_0.email,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.created_at 
+    from
+        users u1_0
+Hibernate: 
+    select
+        count(*) 
+    from
+        users u1_0
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        al1_0.id,
+        al1_0.action,
+        al1_0.created_at,
+        al1_0.details,
+        al1_0.ip,
+        al1_0.user_id 
+    from
+        audit_logs al1_0 
+    limit
+        ?, ?
+Hibernate: 
+    select
+        count(al1_0.id) 
+    from
+        audit_logs al1_0
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.contact,
+        f1_0.content,
+        f1_0.created_at,
+        f1_0.handled_at,
+        f1_0.handler_id,
+        f1_0.resolution,
+        f1_0.status,
+        f1_0.type,
+        f1_0.user_id 
+    from
+        feedbacks f1_0 
+    limit
+        ?, ?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        wc1_0.id,
+        wc1_0.api_key,
+        wc1_0.config_json,
+        wc1_0.created_at,
+        wc1_0.description,
+        wc1_0.enabled,
+        wc1_0.endpoint,
+        wc1_0.name,
+        wc1_0.updated_at,
+        wc1_0.workflow_id 
+    from
+        workflow_configs wc1_0
+Hibernate: 
+    select
+        mc1_0.id,
+        mc1_0.api_key,
+        mc1_0.created_at,
+        mc1_0.enabled,
+        mc1_0.endpoint,
+        mc1_0.max_tokens,
+        mc1_0.model_name,
+        mc1_0.protocol,
+        mc1_0.provider,
+        mc1_0.tag,
+        mc1_0.temperature,
+        mc1_0.topp,
+        mc1_0.updated_at,
+        mc1_0.created_by 
+    from
+        model_configs mc1_0
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.username,
+        u1_0.phone,
+        u1_0.email,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.created_at 
+    from
+        users u1_0
+Hibernate: 
+    select
+        count(*) 
+    from
+        users u1_0
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.username,
+        u1_0.phone,
+        u1_0.email,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.created_at 
+    from
+        users u1_0
+Hibernate: 
+    select
+        count(*) 
+    from
+        users u1_0
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        mc1_0.id,
+        mc1_0.api_key,
+        mc1_0.created_at,
+        mc1_0.enabled,
+        mc1_0.endpoint,
+        mc1_0.max_tokens,
+        mc1_0.model_name,
+        mc1_0.protocol,
+        mc1_0.provider,
+        mc1_0.tag,
+        mc1_0.temperature,
+        mc1_0.topp,
+        mc1_0.updated_at,
+        mc1_0.created_by 
+    from
+        model_configs mc1_0
+Hibernate: 
+    select
+        wc1_0.id,
+        wc1_0.api_key,
+        wc1_0.config_json,
+        wc1_0.created_at,
+        wc1_0.description,
+        wc1_0.enabled,
+        wc1_0.endpoint,
+        wc1_0.name,
+        wc1_0.updated_at,
+        wc1_0.workflow_id 
+    from
+        workflow_configs wc1_0
+Hibernate: 
+    select
+        wc1_0.id,
+        wc1_0.api_key,
+        wc1_0.config_json,
+        wc1_0.created_at,
+        wc1_0.description,
+        wc1_0.enabled,
+        wc1_0.endpoint,
+        wc1_0.name,
+        wc1_0.updated_at,
+        wc1_0.workflow_id 
+    from
+        workflow_configs wc1_0 
+    where
+        wc1_0.id=?
+Hibernate: 
+    select
+        null,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, ip, user_id, id) 
+    values
+        (?, ?, ?, ?, ?, ?)
+Hibernate: 
+    update
+        workflow_configs 
+    set
+        api_key=?,
+        config_json=?,
+        created_at=?,
+        description=?,
+        enabled=?,
+        endpoint=?,
+        name=?,
+        updated_at=?,
+        workflow_id=? 
+    where
+        id=?
+Hibernate: 
+    select
+        wc1_0.id,
+        wc1_0.api_key,
+        wc1_0.config_json,
+        wc1_0.created_at,
+        wc1_0.description,
+        wc1_0.enabled,
+        wc1_0.endpoint,
+        wc1_0.name,
+        wc1_0.updated_at,
+        wc1_0.workflow_id 
+    from
+        workflow_configs wc1_0
+Hibernate: 
+    select
+        wc1_0.id,
+        wc1_0.api_key,
+        wc1_0.config_json,
+        wc1_0.created_at,
+        wc1_0.description,
+        wc1_0.enabled,
+        wc1_0.endpoint,
+        wc1_0.name,
+        wc1_0.updated_at,
+        wc1_0.workflow_id 
+    from
+        workflow_configs wc1_0 
+    where
+        wc1_0.id=?
+Hibernate: 
+    select
+        null,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, ip, user_id, id) 
+    values
+        (?, ?, ?, ?, ?, ?)
+Hibernate: 
+    update
+        workflow_configs 
+    set
+        api_key=?,
+        config_json=?,
+        created_at=?,
+        description=?,
+        enabled=?,
+        endpoint=?,
+        name=?,
+        updated_at=?,
+        workflow_id=? 
+    where
+        id=?
+Hibernate: 
+    select
+        wc1_0.id,
+        wc1_0.api_key,
+        wc1_0.config_json,
+        wc1_0.created_at,
+        wc1_0.description,
+        wc1_0.enabled,
+        wc1_0.endpoint,
+        wc1_0.name,
+        wc1_0.updated_at,
+        wc1_0.workflow_id 
+    from
+        workflow_configs wc1_0
+Hibernate: 
+    select
+        wc1_0.id,
+        wc1_0.api_key,
+        wc1_0.config_json,
+        wc1_0.created_at,
+        wc1_0.description,
+        wc1_0.enabled,
+        wc1_0.endpoint,
+        wc1_0.name,
+        wc1_0.updated_at,
+        wc1_0.workflow_id 
+    from
+        workflow_configs wc1_0 
+    where
+        wc1_0.id=?
+Hibernate: 
+    select
+        null,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, ip, user_id, id) 
+    values
+        (?, ?, ?, ?, ?, ?)
+Hibernate: 
+    update
+        workflow_configs 
+    set
+        api_key=?,
+        config_json=?,
+        created_at=?,
+        description=?,
+        enabled=?,
+        endpoint=?,
+        name=?,
+        updated_at=?,
+        workflow_id=? 
+    where
+        id=?
+Hibernate: 
+    select
+        wc1_0.id,
+        wc1_0.api_key,
+        wc1_0.config_json,
+        wc1_0.created_at,
+        wc1_0.description,
+        wc1_0.enabled,
+        wc1_0.endpoint,
+        wc1_0.name,
+        wc1_0.updated_at,
+        wc1_0.workflow_id 
+    from
+        workflow_configs wc1_0
+Hibernate: 
+    select
+        wc1_0.id,
+        wc1_0.api_key,
+        wc1_0.config_json,
+        wc1_0.created_at,
+        wc1_0.description,
+        wc1_0.enabled,
+        wc1_0.endpoint,
+        wc1_0.name,
+        wc1_0.updated_at,
+        wc1_0.workflow_id 
+    from
+        workflow_configs wc1_0 
+    where
+        wc1_0.id=?
+Hibernate: 
+    select
+        null,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, ip, user_id, id) 
+    values
+        (?, ?, ?, ?, ?, ?)
+Hibernate: 
+    update
+        workflow_configs 
+    set
+        api_key=?,
+        config_json=?,
+        created_at=?,
+        description=?,
+        enabled=?,
+        endpoint=?,
+        name=?,
+        updated_at=?,
+        workflow_id=? 
+    where
+        id=?
+Hibernate: 
+    select
+        wc1_0.id,
+        wc1_0.api_key,
+        wc1_0.config_json,
+        wc1_0.created_at,
+        wc1_0.description,
+        wc1_0.enabled,
+        wc1_0.endpoint,
+        wc1_0.name,
+        wc1_0.updated_at,
+        wc1_0.workflow_id 
+    from
+        workflow_configs wc1_0
+Hibernate: 
+    select
+        wc1_0.id,
+        wc1_0.api_key,
+        wc1_0.config_json,
+        wc1_0.created_at,
+        wc1_0.description,
+        wc1_0.enabled,
+        wc1_0.endpoint,
+        wc1_0.name,
+        wc1_0.updated_at,
+        wc1_0.workflow_id 
+    from
+        workflow_configs wc1_0 
+    where
+        wc1_0.id=?
+Hibernate: 
+    select
+        null,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, ip, user_id, id) 
+    values
+        (?, ?, ?, ?, ?, ?)
+Hibernate: 
+    update
+        workflow_configs 
+    set
+        api_key=?,
+        config_json=?,
+        created_at=?,
+        description=?,
+        enabled=?,
+        endpoint=?,
+        name=?,
+        updated_at=?,
+        workflow_id=? 
+    where
+        id=?
+Hibernate: 
+    select
+        wc1_0.id,
+        wc1_0.api_key,
+        wc1_0.config_json,
+        wc1_0.created_at,
+        wc1_0.description,
+        wc1_0.enabled,
+        wc1_0.endpoint,
+        wc1_0.name,
+        wc1_0.updated_at,
+        wc1_0.workflow_id 
+    from
+        workflow_configs wc1_0
+Hibernate: 
+    select
+        mc1_0.id,
+        mc1_0.api_key,
+        mc1_0.created_at,
+        mc1_0.enabled,
+        mc1_0.endpoint,
+        mc1_0.max_tokens,
+        mc1_0.model_name,
+        mc1_0.protocol,
+        mc1_0.provider,
+        mc1_0.tag,
+        mc1_0.temperature,
+        mc1_0.topp,
+        mc1_0.updated_at,
+        mc1_0.created_by 
+    from
+        model_configs mc1_0
+Hibernate: 
+    select
+        mc1_0.id,
+        mc1_0.api_key,
+        mc1_0.created_at,
+        mc1_0.enabled,
+        mc1_0.endpoint,
+        mc1_0.max_tokens,
+        mc1_0.model_name,
+        mc1_0.protocol,
+        mc1_0.provider,
+        mc1_0.tag,
+        mc1_0.temperature,
+        mc1_0.topp,
+        mc1_0.updated_at,
+        mc1_0.created_by 
+    from
+        model_configs mc1_0 
+    where
+        mc1_0.id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, ip, user_id, id) 
+    values
+        (?, ?, ?, ?, ?, ?)
+Hibernate: 
+    update
+        model_configs 
+    set
+        api_key=?,
+        created_at=?,
+        enabled=?,
+        endpoint=?,
+        max_tokens=?,
+        model_name=?,
+        protocol=?,
+        provider=?,
+        tag=?,
+        temperature=?,
+        topp=?,
+        updated_at=?,
+        created_by=? 
+    where
+        id=?
+Hibernate: 
+    select
+        mc1_0.id,
+        mc1_0.api_key,
+        mc1_0.created_at,
+        mc1_0.enabled,
+        mc1_0.endpoint,
+        mc1_0.max_tokens,
+        mc1_0.model_name,
+        mc1_0.protocol,
+        mc1_0.provider,
+        mc1_0.tag,
+        mc1_0.temperature,
+        mc1_0.topp,
+        mc1_0.updated_at,
+        mc1_0.created_by 
+    from
+        model_configs mc1_0
+Hibernate: 
+    select
+        mc1_0.id,
+        mc1_0.api_key,
+        mc1_0.created_at,
+        mc1_0.enabled,
+        mc1_0.endpoint,
+        mc1_0.max_tokens,
+        mc1_0.model_name,
+        mc1_0.protocol,
+        mc1_0.provider,
+        mc1_0.tag,
+        mc1_0.temperature,
+        mc1_0.topp,
+        mc1_0.updated_at,
+        mc1_0.created_by 
+    from
+        model_configs mc1_0 
+    where
+        mc1_0.id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, ip, user_id, id) 
+    values
+        (?, ?, ?, ?, ?, ?)
+Hibernate: 
+    update
+        model_configs 
+    set
+        api_key=?,
+        created_at=?,
+        enabled=?,
+        endpoint=?,
+        max_tokens=?,
+        model_name=?,
+        protocol=?,
+        provider=?,
+        tag=?,
+        temperature=?,
+        topp=?,
+        updated_at=?,
+        created_by=? 
+    where
+        id=?
+Hibernate: 
+    select
+        mc1_0.id,
+        mc1_0.api_key,
+        mc1_0.created_at,
+        mc1_0.enabled,
+        mc1_0.endpoint,
+        mc1_0.max_tokens,
+        mc1_0.model_name,
+        mc1_0.protocol,
+        mc1_0.provider,
+        mc1_0.tag,
+        mc1_0.temperature,
+        mc1_0.topp,
+        mc1_0.updated_at,
+        mc1_0.created_by 
+    from
+        model_configs mc1_0
+Hibernate: 
+    select
+        mc1_0.id,
+        mc1_0.api_key,
+        mc1_0.created_at,
+        mc1_0.enabled,
+        mc1_0.endpoint,
+        mc1_0.max_tokens,
+        mc1_0.model_name,
+        mc1_0.protocol,
+        mc1_0.provider,
+        mc1_0.tag,
+        mc1_0.temperature,
+        mc1_0.topp,
+        mc1_0.updated_at,
+        mc1_0.created_by 
+    from
+        model_configs mc1_0 
+    where
+        mc1_0.id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    insert 
+    into
+        audit_logs
+        (action, created_at, details, ip, user_id, id) 
+    values
+        (?, ?, ?, ?, ?, ?)
+Hibernate: 
+    update
+        model_configs 
+    set
+        api_key=?,
+        created_at=?,
+        enabled=?,
+        endpoint=?,
+        max_tokens=?,
+        model_name=?,
+        protocol=?,
+        provider=?,
+        tag=?,
+        temperature=?,
+        topp=?,
+        updated_at=?,
+        created_by=? 
+    where
+        id=?
+Hibernate: 
+    select
+        mc1_0.id,
+        mc1_0.api_key,
+        mc1_0.created_at,
+        mc1_0.enabled,
+        mc1_0.endpoint,
+        mc1_0.max_tokens,
+        mc1_0.model_name,
+        mc1_0.protocol,
+        mc1_0.provider,
+        mc1_0.tag,
+        mc1_0.temperature,
+        mc1_0.topp,
+        mc1_0.updated_at,
+        mc1_0.created_by 
+    from
+        model_configs mc1_0
+Hibernate: 
+    select
+        wc1_0.id,
+        wc1_0.api_key,
+        wc1_0.config_json,
+        wc1_0.created_at,
+        wc1_0.description,
+        wc1_0.enabled,
+        wc1_0.endpoint,
+        wc1_0.name,
+        wc1_0.updated_at,
+        wc1_0.workflow_id 
+    from
+        workflow_configs wc1_0
+Hibernate: 
+    select
+        al1_0.id,
+        al1_0.action,
+        al1_0.created_at,
+        al1_0.details,
+        al1_0.ip,
+        al1_0.user_id 
+    from
+        audit_logs al1_0 
+    limit
+        ?, ?
+Hibernate: 
+    select
+        count(al1_0.id) 
+    from
+        audit_logs al1_0
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.contact,
+        f1_0.content,
+        f1_0.created_at,
+        f1_0.handled_at,
+        f1_0.handler_id,
+        f1_0.resolution,
+        f1_0.status,
+        f1_0.type,
+        f1_0.user_id 
+    from
+        feedbacks f1_0 
+    limit
+        ?, ?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        al1_0.id,
+        al1_0.action,
+        al1_0.created_at,
+        al1_0.details,
+        al1_0.ip,
+        al1_0.user_id 
+    from
+        audit_logs al1_0 
+    limit
+        ?, ?
+Hibernate: 
+    select
+        count(al1_0.id) 
+    from
+        audit_logs al1_0
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.username,
+        u1_0.phone,
+        u1_0.email,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.created_at 
+    from
+        users u1_0
+Hibernate: 
+    select
+        count(*) 
+    from
+        users u1_0
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.username,
+        u1_0.phone,
+        u1_0.email,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.created_at 
+    from
+        users u1_0
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.username,
+        u1_0.phone,
+        u1_0.email,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.created_at 
+    from
+        users u1_0
+Hibernate: 
+    select
+        count(*) 
+    from
+        users u1_0
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        mc1_0.id,
+        mc1_0.api_key,
+        mc1_0.created_at,
+        mc1_0.enabled,
+        mc1_0.endpoint,
+        mc1_0.max_tokens,
+        mc1_0.model_name,
+        mc1_0.protocol,
+        mc1_0.provider,
+        mc1_0.tag,
+        mc1_0.temperature,
+        mc1_0.topp,
+        mc1_0.updated_at,
+        mc1_0.created_by 
+    from
+        model_configs mc1_0
+Hibernate: 
+    select
+        wc1_0.id,
+        wc1_0.api_key,
+        wc1_0.config_json,
+        wc1_0.created_at,
+        wc1_0.description,
+        wc1_0.enabled,
+        wc1_0.endpoint,
+        wc1_0.name,
+        wc1_0.updated_at,
+        wc1_0.workflow_id 
+    from
+        workflow_configs wc1_0
+2025-12-04T16:35:56.647+08:00 ERROR 2845628 --- [io-11025-exec-3] o.a.c.c.C.[.[.[.[dispatcherServlet]      : Servlet.service() for servlet [dispatcherServlet] in context with path [/api] threw exception [Request processing failed: java.lang.IllegalArgumentException: Name for argument of type [int] not specified, and parameter name information not available via reflection. Ensure that the compiler uses the '-parameters' flag.] with root cause
+
+java.lang.IllegalArgumentException: Name for argument of type [int] not specified, and parameter name information not available via reflection. Ensure that the compiler uses the '-parameters' flag.
+	at org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.updateNamedValueInfo(AbstractNamedValueMethodArgumentResolver.java:185) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.getNamedValueInfo(AbstractNamedValueMethodArgumentResolver.java:160) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.resolveArgument(AbstractNamedValueMethodArgumentResolver.java:106) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.method.support.HandlerMethodArgumentResolverComposite.resolveArgument(HandlerMethodArgumentResolverComposite.java:122) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.method.support.InvocableHandlerMethod.getMethodArgumentValues(InvocableHandlerMethod.java:226) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:179) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.1.2.jar:6.1.2]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:917) ~[spring-webmvc-6.1.2.jar:6.1.2]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:829) ~[spring-webmvc-6.1.2.jar:6.1.2]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.1.2.jar:6.1.2]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089) ~[spring-webmvc-6.1.2.jar:6.1.2]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979) ~[spring-webmvc-6.1.2.jar:6.1.2]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.1.2.jar:6.1.2]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903) ~[spring-webmvc-6.1.2.jar:6.1.2]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564) ~[tomcat-embed-core-10.1.17.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.1.2.jar:6.1.2]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.17.jar:6.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:205) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:110) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$FilterObservation$SimpleFilterObservation.lambda$wrap$1(ObservationFilterChainDecorator.java:479) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$AroundFilterObservation$SimpleAroundFilterObservation.lambda$wrap$1(ObservationFilterChainDecorator.java:340) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator.lambda$wrapSecured$0(ObservationFilterChainDecorator.java:82) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:128) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:100) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:131) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at com.example.webui.adminapi.config.SecurityConfig$JwtFilter.doFilterInternal(SecurityConfig.java:107) ~[classes/:na]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$AroundFilterObservation$SimpleAroundFilterObservation.lambda$wrap$0(ObservationFilterChainDecorator.java:323) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:224) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$3(HandlerMappingIntrospector.java:195) ~[spring-webmvc-6.1.2.jar:6.1.2]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:225) ~[spring-security-config-6.2.1.jar:6.2.1]
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:352) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:268) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.springframework.web.filter.ServerHttpObservationFilter.doFilterInternal(ServerHttpObservationFilter.java:109) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:340) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1744) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at java.base/java.lang.Thread.run(Thread.java:840) ~[na:na]
+
+Hibernate: 
+    select
+        al1_0.id,
+        al1_0.action,
+        al1_0.created_at,
+        al1_0.details,
+        al1_0.ip,
+        al1_0.user_id 
+    from
+        audit_logs al1_0 
+    limit
+        ?, ?
+Hibernate: 
+    select
+        count(al1_0.id) 
+    from
+        audit_logs al1_0
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.contact,
+        f1_0.content,
+        f1_0.created_at,
+        f1_0.handled_at,
+        f1_0.handler_id,
+        f1_0.resolution,
+        f1_0.status,
+        f1_0.type,
+        f1_0.user_id 
+    from
+        feedbacks f1_0 
+    limit
+        ?, ?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.username,
+        u1_0.phone,
+        u1_0.email,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.created_at 
+    from
+        users u1_0
+Hibernate: 
+    select
+        count(*) 
+    from
+        users u1_0
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        mc1_0.id,
+        mc1_0.api_key,
+        mc1_0.created_at,
+        mc1_0.enabled,
+        mc1_0.endpoint,
+        mc1_0.max_tokens,
+        mc1_0.model_name,
+        mc1_0.protocol,
+        mc1_0.provider,
+        mc1_0.tag,
+        mc1_0.temperature,
+        mc1_0.topp,
+        mc1_0.updated_at,
+        mc1_0.created_by 
+    from
+        model_configs mc1_0
+Hibernate: 
+    select
+        wc1_0.id,
+        wc1_0.api_key,
+        wc1_0.config_json,
+        wc1_0.created_at,
+        wc1_0.description,
+        wc1_0.enabled,
+        wc1_0.endpoint,
+        wc1_0.name,
+        wc1_0.updated_at,
+        wc1_0.workflow_id 
+    from
+        workflow_configs wc1_0
+Hibernate: 
+    select
+        al1_0.id,
+        al1_0.action,
+        al1_0.created_at,
+        al1_0.details,
+        al1_0.ip,
+        al1_0.user_id 
+    from
+        audit_logs al1_0 
+    limit
+        ?, ?
+Hibernate: 
+    select
+        count(al1_0.id) 
+    from
+        audit_logs al1_0
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.contact,
+        f1_0.content,
+        f1_0.created_at,
+        f1_0.handled_at,
+        f1_0.handler_id,
+        f1_0.resolution,
+        f1_0.status,
+        f1_0.type,
+        f1_0.user_id 
+    from
+        feedbacks f1_0 
+    limit
+        ?, ?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        al1_0.id,
+        al1_0.action,
+        al1_0.created_at,
+        al1_0.details,
+        al1_0.ip,
+        al1_0.user_id 
+    from
+        audit_logs al1_0 
+    limit
+        ?, ?
+Hibernate: 
+    select
+        count(al1_0.id) 
+    from
+        audit_logs al1_0
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+2025-12-04T16:40:04.081+08:00 ERROR 2845628 --- [io-11025-exec-3] o.a.c.c.C.[.[.[.[dispatcherServlet]      : Servlet.service() for servlet [dispatcherServlet] in context with path [/api] threw exception [Request processing failed: java.lang.IllegalArgumentException: Name for argument of type [int] not specified, and parameter name information not available via reflection. Ensure that the compiler uses the '-parameters' flag.] with root cause
+
+java.lang.IllegalArgumentException: Name for argument of type [int] not specified, and parameter name information not available via reflection. Ensure that the compiler uses the '-parameters' flag.
+	at org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.updateNamedValueInfo(AbstractNamedValueMethodArgumentResolver.java:185) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.getNamedValueInfo(AbstractNamedValueMethodArgumentResolver.java:160) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.resolveArgument(AbstractNamedValueMethodArgumentResolver.java:106) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.method.support.HandlerMethodArgumentResolverComposite.resolveArgument(HandlerMethodArgumentResolverComposite.java:122) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.method.support.InvocableHandlerMethod.getMethodArgumentValues(InvocableHandlerMethod.java:226) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:179) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.1.2.jar:6.1.2]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:917) ~[spring-webmvc-6.1.2.jar:6.1.2]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:829) ~[spring-webmvc-6.1.2.jar:6.1.2]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.1.2.jar:6.1.2]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089) ~[spring-webmvc-6.1.2.jar:6.1.2]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979) ~[spring-webmvc-6.1.2.jar:6.1.2]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.1.2.jar:6.1.2]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903) ~[spring-webmvc-6.1.2.jar:6.1.2]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564) ~[tomcat-embed-core-10.1.17.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.1.2.jar:6.1.2]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.17.jar:6.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:205) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:110) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$FilterObservation$SimpleFilterObservation.lambda$wrap$1(ObservationFilterChainDecorator.java:479) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$AroundFilterObservation$SimpleAroundFilterObservation.lambda$wrap$1(ObservationFilterChainDecorator.java:340) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator.lambda$wrapSecured$0(ObservationFilterChainDecorator.java:82) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:128) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:100) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:131) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at com.example.webui.adminapi.config.SecurityConfig$JwtFilter.doFilterInternal(SecurityConfig.java:107) ~[classes/:na]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$AroundFilterObservation$SimpleAroundFilterObservation.lambda$wrap$0(ObservationFilterChainDecorator.java:323) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:224) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$3(HandlerMappingIntrospector.java:195) ~[spring-webmvc-6.1.2.jar:6.1.2]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:225) ~[spring-security-config-6.2.1.jar:6.2.1]
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:352) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:268) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.springframework.web.filter.ServerHttpObservationFilter.doFilterInternal(ServerHttpObservationFilter.java:109) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:340) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1744) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at java.base/java.lang.Thread.run(Thread.java:840) ~[na:na]
+
+2025-12-04T16:40:05.818+08:00 ERROR 2845628 --- [io-11025-exec-4] o.a.c.c.C.[.[.[.[dispatcherServlet]      : Servlet.service() for servlet [dispatcherServlet] in context with path [/api] threw exception [Request processing failed: java.lang.IllegalArgumentException: Name for argument of type [int] not specified, and parameter name information not available via reflection. Ensure that the compiler uses the '-parameters' flag.] with root cause
+
+java.lang.IllegalArgumentException: Name for argument of type [int] not specified, and parameter name information not available via reflection. Ensure that the compiler uses the '-parameters' flag.
+	at org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.updateNamedValueInfo(AbstractNamedValueMethodArgumentResolver.java:185) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.getNamedValueInfo(AbstractNamedValueMethodArgumentResolver.java:160) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.resolveArgument(AbstractNamedValueMethodArgumentResolver.java:106) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.method.support.HandlerMethodArgumentResolverComposite.resolveArgument(HandlerMethodArgumentResolverComposite.java:122) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.method.support.InvocableHandlerMethod.getMethodArgumentValues(InvocableHandlerMethod.java:226) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:179) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.1.2.jar:6.1.2]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:917) ~[spring-webmvc-6.1.2.jar:6.1.2]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:829) ~[spring-webmvc-6.1.2.jar:6.1.2]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.1.2.jar:6.1.2]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089) ~[spring-webmvc-6.1.2.jar:6.1.2]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979) ~[spring-webmvc-6.1.2.jar:6.1.2]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.1.2.jar:6.1.2]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903) ~[spring-webmvc-6.1.2.jar:6.1.2]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564) ~[tomcat-embed-core-10.1.17.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.1.2.jar:6.1.2]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.17.jar:6.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:205) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:110) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$FilterObservation$SimpleFilterObservation.lambda$wrap$1(ObservationFilterChainDecorator.java:479) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$AroundFilterObservation$SimpleAroundFilterObservation.lambda$wrap$1(ObservationFilterChainDecorator.java:340) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator.lambda$wrapSecured$0(ObservationFilterChainDecorator.java:82) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:128) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:100) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:131) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at com.example.webui.adminapi.config.SecurityConfig$JwtFilter.doFilterInternal(SecurityConfig.java:107) ~[classes/:na]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$AroundFilterObservation$SimpleAroundFilterObservation.lambda$wrap$0(ObservationFilterChainDecorator.java:323) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:224) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$3(HandlerMappingIntrospector.java:195) ~[spring-webmvc-6.1.2.jar:6.1.2]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:225) ~[spring-security-config-6.2.1.jar:6.2.1]
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:352) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:268) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.springframework.web.filter.ServerHttpObservationFilter.doFilterInternal(ServerHttpObservationFilter.java:109) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:340) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1744) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at java.base/java.lang.Thread.run(Thread.java:840) ~[na:na]
+
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.username,
+        u1_0.phone,
+        u1_0.email,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.created_at 
+    from
+        users u1_0
+Hibernate: 
+    select
+        count(*) 
+    from
+        users u1_0
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        mc1_0.id,
+        mc1_0.api_key,
+        mc1_0.created_at,
+        mc1_0.enabled,
+        mc1_0.endpoint,
+        mc1_0.max_tokens,
+        mc1_0.model_name,
+        mc1_0.protocol,
+        mc1_0.provider,
+        mc1_0.tag,
+        mc1_0.temperature,
+        mc1_0.topp,
+        mc1_0.updated_at,
+        mc1_0.created_by 
+    from
+        model_configs mc1_0
+Hibernate: 
+    select
+        wc1_0.id,
+        wc1_0.api_key,
+        wc1_0.config_json,
+        wc1_0.created_at,
+        wc1_0.description,
+        wc1_0.enabled,
+        wc1_0.endpoint,
+        wc1_0.name,
+        wc1_0.updated_at,
+        wc1_0.workflow_id 
+    from
+        workflow_configs wc1_0
+Hibernate: 
+    select
+        al1_0.id,
+        al1_0.action,
+        al1_0.created_at,
+        al1_0.details,
+        al1_0.ip,
+        al1_0.user_id 
+    from
+        audit_logs al1_0 
+    limit
+        ?, ?
+Hibernate: 
+    select
+        count(al1_0.id) 
+    from
+        audit_logs al1_0
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.contact,
+        f1_0.content,
+        f1_0.created_at,
+        f1_0.handled_at,
+        f1_0.handler_id,
+        f1_0.resolution,
+        f1_0.status,
+        f1_0.type,
+        f1_0.user_id 
+    from
+        feedbacks f1_0 
+    limit
+        ?, ?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.contact,
+        f1_0.content,
+        f1_0.created_at,
+        f1_0.handled_at,
+        f1_0.handler_id,
+        f1_0.resolution,
+        f1_0.status,
+        f1_0.type,
+        f1_0.user_id 
+    from
+        feedbacks f1_0 
+    limit
+        ?, ?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+2025-12-04T16:50:03.724+08:00  WARN 2845628 --- [io-11025-exec-1] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'GET' is not supported]
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.contact,
+        f1_0.content,
+        f1_0.created_at,
+        f1_0.handled_at,
+        f1_0.handler_id,
+        f1_0.resolution,
+        f1_0.status,
+        f1_0.type,
+        f1_0.user_id 
+    from
+        feedbacks f1_0 
+    limit
+        ?, ?
+2025-12-04T16:50:11.787+08:00  WARN 2845628 --- [io-11025-exec-4] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'GET' is not supported]
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+2025-12-04T16:50:11.813+08:00  WARN 2845628 --- [io-11025-exec-6] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'GET' is not supported]
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.contact,
+        f1_0.content,
+        f1_0.created_at,
+        f1_0.handled_at,
+        f1_0.handler_id,
+        f1_0.resolution,
+        f1_0.status,
+        f1_0.type,
+        f1_0.user_id 
+    from
+        feedbacks f1_0 
+    limit
+        ?, ?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+2025-12-04T16:50:30.960+08:00  WARN 2845628 --- [io-11025-exec-7] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'GET' is not supported]
+2025-12-04T16:50:30.987+08:00  WARN 2845628 --- [io-11025-exec-8] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'GET' is not supported]
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.contact,
+        f1_0.content,
+        f1_0.created_at,
+        f1_0.handled_at,
+        f1_0.handler_id,
+        f1_0.resolution,
+        f1_0.status,
+        f1_0.type,
+        f1_0.user_id 
+    from
+        feedbacks f1_0 
+    limit
+        ?, ?
+2025-12-04T16:50:34.381+08:00  WARN 2845628 --- [io-11025-exec-9] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'GET' is not supported]
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+2025-12-04T16:50:34.406+08:00  WARN 2845628 --- [io-11025-exec-2] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'GET' is not supported]
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.contact,
+        f1_0.content,
+        f1_0.created_at,
+        f1_0.handled_at,
+        f1_0.handler_id,
+        f1_0.resolution,
+        f1_0.status,
+        f1_0.type,
+        f1_0.user_id 
+    from
+        feedbacks f1_0 
+    limit
+        ?, ?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+2025-12-04T16:50:38.486+08:00  WARN 2845628 --- [io-11025-exec-4] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'GET' is not supported]
+2025-12-04T16:50:38.517+08:00  WARN 2845628 --- [io-11025-exec-3] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'GET' is not supported]
+2025-12-04T16:58:56.100+08:00  WARN 2845628 --- [io-11025-exec-6] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'GET' is not supported]
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.contact,
+        f1_0.content,
+        f1_0.created_at,
+        f1_0.handled_at,
+        f1_0.handler_id,
+        f1_0.resolution,
+        f1_0.status,
+        f1_0.type,
+        f1_0.user_id 
+    from
+        feedbacks f1_0 
+    limit
+        ?, ?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+2025-12-04T16:58:56.151+08:00  WARN 2845628 --- [io-11025-exec-7] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'GET' is not supported]
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.username,
+        u1_0.phone,
+        u1_0.email,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.created_at 
+    from
+        users u1_0
+Hibernate: 
+    select
+        count(*) 
+    from
+        users u1_0
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        mc1_0.id,
+        mc1_0.api_key,
+        mc1_0.created_at,
+        mc1_0.enabled,
+        mc1_0.endpoint,
+        mc1_0.max_tokens,
+        mc1_0.model_name,
+        mc1_0.protocol,
+        mc1_0.provider,
+        mc1_0.tag,
+        mc1_0.temperature,
+        mc1_0.topp,
+        mc1_0.updated_at,
+        mc1_0.created_by 
+    from
+        model_configs mc1_0
+Hibernate: 
+    select
+        wc1_0.id,
+        wc1_0.api_key,
+        wc1_0.config_json,
+        wc1_0.created_at,
+        wc1_0.description,
+        wc1_0.enabled,
+        wc1_0.endpoint,
+        wc1_0.name,
+        wc1_0.updated_at,
+        wc1_0.workflow_id 
+    from
+        workflow_configs wc1_0
+2025-12-04T16:59:14.283+08:00 ERROR 2845628 --- [io-11025-exec-1] o.a.c.c.C.[.[.[.[dispatcherServlet]      : Servlet.service() for servlet [dispatcherServlet] in context with path [/api] threw exception [Request processing failed: java.lang.IllegalArgumentException: Name for argument of type [int] not specified, and parameter name information not available via reflection. Ensure that the compiler uses the '-parameters' flag.] with root cause
+
+java.lang.IllegalArgumentException: Name for argument of type [int] not specified, and parameter name information not available via reflection. Ensure that the compiler uses the '-parameters' flag.
+	at org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.updateNamedValueInfo(AbstractNamedValueMethodArgumentResolver.java:185) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.getNamedValueInfo(AbstractNamedValueMethodArgumentResolver.java:160) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.resolveArgument(AbstractNamedValueMethodArgumentResolver.java:106) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.method.support.HandlerMethodArgumentResolverComposite.resolveArgument(HandlerMethodArgumentResolverComposite.java:122) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.method.support.InvocableHandlerMethod.getMethodArgumentValues(InvocableHandlerMethod.java:226) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:179) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.1.2.jar:6.1.2]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:917) ~[spring-webmvc-6.1.2.jar:6.1.2]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:829) ~[spring-webmvc-6.1.2.jar:6.1.2]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.1.2.jar:6.1.2]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089) ~[spring-webmvc-6.1.2.jar:6.1.2]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979) ~[spring-webmvc-6.1.2.jar:6.1.2]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.1.2.jar:6.1.2]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903) ~[spring-webmvc-6.1.2.jar:6.1.2]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564) ~[tomcat-embed-core-10.1.17.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.1.2.jar:6.1.2]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.17.jar:6.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:205) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:110) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$FilterObservation$SimpleFilterObservation.lambda$wrap$1(ObservationFilterChainDecorator.java:479) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$AroundFilterObservation$SimpleAroundFilterObservation.lambda$wrap$1(ObservationFilterChainDecorator.java:340) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator.lambda$wrapSecured$0(ObservationFilterChainDecorator.java:82) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:128) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:100) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:131) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at com.example.webui.adminapi.config.SecurityConfig$JwtFilter.doFilterInternal(SecurityConfig.java:107) ~[classes/:na]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$AroundFilterObservation$SimpleAroundFilterObservation.lambda$wrap$0(ObservationFilterChainDecorator.java:323) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:224) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191) ~[spring-security-web-6.2.1.jar:6.2.1]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$3(HandlerMappingIntrospector.java:195) ~[spring-webmvc-6.1.2.jar:6.1.2]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:225) ~[spring-security-config-6.2.1.jar:6.2.1]
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:352) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:268) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.springframework.web.filter.ServerHttpObservationFilter.doFilterInternal(ServerHttpObservationFilter.java:109) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.2.jar:6.1.2]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:340) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1744) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-10.1.17.jar:10.1.17]
+	at java.base/java.lang.Thread.run(Thread.java:840) ~[na:na]
+
+Hibernate: 
+    select
+        al1_0.id,
+        al1_0.action,
+        al1_0.created_at,
+        al1_0.details,
+        al1_0.ip,
+        al1_0.user_id 
+    from
+        audit_logs al1_0 
+    limit
+        ?, ?
+Hibernate: 
+    select
+        count(al1_0.id) 
+    from
+        audit_logs al1_0
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.contact,
+        f1_0.content,
+        f1_0.created_at,
+        f1_0.handled_at,
+        f1_0.handler_id,
+        f1_0.resolution,
+        f1_0.status,
+        f1_0.type,
+        f1_0.user_id 
+    from
+        feedbacks f1_0 
+    limit
+        ?, ?
+2025-12-04T16:59:17.182+08:00  WARN 2845628 --- [io-11025-exec-6] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'GET' is not supported]
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+2025-12-04T16:59:17.203+08:00  WARN 2845628 --- [io-11025-exec-5] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'GET' is not supported]
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.username,
+        u1_0.phone,
+        u1_0.email,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.created_at 
+    from
+        users u1_0
+Hibernate: 
+    select
+        count(*) 
+    from
+        users u1_0
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.contact,
+        f1_0.content,
+        f1_0.created_at,
+        f1_0.handled_at,
+        f1_0.handler_id,
+        f1_0.resolution,
+        f1_0.status,
+        f1_0.type,
+        f1_0.user_id 
+    from
+        feedbacks f1_0 
+    limit
+        ?, ?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+2025-12-04T16:59:27.316+08:00  WARN 2845628 --- [o-11025-exec-10] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'GET' is not supported]
+2025-12-04T16:59:27.334+08:00  WARN 2845628 --- [io-11025-exec-2] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'GET' is not supported]
+2025-12-04T17:05:51.606+08:00  WARN 2845628 --- [io-11025-exec-4] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'GET' is not supported]
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.contact,
+        f1_0.content,
+        f1_0.created_at,
+        f1_0.handled_at,
+        f1_0.handler_id,
+        f1_0.resolution,
+        f1_0.status,
+        f1_0.type,
+        f1_0.user_id 
+    from
+        feedbacks f1_0 
+    limit
+        ?, ?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+2025-12-04T17:05:51.673+08:00  WARN 2845628 --- [io-11025-exec-6] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'GET' is not supported]
+Hibernate: 
+    select
+        mc1_0.id,
+        mc1_0.api_key,
+        mc1_0.created_at,
+        mc1_0.enabled,
+        mc1_0.endpoint,
+        mc1_0.max_tokens,
+        mc1_0.model_name,
+        mc1_0.protocol,
+        mc1_0.provider,
+        mc1_0.tag,
+        mc1_0.temperature,
+        mc1_0.topp,
+        mc1_0.updated_at,
+        mc1_0.created_by 
+    from
+        model_configs mc1_0
+Hibernate: 
+    select
+        wc1_0.id,
+        wc1_0.api_key,
+        wc1_0.config_json,
+        wc1_0.created_at,
+        wc1_0.description,
+        wc1_0.enabled,
+        wc1_0.endpoint,
+        wc1_0.name,
+        wc1_0.updated_at,
+        wc1_0.workflow_id 
+    from
+        workflow_configs wc1_0
+Hibernate: 
+    select
+        mc1_0.id,
+        mc1_0.api_key,
+        mc1_0.created_at,
+        mc1_0.enabled,
+        mc1_0.endpoint,
+        mc1_0.max_tokens,
+        mc1_0.model_name,
+        mc1_0.protocol,
+        mc1_0.provider,
+        mc1_0.tag,
+        mc1_0.temperature,
+        mc1_0.topp,
+        mc1_0.updated_at,
+        mc1_0.created_by 
+    from
+        model_configs mc1_0
+Hibernate: 
+    select
+        wc1_0.id,
+        wc1_0.api_key,
+        wc1_0.config_json,
+        wc1_0.created_at,
+        wc1_0.description,
+        wc1_0.enabled,
+        wc1_0.endpoint,
+        wc1_0.name,
+        wc1_0.updated_at,
+        wc1_0.workflow_id 
+    from
+        workflow_configs wc1_0
+Hibernate: 
+    select
+        mc1_0.id,
+        mc1_0.api_key,
+        mc1_0.created_at,
+        mc1_0.enabled,
+        mc1_0.endpoint,
+        mc1_0.max_tokens,
+        mc1_0.model_name,
+        mc1_0.protocol,
+        mc1_0.provider,
+        mc1_0.tag,
+        mc1_0.temperature,
+        mc1_0.topp,
+        mc1_0.updated_at,
+        mc1_0.created_by 
+    from
+        model_configs mc1_0
+Hibernate: 
+    select
+        wc1_0.id,
+        wc1_0.api_key,
+        wc1_0.config_json,
+        wc1_0.created_at,
+        wc1_0.description,
+        wc1_0.enabled,
+        wc1_0.endpoint,
+        wc1_0.name,
+        wc1_0.updated_at,
+        wc1_0.workflow_id 
+    from
+        workflow_configs wc1_0
+Hibernate: 
+    select
+        mc1_0.id,
+        mc1_0.api_key,
+        mc1_0.created_at,
+        mc1_0.enabled,
+        mc1_0.endpoint,
+        mc1_0.max_tokens,
+        mc1_0.model_name,
+        mc1_0.protocol,
+        mc1_0.provider,
+        mc1_0.tag,
+        mc1_0.temperature,
+        mc1_0.topp,
+        mc1_0.updated_at,
+        mc1_0.created_by 
+    from
+        model_configs mc1_0
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.username,
+        u1_0.phone,
+        u1_0.email,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.created_at 
+    from
+        users u1_0
+Hibernate: 
+    select
+        count(*) 
+    from
+        users u1_0
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.username,
+        u1_0.phone,
+        u1_0.email,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.created_at 
+    from
+        users u1_0
+Hibernate: 
+    select
+        count(*) 
+    from
+        users u1_0
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        al1_0.id,
+        al1_0.action,
+        al1_0.created_at,
+        al1_0.details,
+        al1_0.ip,
+        al1_0.user_id 
+    from
+        audit_logs al1_0 
+    limit
+        ?, ?
+Hibernate: 
+    select
+        count(al1_0.id) 
+    from
+        audit_logs al1_0
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+2025-12-04T17:59:33.392+08:00  WARN 2845628 --- [io-11025-exec-8] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'GET' is not supported]
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.contact,
+        f1_0.content,
+        f1_0.created_at,
+        f1_0.handled_at,
+        f1_0.handler_id,
+        f1_0.resolution,
+        f1_0.status,
+        f1_0.type,
+        f1_0.user_id 
+    from
+        feedbacks f1_0 
+    limit
+        ?, ?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+2025-12-04T17:59:33.428+08:00  WARN 2845628 --- [io-11025-exec-9] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'GET' is not supported]
+Hibernate: 
+    select
+        mc1_0.id,
+        mc1_0.api_key,
+        mc1_0.created_at,
+        mc1_0.enabled,
+        mc1_0.endpoint,
+        mc1_0.max_tokens,
+        mc1_0.model_name,
+        mc1_0.protocol,
+        mc1_0.provider,
+        mc1_0.tag,
+        mc1_0.temperature,
+        mc1_0.topp,
+        mc1_0.updated_at,
+        mc1_0.created_by 
+    from
+        model_configs mc1_0
+Hibernate: 
+    select
+        wc1_0.id,
+        wc1_0.api_key,
+        wc1_0.config_json,
+        wc1_0.created_at,
+        wc1_0.description,
+        wc1_0.enabled,
+        wc1_0.endpoint,
+        wc1_0.name,
+        wc1_0.updated_at,
+        wc1_0.workflow_id 
+    from
+        workflow_configs wc1_0
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.username,
+        u1_0.phone,
+        u1_0.email,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.created_at 
+    from
+        users u1_0
+Hibernate: 
+    select
+        count(*) 
+    from
+        users u1_0
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        mc1_0.id,
+        mc1_0.api_key,
+        mc1_0.created_at,
+        mc1_0.enabled,
+        mc1_0.endpoint,
+        mc1_0.max_tokens,
+        mc1_0.model_name,
+        mc1_0.protocol,
+        mc1_0.provider,
+        mc1_0.tag,
+        mc1_0.temperature,
+        mc1_0.topp,
+        mc1_0.updated_at,
+        mc1_0.created_by 
+    from
+        model_configs mc1_0
+Hibernate: 
+    select
+        wc1_0.id,
+        wc1_0.api_key,
+        wc1_0.config_json,
+        wc1_0.created_at,
+        wc1_0.description,
+        wc1_0.enabled,
+        wc1_0.endpoint,
+        wc1_0.name,
+        wc1_0.updated_at,
+        wc1_0.workflow_id 
+    from
+        workflow_configs wc1_0
+Hibernate: 
+    select
+        al1_0.id,
+        al1_0.action,
+        al1_0.created_at,
+        al1_0.details,
+        al1_0.ip,
+        al1_0.user_id 
+    from
+        audit_logs al1_0 
+    limit
+        ?, ?
+Hibernate: 
+    select
+        count(al1_0.id) 
+    from
+        audit_logs al1_0
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+2025-12-04T18:07:36.776+08:00  WARN 2845628 --- [io-11025-exec-7] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'GET' is not supported]
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.contact,
+        f1_0.content,
+        f1_0.created_at,
+        f1_0.handled_at,
+        f1_0.handler_id,
+        f1_0.resolution,
+        f1_0.status,
+        f1_0.type,
+        f1_0.user_id 
+    from
+        feedbacks f1_0 
+    limit
+        ?, ?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+2025-12-04T18:07:36.804+08:00  WARN 2845628 --- [io-11025-exec-9] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'GET' is not supported]
+Hibernate: 
+    select
+        al1_0.id,
+        al1_0.action,
+        al1_0.created_at,
+        al1_0.details,
+        al1_0.ip,
+        al1_0.user_id 
+    from
+        audit_logs al1_0 
+    limit
+        ?, ?
+Hibernate: 
+    select
+        count(al1_0.id) 
+    from
+        audit_logs al1_0
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.contact,
+        f1_0.content,
+        f1_0.created_at,
+        f1_0.handled_at,
+        f1_0.handler_id,
+        f1_0.resolution,
+        f1_0.status,
+        f1_0.type,
+        f1_0.user_id 
+    from
+        feedbacks f1_0 
+    limit
+        ?, ?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+2025-12-04T18:07:38.435+08:00  WARN 2845628 --- [io-11025-exec-4] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'GET' is not supported]
+2025-12-04T18:07:38.470+08:00  WARN 2845628 --- [io-11025-exec-1] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'GET' is not supported]

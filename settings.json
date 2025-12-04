@@ -1,0 +1,6 @@
+{
+  "env": {
+    "ANTHROPIC_AUTH_TOKEN": "sk-HTqwivYEY3gNSL1acLLpJZNX1bMXrSh1nSdTphhpaImOjlvu",
+    "ANTHROPIC_BASE_URL": "https://runanytime.hxi.me/v1/messages"
+  }
+}

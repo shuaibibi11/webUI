@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>前台对话 - 用户登录与聊天</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root { --primary:#1E40AF; --border:#e5e7eb; --bg:#f3f4f6; --text:#111827; }
+    * { box-sizing: border-box; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto; margin:0; background:#fff; color:var(--text); }
+    header { padding:16px 24px; border-bottom:1px solid var(--border); }
+    header h1 { margin:0; font-size:20px; color:var(--primary); }
+    main { max-width:1024px; margin:0 auto; padding:24px; }
+    .card { background:#fff; border:1px solid var(--border); border-radius:8px; padding:20px; }
+    label { display:block; margin-top:12px; font-size:14px; }
+    input { width:100%; border:1px solid var(--border); border-radius:6px; padding:10px; }
+    button { border:1px solid var(--primary); background:var(--primary); color:#fff; padding:10px 14px; border-radius:6px; cursor:pointer; }
+    button.secondary { background:#fff; color:var(--primary); }
+    .row { display:flex; gap:16px; }
+    .col { flex:1; }
+    .messages { height:360px; overflow:auto; border:1px solid var(--border); border-radius:8px; padding:12px; background:#fafafa; }
+    .msg { padding:8px; margin-bottom:8px; border-radius:6px; border:1px solid var(--border); }
+    .msg.user { border-color:#d1fae5; background:#ecfdf5; }
+    .msg.assistant { border-color:#e5e7eb; background:#f9fafb; }
+    .error { color:#b91c1c; margin-top:10px; }
+    .hint { color:#6b7280; font-size:12px; }
+  </style>
+  <script src="https://unpkg.com/vue@3.4.21/dist/vue.global.prod.js"></script>
+  <script src="https://unpkg.com/vue-router@4.3.2/dist/vue-router.global.prod.js"></script>
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+</head>
+<body>
+  <header><h1>前台对话</h1></header>
+  <main id="app">
+    <router-view></router-view>
+  </main>
+
+  <script>
+    const API_BASE = '/api';
+    const WS_PATH = '/socket.io';
+
+    function createApi(state){
+      return {
+        async req(path,opt={}){ const h=Object.assign({'Content-Type':'application/json'},opt.headers||{}); if(state.token) h['Authorization']='Bearer '+state.token; const r=await fetch(API_BASE+path,Object.assign({},opt,{headers:h})); let b={}; try{ b=await r.json(); }catch(e){} if(!r.ok) throw new Error(b.error||('HTTP '+r.status)); return b; },
+        socketConnect(){ try{ const s=io(location.origin,{path:WS_PATH,query:{token:state.token}}); return s; }catch(e){ return null; } }
+      };
+    }
+
+    const Login = { template:`
+      <div class='card'>
+        <h2 style='margin:0 0 10px'>登录</h2>
+        <label>用户名/邮箱/手机号<input v-model='state.username' placeholder='admin' /></label>
+        <label>密码<input v-model='state.password' type='password' placeholder='Abcdef1!' /></label>
+        <div style='margin-top:12px; display:flex; gap:8px;'>
+          <button @click='login'>登录</button><span class='hint'>API: /api/users/login</span>
+        </div>
+        <div style='margin-top:12px; display:flex; gap:12px;'>
+          <a href='/register' @click.prevent="$router.push('/register')">去注册</a>
+          <a href='/reset' @click.prevent="$router.push('/reset')">忘记密码</a>
+        </div>
+        <div class='error' v-if='state.error'>{{ state.error }}</div>
+      </div>`,
+      data(){ return { state: { username:'admin', password:'Abcdef1!', token:null, error:'' } } },
+      methods:{ async login(){ try{ const api=createApi(this.state); const b=await api.req('/users/login',{method:'POST',body:JSON.stringify({username:this.state.username,password:this.state.password})}); this.state.token=b.token; sessionStorage.setItem('access_token',b.token); this.$router.push('/chat'); }catch(e){ this.state.error=e.message; } } },
+      mounted(){ const t=sessionStorage.getItem('access_token'); if(t){ this.state.token=t; this.$router.push('/chat'); } }
+    };
+
+    const Chat = { template:`
+      <div class='row'>
+        <div class='col card'>
+          <h2 style='margin:0 0 10px'>会话</h2>
+          <div style='display:flex; gap:8px; margin-bottom:12px;'>
+            <button @click='loadConversations'>刷新</button>
+            <button class='secondary' @click='createConversation'>新建会话</button>
+            <span class='hint'>API: /api/conversations</span>
+          </div>
+          <div v-for='c in state.conversations' :key='c.id' style='border:1px solid var(--border); border-radius:6px; padding:8px; margin-bottom:8px; cursor:pointer;' @click='selectConversation(c)'>
+            <div style='font-weight:600;'>{{ c.title || '未命名会话' }}</div>
+            <div class='hint'>{{ c.id }}</div>
+          </div>
+        </div>
+        <div class='col card'>
+          <h2 style='margin:0 0 10px'>消息</h2>
+          <div class='messages'>
+            <div v-for='m in state.messages' :key='m.id' class='msg' :class='m.role'>
+              <div style='font-size:12px; color:#6b7280;'>{{ m.role }} · {{ m.createdAt }}</div>
+              <div>{{ m.content }}</div>
+            </div>
+          </div>
+          <div style='display:flex; gap:8px; margin-top:12px;'>
+            <input v-model='state.input' placeholder='输入消息...' />
+            <button @click='send'>发送</button>
+          </div>
+          <div class='error' v-if='state.error'>{{ state.error }}</div>
+        </div>
+      </div>`,
+      data(){ return { state:{ token: sessionStorage.getItem('access_token'), conversations:[], currentConversation:null, messages:[], input:'', error:'' } } },
+      methods:{
+        async loadConversations(){ try{ const api=createApi(this.state); const b=await api.req('/conversations'); this.state.conversations=b.conversations||[]; if(this.state.conversations.length&&!this.state.currentConversation){ this.selectConversation(this.state.conversations[0]); } }catch(e){ this.state.error=e.message; } },
+        async createConversation(){ try{ const api=createApi(this.state); await api.req('/conversations',{method:'POST',body:JSON.stringify({title:'新对话'})}); this.loadConversations(); }catch(e){ this.state.error=e.message; } },
+        async selectConversation(c){ this.state.currentConversation=c; await this.loadMessages(); },
+        async loadMessages(){ if(!this.state.currentConversation) return; try{ const api=createApi(this.state); const b=await api.req('/messages/'+this.state.currentConversation.id); this.state.messages=(b.messages||[]).map(m=>({ id:m.id, role:(m.senderId==='assistant'?'assistant':'user'), content:m.content, createdAt:m.createdAt })); }catch(e){ this.state.error=e.message; } },
+        async send(){ if(!this.state.input||!this.state.currentConversation) return; try{ const api=createApi(this.state); await api.req('/chat',{method:'POST',body:JSON.stringify({conversationId:this.state.currentConversation.id,content:this.state.input})}); this.state.input=''; await this.loadMessages(); }catch(e){ this.state.error=e.message; } }
+      },
+      mounted(){ if(!this.state.token){ this.$router.push('/'); return; } this.loadConversations(); }
+    };
+
+    const Feedback = { template:`<div class='card'><h2>提交反馈</h2><label>类型<select v-model='type'><option value='complaint'>投诉</option><option value='report'>举报</option><option value='suggestion'>建议</option></select></label><label>内容<textarea v-model='content' style='width:100%;height:120px;border:1px solid var(--border);border-radius:6px;padding:10px;'></textarea></label><label>联系方式<input v-model='contact' /></label><div style='margin-top:12px'><button @click='submit'>提交</button></div><div class='error' v-if='error'>{{error}}</div><pre v-if='last'>{{ last }}</pre></div>`, data(){return{type:'complaint',content:'',contact:'',error:'',last:''}}, methods:{ async submit(){ try{ const t=sessionStorage.getItem('access_token'); const r=await fetch(API_BASE+'/feedbacks',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+t},body:JSON.stringify({type:this.type,content:this.content,contact:this.contact})}); const j=await r.json(); if(!r.ok) throw new Error(j.error||('HTTP '+r.status)); this.last=JSON.stringify(j,null,2); this.error=''; }catch(e){ this.error=e.message; } } } };
+
+    const Register = { template:`
+      <div class='card'>
+        <h2 style='margin:0 0 10px'>注册</h2>
+        <label>用户名<input v-model='form.username' /></label>
+        <label>手机号<input v-model='form.phone' /></label>
+        <label>邮箱<input v-model='form.email' type='email' /></label>
+        <label>密码<input v-model='form.password' type='password' /></label>
+        <label>实名<input v-model='form.realName' /></label>
+        <label>身份证号<input v-model='form.idCard' /></label>
+        <div style='margin-top:12px; display:flex; gap:8px;'>
+          <button @click='submit'>提交注册</button>
+          <span class='hint'>注册后需管理员审批</span>
+        </div>
+        <div class='error' v-if='state.error'>{{ state.error }}</div>
+        <div v-if='state.success' class='hint'>{{ state.success }}</div>
+        <div style='margin-top:12px;'>
+          <a href='/' @click.prevent="$router.push('/')">返回登录</a>
+        </div>
+      </div>
+    `, data(){ return { form:{ username:'', phone:'', email:'', password:'', realName:'', idCard:'' }, state:{ error:'', success:'' } } }, methods:{ async submit(){ try{ this.state.error=''; this.state.success=''; const r=await fetch(API_BASE+'/users/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(this.form)}); const j=await r.json(); if(!r.ok) throw new Error(j.error||('HTTP '+r.status)); this.state.success='注册成功，请等待管理员审批后登录'; }catch(e){ this.state.error=e.message; } } } };
+
+    const PasswordReset = { template:`
+      <div class='card'>
+        <h2 style='margin:0 0 10px'>密码重置</h2>
+        <div style='display:flex; gap:16px;'>
+          <div style='flex:1;'>
+            <h3 style='margin:0 0 8px; font-size:16px;'>申请重置</h3>
+            <label>用户名/邮箱/手机号<input v-model='req.identifier' /></label>
+            <div style='margin-top:12px;'>
+              <button @click='requestReset'>获取重置令牌</button>
+            </div>
+            <div class='error' v-if='state.reqError'>{{ state.reqError }}</div>
+            <div class='hint' v-if='state.token'>令牌：{{ state.token }}</div>
+          </div>
+          <div style='flex:1;'>
+            <h3 style='margin:0 0 8px; font-size:16px;'>确认重置</h3>
+            <label>令牌<input v-model='confirm.token' /></label>
+            <label>新密码<input v-model='confirm.newPassword' type='password' /></label>
+            <div style='margin-top:12px;'>
+              <button @click='confirmReset'>提交重置</button>
+            </div>
+            <div class='error' v-if='state.confirmError'>{{ state.confirmError }}</div>
+            <div class='hint' v-if='state.confirmOk'>{{ state.confirmOk }}</div>
+          </div>
+        </div>
+        <div style='margin-top:12px;'>
+          <a href='/' @click.prevent="$router.push('/')">返回登录</a>
+        </div>
+      </div>
+    `, data(){ return { req:{ identifier:'' }, confirm:{ token:'', newPassword:'' }, state:{ token:'', reqError:'', confirmError:'', confirmOk:'' } } }, methods:{ async requestReset(){ try{ this.state.reqError=''; const r=await fetch(API_BASE+'/users/password-reset/request',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({identifier:this.req.identifier})}); const j=await r.json(); if(!r.ok) throw new Error(j.error||('HTTP '+r.status)); this.state.token=j.token; }catch(e){ this.state.reqError=e.message; } }, async confirmReset(){ try{ this.state.confirmError=''; this.state.confirmOk=''; const r=await fetch(API_BASE+'/users/password-reset/confirm',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:this.confirm.token,newPassword:this.confirm.newPassword})}); const j=await r.json(); if(!r.ok) throw new Error(j.error||('HTTP '+r.status)); this.state.confirmOk=j.message||'密码已重置'; }catch(e){ this.state.confirmError=e.message; } } } };
+
+    const Terms = { template:`<div class='card'><h2>服务条款</h2><p>请阅读并遵守服务条款。</p></div>` };
+    const Privacy = { template:`<div class='card'><h2>隐私政策</h2><p>请阅读并遵守隐私政策。</p></div>` };
+
+    const routes = [ { path:'/', component: Login }, { path:'/register', component: Register }, { path:'/reset', component: PasswordReset }, { path:'/chat', component: Chat }, { path:'/feedback', component: Feedback }, { path:'/terms', component: Terms }, { path:'/privacy', component: Privacy } ];
+    const router = VueRouter.createRouter({ history: VueRouter.createWebHistory(), routes });
+    const app = Vue.createApp({});
+    app.use(router).mount('#app');
+  </script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+{
+  "baseUrl": "http://localhost:13080/api",
+  "basePath": "/",
+  "port": 13080,
+  "contentType": "application/json",
+  "accept": "application/json",
+  "connectionTimeout": 30000,
+  "socketTimeout": 30000,
+  "followRedirects": true,
+  "authentication": {
+    "type": "none",
+    "username": "",
+    "password": ""
+  },
+  "headers": {
+    "User-Agent": "REST Assured/5.5.0"
+  },
+  "proxy": {
+    "enabled": false,
+    "host": "",
+    "port": 0,
+    "username": "",
+    "password": ""
+  },
+  "ssl": {
+    "enabled": false,
+    "trustAll": true,
+    "keyStore": "",
+    "keyStorePassword": "",
+    "keyStoreType": "JKS",
+    "trustStore": "",
+    "trustStorePassword": "",
+    "trustStoreType": "JKS"
+  }
+}

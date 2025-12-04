@@ -1,0 +1,3 @@
+/data/webUI-java/user-api/src/test/java/com/example/webui/userapi/BaseTest.java
+/data/webUI-java/user-api/src/test/java/com/example/webui/userapi/controller/UserControllerTest.java
+/data/webUI-java/user-api/src/test/java/com/example/webui/userapi/controller/UserControllerIntegrationTest.java

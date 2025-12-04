@@ -1,0 +1,1002 @@
+{
+  "timestamp": 1764651893.7811599,
+  "config": {
+    "user_web_url": "http://localhost:13080",
+    "admin_web_url": "http://localhost:13086",
+    "user_api_url": "http://localhost:11031",
+    "admin_api_url": "http://localhost:11025",
+    "test_user": {
+      "username": "testuser",
+      "password": "Test123456!"
+    },
+    "admin_user": {
+      "username": "admin",
+      "password": "Abcdef1!"
+    },
+    "timeout": 15,
+    "headless": false
+  },
+  "network_requests": [
+    {
+      "url": "http://localhost:13086/login",
+      "method": "GET",
+      "headers": {
+        "Upgrade-Insecure-Requests": "1",
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/142.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not_A Brand\";v=\"99\", \"Chromium\";v=\"142\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Linux\""
+      },
+      "timestamp": 1764651882.591882,
+      "type": "request"
+    },
+    {
+      "url": "http://localhost:13086/login",
+      "status": 200,
+      "headers": {
+        "Cache-Control": "no-cache",
+        "Connection": "keep-alive",
+        "Content-Length": "460",
+        "Content-Type": "text/html",
+        "Date": "Tue, 02 Dec 2025 05:04:38 GMT",
+        "Etag": "W/\"1cc-/P8ec5j5G4WlEkWrTvyqTNjlQ40\"",
+        "Keep-Alive": "timeout=5",
+        "Vary": "Origin"
+      },
+      "timestamp": 1764651882.591938,
+      "type": "response"
+    },
+    {
+      "url": "http://localhost:13086/@vite/client",
+      "method": "GET",
+      "headers": {
+        "Origin": "http://localhost:13086",
+        "Referer": "http://localhost:13086/login",
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/142.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not_A Brand\";v=\"99\", \"Chromium\";v=\"142\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Linux\""
+      },
+      "timestamp": 1764651882.591979,
+      "type": "request"
+    },
+    {
+      "url": "http://localhost:13086/src/main.ts",
+      "method": "GET",
+      "headers": {
+        "Origin": "http://localhost:13086",
+        "Referer": "http://localhost:13086/login",
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/142.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not_A Brand\";v=\"99\", \"Chromium\";v=\"142\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Linux\""
+      },
+      "timestamp": 1764651882.5919995,
+      "type": "request"
+    },
+    {
+      "url": "http://localhost:13086/src/main.ts",
+      "status": 200,
+      "headers": {
+        "Access-Control-Allow-Origin": "http://localhost:13086",
+        "Cache-Control": "no-cache",
+        "Connection": "keep-alive",
+        "Content-Length": "1175",
+        "Content-Type": "text/javascript",
+        "Date": "Tue, 02 Dec 2025 05:04:39 GMT",
+        "Etag": "W/\"18c-nSaDM3ZvNrq7d5uiLyg7/2a3bJ0\"",
+        "Keep-Alive": "timeout=5",
+        "Vary": "Origin"
+      },
+      "timestamp": 1764651882.5920815,
+      "type": "response"
+    },
+    {
+      "url": "http://localhost:13086/node_modules/.vite/deps/vue.js?v=1f40ca87",
+      "method": "GET",
+      "headers": {
+        "Origin": "http://localhost:13086",
+        "Referer": "http://localhost:13086/src/main.ts",
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/142.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not_A Brand\";v=\"99\", \"Chromium\";v=\"142\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Linux\""
+      },
+      "timestamp": 1764651882.592109,
+      "type": "request"
+    },
+    {
+      "url": "http://localhost:13086/node_modules/.vite/deps/pinia.js?v=1f40ca87",
+      "method": "GET",
+      "headers": {
+        "Origin": "http://localhost:13086",
+        "Referer": "http://localhost:13086/src/main.ts",
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/142.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not_A Brand\";v=\"99\", \"Chromium\";v=\"142\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Linux\""
+      },
+      "timestamp": 1764651882.5921211,
+      "type": "request"
+    },
+    {
+      "url": "http://localhost:13086/node_modules/.vite/deps/naive-ui.js?v=1f40ca87",
+      "method": "GET",
+      "headers": {
+        "Origin": "http://localhost:13086",
+        "Referer": "http://localhost:13086/src/main.ts",
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/142.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not_A Brand\";v=\"99\", \"Chromium\";v=\"142\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Linux\""
+      },
+      "timestamp": 1764651882.5921328,
+      "type": "request"
+    },
+    {
+      "url": "http://localhost:13086/src/App.vue",
+      "method": "GET",
+      "headers": {
+        "Origin": "http://localhost:13086",
+        "Referer": "http://localhost:13086/src/main.ts",
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/142.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not_A Brand\";v=\"99\", \"Chromium\";v=\"142\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Linux\""
+      },
+      "timestamp": 1764651882.592144,
+      "type": "request"
+    },
+    {
+      "url": "http://localhost:13086/src/router/index.ts",
+      "method": "GET",
+      "headers": {
+        "Origin": "http://localhost:13086",
+        "Referer": "http://localhost:13086/src/main.ts",
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/142.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not_A Brand\";v=\"99\", \"Chromium\";v=\"142\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Linux\""
+      },
+      "timestamp": 1764651882.5921555,
+      "type": "request"
+    },
+    {
+      "url": "http://localhost:13086/@vite/client",
+      "status": 200,
+      "headers": {
+        "Access-Control-Allow-Origin": "http://localhost:13086",
+        "Cache-Control": "no-cache",
+        "Connection": "keep-alive",
+        "Content-Length": "182541",
+        "Content-Type": "text/javascript",
+        "Date": "Tue, 02 Dec 2025 05:04:38 GMT",
+        "Etag": "W/\"7e62-RHb0sksn53oKrHjc+JjQ75tb0dY\"",
+        "Keep-Alive": "timeout=5",
+        "Vary": "Origin"
+      },
+      "timestamp": 1764651882.5921762,
+      "type": "response"
+    },
+    {
+      "url": "http://localhost:13086/node_modules/vite/dist/client/env.mjs",
+      "method": "GET",
+      "headers": {
+        "Origin": "http://localhost:13086",
+        "Referer": "http://localhost:13086/@vite/client",
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/142.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not_A Brand\";v=\"99\", \"Chromium\";v=\"142\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Linux\""
+      },
+      "timestamp": 1764651882.592221,
+      "type": "request"
+    },
+    {
+      "url": "http://localhost:13086/node_modules/.vite/deps/vue.js?v=1f40ca87",
+      "status": 200,
+      "headers": {
+        "Access-Control-Allow-Origin": "http://localhost:13086",
+        "Cache-Control": "max-age=31536000,immutable",
+        "Connection": "keep-alive",
+        "Content-Length": "23452",
+        "Content-Type": "text/javascript",
+        "Date": "Tue, 02 Dec 2025 05:04:39 GMT",
+        "Etag": "W/\"15ed-nzt3hipiXNG8Ds6rXwky+e9w5TQ\"",
+        "Keep-Alive": "timeout=5",
+        "Vary": "Origin"
+      },
+      "timestamp": 1764651882.5923285,
+      "type": "response"
+    },
+    {
+      "url": "http://localhost:13086/node_modules/.vite/deps/chunk-PIL5TIVM.js?v=1f40ca87",
+      "method": "GET",
+      "headers": {
+        "Origin": "http://localhost:13086",
+        "Referer": "http://localhost:13086/node_modules/.vite/deps/vue.js?v=1f40ca87",
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/142.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not_A Brand\";v=\"99\", \"Chromium\";v=\"142\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Linux\""
+      },
+      "timestamp": 1764651882.5923584,
+      "type": "request"
+    },
+    {
+      "url": "http://localhost:13086/node_modules/.vite/deps/pinia.js?v=1f40ca87",
+      "status": 200,
+      "headers": {
+        "Access-Control-Allow-Origin": "http://localhost:13086",
+        "Cache-Control": "max-age=31536000,immutable",
+        "Connection": "keep-alive",
+        "Content-Length": "47636",
+        "Content-Type": "text/javascript",
+        "Date": "Tue, 02 Dec 2025 05:04:39 GMT",
+        "Etag": "W/\"ba14-7oMArdPY0cgxk2qGMnWIAWTLBoo\"",
+        "Keep-Alive": "timeout=5",
+        "Vary": "Origin"
+      },
+      "timestamp": 1764651882.5923889,
+      "type": "response"
+    },
+    {
+      "url": "http://localhost:13086/node_modules/.vite/deps/chunk-YFT6OQ5R.js?v=1f40ca87",
+      "method": "GET",
+      "headers": {
+        "Origin": "http://localhost:13086",
+        "Referer": "http://localhost:13086/node_modules/.vite/deps/pinia.js?v=1f40ca87",
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/142.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not_A Brand\";v=\"99\", \"Chromium\";v=\"142\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Linux\""
+      },
+      "timestamp": 1764651882.5924172,
+      "type": "request"
+    },
+    {
+      "url": "http://localhost:13086/src/router/index.ts",
+      "status": 200,
+      "headers": {
+        "Access-Control-Allow-Origin": "http://localhost:13086",
+        "Cache-Control": "no-cache",
+        "Connection": "keep-alive",
+        "Content-Length": "4482",
+        "Content-Type": "text/javascript",
+        "Date": "Tue, 02 Dec 2025 05:04:39 GMT",
+        "Etag": "W/\"53f-d/o8anbUpXAw/SYLtgewOc/w2a4\"",
+        "Keep-Alive": "timeout=5",
+        "Vary": "Origin"
+      },
+      "timestamp": 1764651882.5924764,
+      "type": "response"
+    },
+    {
+      "url": "http://localhost:13086/src/App.vue",
+      "status": 200,
+      "headers": {
+        "Access-Control-Allow-Origin": "http://localhost:13086",
+        "Cache-Control": "no-cache",
+        "Connection": "keep-alive",
+        "Content-Length": "18066",
+        "Content-Type": "text/javascript",
+        "Date": "Tue, 02 Dec 2025 05:04:39 GMT",
+        "Etag": "W/\"1f2b-g7hCw5yGc7ovvVCokwra6ozgyec\"",
+        "Keep-Alive": "timeout=5",
+        "Vary": "Origin"
+      },
+      "timestamp": 1764651882.5925126,
+      "type": "response"
+    },
+    {
+      "url": "http://localhost:13086/node_modules/.vite/deps/vue-router.js?v=1f40ca87",
+      "method": "GET",
+      "headers": {
+        "Origin": "http://localhost:13086",
+        "Referer": "http://localhost:13086/src/router/index.ts",
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/142.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not_A Brand\";v=\"99\", \"Chromium\";v=\"142\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Linux\""
+      },
+      "timestamp": 1764651882.5925398,
+      "type": "request"
+    },
+    {
+      "url": "http://localhost:13086/src/views/Login.vue",
+      "method": "GET",
+      "headers": {
+        "Origin": "http://localhost:13086",
+        "Referer": "http://localhost:13086/src/router/index.ts",
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/142.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not_A Brand\";v=\"99\", \"Chromium\";v=\"142\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Linux\""
+      },
+      "timestamp": 1764651882.5925522,
+      "type": "request"
+    },
+    {
+      "url": "http://localhost:13086/src/views/Dashboard.vue",
+      "method": "GET",
+      "headers": {
+        "Origin": "http://localhost:13086",
+        "Referer": "http://localhost:13086/src/router/index.ts",
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/142.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not_A Brand\";v=\"99\", \"Chromium\";v=\"142\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Linux\""
+      },
+      "timestamp": 1764651882.5925639,
+      "type": "request"
+    },
+    {
+      "url": "http://localhost:13086/src/views/Users.vue",
+      "method": "GET",
+      "headers": {
+        "Origin": "http://localhost:13086",
+        "Referer": "http://localhost:13086/src/router/index.ts",
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/142.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not_A Brand\";v=\"99\", \"Chromium\";v=\"142\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Linux\""
+      },
+      "timestamp": 1764651882.592575,
+      "type": "request"
+    },
+    {
+      "url": "http://localhost:13086/src/views/Models.vue",
+      "method": "GET",
+      "headers": {
+        "Origin": "http://localhost:13086",
+        "Referer": "http://localhost:13086/src/router/index.ts",
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/142.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not_A Brand\";v=\"99\", \"Chromium\";v=\"142\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Linux\""
+      },
+      "timestamp": 1764651882.5925858,
+      "type": "request"
+    },
+    {
+      "url": "http://localhost:13086/src/views/Workflows.vue",
+      "method": "GET",
+      "headers": {
+        "Origin": "http://localhost:13086",
+        "Referer": "http://localhost:13086/src/router/index.ts",
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/142.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not_A Brand\";v=\"99\", \"Chromium\";v=\"142\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Linux\""
+      },
+      "timestamp": 1764651882.5925965,
+      "type": "request"
+    },
+    {
+      "url": "http://localhost:13086/src/views/Logs.vue",
+      "method": "GET",
+      "headers": {
+        "Origin": "http://localhost:13086",
+        "Referer": "http://localhost:13086/src/router/index.ts",
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/142.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not_A Brand\";v=\"99\", \"Chromium\";v=\"142\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Linux\""
+      },
+      "timestamp": 1764651882.5926073,
+      "type": "request"
+    },
+    {
+      "url": "http://localhost:13086/src/views/Feedbacks.vue",
+      "method": "GET",
+      "headers": {
+        "Origin": "http://localhost:13086",
+        "Referer": "http://localhost:13086/src/router/index.ts",
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/142.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not_A Brand\";v=\"99\", \"Chromium\";v=\"142\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Linux\""
+      },
+      "timestamp": 1764651882.5926228,
+      "type": "request"
+    },
+    {
+      "url": "http://localhost:13086/node_modules/.vite/deps/@vicons_ionicons5.js?v=1f40ca87",
+      "method": "GET",
+      "headers": {
+        "Origin": "http://localhost:13086",
+        "Referer": "http://localhost:13086/src/App.vue",
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/142.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not_A Brand\";v=\"99\", \"Chromium\";v=\"142\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Linux\""
+      },
+      "timestamp": 1764651882.5926335,
+      "type": "request"
+    },
+    {
+      "url": "http://localhost:13086/src/App.vue?vue&type=style&index=0&scoped=7a7a37b1&lang.css",
+      "method": "GET",
+      "headers": {
+        "Origin": "http://localhost:13086",
+        "Referer": "http://localhost:13086/src/App.vue",
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/142.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not_A Brand\";v=\"99\", \"Chromium\";v=\"142\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Linux\""
+      },
+      "timestamp": 1764651882.5926442,
+      "type": "request"
+    },
+    {
+      "url": "http://localhost:13086/@id/__x00__plugin-vue:export-helper",
+      "method": "GET",
+      "headers": {
+        "Origin": "http://localhost:13086",
+        "Referer": "http://localhost:13086/src/App.vue",
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/142.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not_A Brand\";v=\"99\", \"Chromium\";v=\"142\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Linux\""
+      },
+      "timestamp": 1764651882.592655,
+      "type": "request"
+    },
+    {
+      "url": "http://localhost:13086/node_modules/vite/dist/client/env.mjs",
+      "status": 200,
+      "headers": {
+        "Access-Control-Allow-Origin": "http://localhost:13086",
+        "Cache-Control": "no-cache",
+        "Connection": "keep-alive",
+        "Content-Length": "4278",
+        "Content-Type": "text/javascript",
+        "Date": "Tue, 02 Dec 2025 05:04:39 GMT",
+        "Etag": "W/\"2e7-OfEspBJllw5bTxufwHJgheqvLXg\"",
+        "Keep-Alive": "timeout=5",
+        "Vary": "Origin"
+      },
+      "timestamp": 1764651882.5927486,
+      "type": "response"
+    },
+    {
+      "url": "http://localhost:13086/node_modules/.vite/deps/chunk-YFT6OQ5R.js?v=1f40ca87",
+      "status": 200,
+      "headers": {
+        "Access-Control-Allow-Origin": "http://localhost:13086",
+        "Cache-Control": "max-age=31536000,immutable",
+        "Connection": "keep-alive",
+        "Content-Length": "4624",
+        "Content-Type": "text/javascript",
+        "Date": "Tue, 02 Dec 2025 05:04:39 GMT",
+        "Etag": "W/\"1210-UZjL6PCdpdydHhTzRjW5PmQ1uUU\"",
+        "Keep-Alive": "timeout=5",
+        "Vary": "Origin"
+      },
+      "timestamp": 1764651882.5928044,
+      "type": "response"
+    },
+    {
+      "url": "http://localhost:13086/src/views/Login.vue",
+      "status": 200,
+      "headers": {
+        "Access-Control-Allow-Origin": "http://localhost:13086",
+        "Cache-Control": "no-cache",
+        "Connection": "keep-alive",
+        "Content-Length": "12533",
+        "Content-Type": "text/javascript",
+        "Date": "Tue, 02 Dec 2025 05:04:39 GMT",
+        "Etag": "W/\"1836-8zw1PYKxrMhwCWPfwOT8qLyp+KA\"",
+        "Keep-Alive": "timeout=5",
+        "Vary": "Origin"
+      },
+      "timestamp": 1764651882.5929534,
+      "type": "response"
+    },
+    {
+      "url": "http://localhost:13086/src/views/Dashboard.vue",
+      "status": 200,
+      "headers": {
+        "Access-Control-Allow-Origin": "http://localhost:13086",
+        "Cache-Control": "no-cache",
+        "Connection": "keep-alive",
+        "Content-Length": "8999",
+        "Content-Type": "text/javascript",
+        "Date": "Tue, 02 Dec 2025 05:04:39 GMT",
+        "Etag": "W/\"10dc-Bl3MUj+Ixpv81reFzb13fJZj61o\"",
+        "Keep-Alive": "timeout=5",
+        "Vary": "Origin"
+      },
+      "timestamp": 1764651882.5930026,
+      "type": "response"
+    },
+    {
+      "url": "http://localhost:13086/node_modules/.vite/deps/vue-router.js?v=1f40ca87",
+      "status": 200,
+      "headers": {
+        "Access-Control-Allow-Origin": "http://localhost:13086",
+        "Cache-Control": "max-age=31536000,immutable",
+        "Connection": "keep-alive",
+        "Content-Length": "89609",
+        "Content-Type": "text/javascript",
+        "Date": "Tue, 02 Dec 2025 05:04:39 GMT",
+        "Etag": "W/\"15e09-H+cR3Z4DF2uIJMoGMYkYHtPltCg\"",
+        "Keep-Alive": "timeout=5",
+        "Vary": "Origin"
+      },
+      "timestamp": 1764651882.5930476,
+      "type": "response"
+    },
+    {
+      "url": "http://localhost:13086/src/views/Users.vue",
+      "status": 200,
+      "headers": {
+        "Access-Control-Allow-Origin": "http://localhost:13086",
+        "Cache-Control": "no-cache",
+        "Connection": "keep-alive",
+        "Content-Length": "21461",
+        "Content-Type": "text/javascript",
+        "Date": "Tue, 02 Dec 2025 05:04:39 GMT",
+        "Etag": "W/\"2496-UXfF3Vgzz7L6BuW+S2WSUmWoznk\"",
+        "Keep-Alive": "timeout=5",
+        "Vary": "Origin"
+      },
+      "timestamp": 1764651882.5931168,
+      "type": "response"
+    },
+    {
+      "url": "http://localhost:13086/src/utils/api.ts",
+      "method": "GET",
+      "headers": {
+        "Origin": "http://localhost:13086",
+        "Referer": "http://localhost:13086/src/views/Login.vue",
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/142.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not_A Brand\";v=\"99\", \"Chromium\";v=\"142\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Linux\""
+      },
+      "timestamp": 1764651882.5931463,
+      "type": "request"
+    },
+    {
+      "url": "http://localhost:13086/src/views/Login.vue?vue&type=style&index=0&scoped=08aaad4e&lang.css",
+      "method": "GET",
+      "headers": {
+        "Origin": "http://localhost:13086",
+        "Referer": "http://localhost:13086/src/views/Login.vue",
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/142.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not_A Brand\";v=\"99\", \"Chromium\";v=\"142\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Linux\""
+      },
+      "timestamp": 1764651882.59316,
+      "type": "request"
+    },
+    {
+      "url": "http://localhost:13086/src/views/Dashboard.vue?vue&type=style&index=0&scoped=7f773d42&lang.css",
+      "method": "GET",
+      "headers": {
+        "Origin": "http://localhost:13086",
+        "Referer": "http://localhost:13086/src/views/Dashboard.vue",
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/142.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not_A Brand\";v=\"99\", \"Chromium\";v=\"142\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Linux\""
+      },
+      "timestamp": 1764651882.593183,
+      "type": "request"
+    },
+    {
+      "url": "http://localhost:13086/src/views/Models.vue",
+      "status": 200,
+      "headers": {
+        "Access-Control-Allow-Origin": "http://localhost:13086",
+        "Cache-Control": "no-cache",
+        "Connection": "keep-alive",
+        "Content-Length": "30640",
+        "Content-Type": "text/javascript",
+        "Date": "Tue, 02 Dec 2025 05:04:39 GMT",
+        "Etag": "W/\"3639-Bbpn2WpIbeckU4/I7F7BvdStnH8\"",
+        "Keep-Alive": "timeout=5",
+        "Vary": "Origin"
+      },
+      "timestamp": 1764651882.593214,
+      "type": "response"
+    },
+    {
+      "url": "http://localhost:13086/src/views/Users.vue?vue&type=style&index=0&scoped=10ab5d2a&lang.css",
+      "method": "GET",
+      "headers": {
+        "Origin": "http://localhost:13086",
+        "Referer": "http://localhost:13086/src/views/Users.vue",
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/142.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not_A Brand\";v=\"99\", \"Chromium\";v=\"142\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Linux\""
+      },
+      "timestamp": 1764651882.5932426,
+      "type": "request"
+    },
+    {
+      "url": "http://localhost:13086/src/views/Models.vue?vue&type=style&index=0&scoped=871dc3be&lang.css",
+      "method": "GET",
+      "headers": {
+        "Origin": "http://localhost:13086",
+        "Referer": "http://localhost:13086/src/views/Models.vue",
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/142.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not_A Brand\";v=\"99\", \"Chromium\";v=\"142\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Linux\""
+      },
+      "timestamp": 1764651882.5932546,
+      "type": "request"
+    },
+    {
+      "url": "http://localhost:13086/src/views/Logs.vue",
+      "status": 200,
+      "headers": {
+        "Access-Control-Allow-Origin": "http://localhost:13086",
+        "Cache-Control": "no-cache",
+        "Connection": "keep-alive",
+        "Content-Length": "10444",
+        "Content-Type": "text/javascript",
+        "Date": "Tue, 02 Dec 2025 05:04:39 GMT",
+        "Etag": "W/\"1395-/7/nIS9mw/ixWFcWlOV5aJKcDVg\"",
+        "Keep-Alive": "timeout=5",
+        "Vary": "Origin"
+      },
+      "timestamp": 1764651882.5933383,
+      "type": "response"
+    },
+    {
+      "url": "http://localhost:13086/src/views/Feedbacks.vue",
+      "status": 200,
+      "headers": {
+        "Access-Control-Allow-Origin": "http://localhost:13086",
+        "Cache-Control": "no-cache",
+        "Connection": "keep-alive",
+        "Content-Length": "15176",
+        "Content-Type": "text/javascript",
+        "Date": "Tue, 02 Dec 2025 05:04:39 GMT",
+        "Etag": "W/\"1b75-6wej+eEbBAMkpvCZGqz6RpK9dBU\"",
+        "Keep-Alive": "timeout=5",
+        "Vary": "Origin"
+      },
+      "timestamp": 1764651882.5934005,
+      "type": "response"
+    },
+    {
+      "url": "http://localhost:13086/node_modules/.vite/deps/chunk-PIL5TIVM.js?v=1f40ca87",
+      "status": 200,
+      "headers": {
+        "Access-Control-Allow-Origin": "http://localhost:13086",
+        "Cache-Control": "max-age=31536000,immutable",
+        "Connection": "keep-alive",
+        "Content-Length": "378336",
+        "Content-Type": "text/javascript",
+        "Date": "Tue, 02 Dec 2025 05:04:39 GMT",
+        "Etag": "W/\"5c5e0-2F7K1F+HvhtI73+R2Lt2V+u/7SA\"",
+        "Keep-Alive": "timeout=5",
+        "Vary": "Origin"
+      },
+      "timestamp": 1764651882.5934513,
+      "type": "response"
+    },
+    {
+      "url": "http://localhost:13086/src/views/Workflows.vue",
+      "status": 200,
+      "headers": {
+        "Access-Control-Allow-Origin": "http://localhost:13086",
+        "Cache-Control": "no-cache",
+        "Connection": "keep-alive",
+        "Content-Length": "34002",
+        "Content-Type": "text/javascript",
+        "Date": "Tue, 02 Dec 2025 05:04:39 GMT",
+        "Etag": "W/\"3c0b-f/eFy3jqqnrCxDMVEsPozu3eOtE\"",
+        "Keep-Alive": "timeout=5",
+        "Vary": "Origin"
+      },
+      "timestamp": 1764651882.5935056,
+      "type": "response"
+    },
+    {
+      "url": "http://localhost:13086/src/views/Logs.vue?vue&type=style&index=0&scoped=8c2906e0&lang.css",
+      "method": "GET",
+      "headers": {
+        "Origin": "http://localhost:13086",
+        "Referer": "http://localhost:13086/src/views/Logs.vue",
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/142.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not_A Brand\";v=\"99\", \"Chromium\";v=\"142\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Linux\""
+      },
+      "timestamp": 1764651882.5935383,
+      "type": "request"
+    },
+    {
+      "url": "http://localhost:13086/src/views/Feedbacks.vue?vue&type=style&index=0&scoped=68dbca68&lang.css",
+      "method": "GET",
+      "headers": {
+        "Origin": "http://localhost:13086",
+        "Referer": "http://localhost:13086/src/views/Feedbacks.vue",
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/142.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not_A Brand\";v=\"99\", \"Chromium\";v=\"142\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Linux\""
+      },
+      "timestamp": 1764651882.5935514,
+      "type": "request"
+    },
+    {
+      "url": "http://localhost:13086/src/views/Workflows.vue?vue&type=style&index=0&scoped=8913cd82&lang.css",
+      "method": "GET",
+      "headers": {
+        "Origin": "http://localhost:13086",
+        "Referer": "http://localhost:13086/src/views/Workflows.vue",
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/142.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not_A Brand\";v=\"99\", \"Chromium\";v=\"142\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Linux\""
+      },
+      "timestamp": 1764651882.5935645,
+      "type": "request"
+    },
+    {
+      "url": "http://localhost:13086/@id/__x00__plugin-vue:export-helper",
+      "status": 200,
+      "headers": {
+        "Access-Control-Allow-Origin": "http://localhost:13086",
+        "Cache-Control": "no-cache",
+        "Connection": "keep-alive",
+        "Content-Length": "1074",
+        "Content-Type": "text/javascript",
+        "Date": "Tue, 02 Dec 2025 05:04:39 GMT",
+        "Etag": "W/\"9b-LJRQlSkEmFyey2baN8wAAKI2VwI\"",
+        "Keep-Alive": "timeout=5",
+        "Vary": "Origin"
+      },
+      "timestamp": 1764651882.593668,
+      "type": "response"
+    },
+    {
+      "url": "http://localhost:13086/src/views/Login.vue?vue&type=style&index=0&scoped=08aaad4e&lang.css",
+      "status": 200,
+      "headers": {
+        "Access-Control-Allow-Origin": "http://localhost:13086",
+        "Cache-Control": "no-cache",
+        "Connection": "keep-alive",
+        "Content-Length": "850",
+        "Content-Type": "text/javascript",
+        "Date": "Tue, 02 Dec 2025 05:04:39 GMT",
+        "Etag": "W/\"352-iahwDZnDR0rUxRfXjU1KtqI/MRE\"",
+        "Keep-Alive": "timeout=5",
+        "Vary": "Origin"
+      },
+      "timestamp": 1764651882.5937111,
+      "type": "response"
+    },
+    {
+      "url": "http://localhost:13086/src/App.vue?vue&type=style&index=0&scoped=7a7a37b1&lang.css",
+      "status": 200,
+      "headers": {
+        "Access-Control-Allow-Origin": "http://localhost:13086",
+        "Cache-Control": "no-cache",
+        "Connection": "keep-alive",
+        "Content-Length": "2007",
+        "Content-Type": "text/javascript",
+        "Date": "Tue, 02 Dec 2025 05:04:39 GMT",
+        "Etag": "W/\"7d7-vWLzHzQBIftK2mH9tizirHwpM60\"",
+        "Keep-Alive": "timeout=5",
+        "Vary": "Origin"
+      },
+      "timestamp": 1764651882.5937538,
+      "type": "response"
+    },
+    {
+      "url": "http://localhost:13086/src/views/Dashboard.vue?vue&type=style&index=0&scoped=7f773d42&lang.css",
+      "status": 200,
+      "headers": {
+        "Access-Control-Allow-Origin": "http://localhost:13086",
+        "Cache-Control": "no-cache",
+        "Connection": "keep-alive",
+        "Content-Length": "1644",
+        "Content-Type": "text/javascript",
+        "Date": "Tue, 02 Dec 2025 05:04:39 GMT",
+        "Etag": "W/\"66c-D+NG6vjDvf/1eNFo+EmSy8gq0W0\"",
+        "Keep-Alive": "timeout=5",
+        "Vary": "Origin"
+      },
+      "timestamp": 1764651882.5938153,
+      "type": "response"
+    },
+    {
+      "url": "http://localhost:13086/src/utils/api.ts",
+      "status": 200,
+      "headers": {
+        "Access-Control-Allow-Origin": "http://localhost:13086",
+        "Cache-Control": "no-cache",
+        "Connection": "keep-alive",
+        "Content-Length": "11099",
+        "Content-Type": "text/javascript",
+        "Date": "Tue, 02 Dec 2025 05:04:39 GMT",
+        "Etag": "W/\"a8c-EghnPcM3+NK/q0EE1mrs8QncFTs\"",
+        "Keep-Alive": "timeout=5",
+        "Vary": "Origin"
+      },
+      "timestamp": 1764651882.5938456,
+      "type": "response"
+    },
+    {
+      "url": "http://localhost:13086/src/views/Users.vue?vue&type=style&index=0&scoped=10ab5d2a&lang.css",
+      "status": 200,
+      "headers": {
+        "Access-Control-Allow-Origin": "http://localhost:13086",
+        "Cache-Control": "no-cache",
+        "Connection": "keep-alive",
+        "Content-Length": "948",
+        "Content-Type": "text/javascript",
+        "Date": "Tue, 02 Dec 2025 05:04:39 GMT",
+        "Etag": "W/\"3b4-B2EiX1RcUAZhfD3XMAgz7I+B3OI\"",
+        "Keep-Alive": "timeout=5",
+        "Vary": "Origin"
+      },
+      "timestamp": 1764651882.5939705,
+      "type": "response"
+    },
+    {
+      "url": "http://localhost:13086/src/views/Models.vue?vue&type=style&index=0&scoped=871dc3be&lang.css",
+      "status": 200,
+      "headers": {
+        "Access-Control-Allow-Origin": "http://localhost:13086",
+        "Cache-Control": "no-cache",
+        "Connection": "keep-alive",
+        "Content-Length": "898",
+        "Content-Type": "text/javascript",
+        "Date": "Tue, 02 Dec 2025 05:04:39 GMT",
+        "Etag": "W/\"382-pYdsxJ3Qj2N9dRK832czdDUSolo\"",
+        "Keep-Alive": "timeout=5",
+        "Vary": "Origin"
+      },
+      "timestamp": 1764651882.5940025,
+      "type": "response"
+    },
+    {
+      "url": "http://localhost:13086/src/views/Logs.vue?vue&type=style&index=0&scoped=8c2906e0&lang.css",
+      "status": 200,
+      "headers": {
+        "Access-Control-Allow-Origin": "http://localhost:13086",
+        "Cache-Control": "no-cache",
+        "Connection": "keep-alive",
+        "Content-Length": "903",
+        "Content-Type": "text/javascript",
+        "Date": "Tue, 02 Dec 2025 05:04:39 GMT",
+        "Etag": "W/\"387-USeWBPnC94zxw4Zn6M8rAtWF9xs\"",
+        "Keep-Alive": "timeout=5",
+        "Vary": "Origin"
+      },
+      "timestamp": 1764651882.5940332,
+      "type": "response"
+    },
+    {
+      "url": "http://localhost:13086/src/views/Feedbacks.vue?vue&type=style&index=0&scoped=68dbca68&lang.css",
+      "status": 200,
+      "headers": {
+        "Access-Control-Allow-Origin": "http://localhost:13086",
+        "Cache-Control": "no-cache",
+        "Connection": "keep-alive",
+        "Content-Length": "964",
+        "Content-Type": "text/javascript",
+        "Date": "Tue, 02 Dec 2025 05:04:39 GMT",
+        "Etag": "W/\"3c4-eR34WBbnKhp4yAuezZbpyg8Ysuc\"",
+        "Keep-Alive": "timeout=5",
+        "Vary": "Origin"
+      },
+      "timestamp": 1764651882.5940633,
+      "type": "response"
+    },
+    {
+      "url": "http://localhost:13086/src/views/Workflows.vue?vue&type=style&index=0&scoped=8913cd82&lang.css",
+      "status": 200,
+      "headers": {
+        "Access-Control-Allow-Origin": "http://localhost:13086",
+        "Cache-Control": "no-cache",
+        "Connection": "keep-alive",
+        "Content-Length": "1009",
+        "Content-Type": "text/javascript",
+        "Date": "Tue, 02 Dec 2025 05:04:39 GMT",
+        "Etag": "W/\"3f1-yXYfQTSA/HGpfTwpXOXuPPKPiv8\"",
+        "Keep-Alive": "timeout=5",
+        "Vary": "Origin"
+      },
+      "timestamp": 1764651882.5941079,
+      "type": "response"
+    },
+    {
+      "url": "http://localhost:13086/node_modules/.vite/deps/@vicons_ionicons5.js?v=1f40ca87",
+      "status": 200,
+      "headers": {
+        "Access-Control-Allow-Origin": "http://localhost:13086",
+        "Cache-Control": "max-age=31536000,immutable",
+        "Connection": "keep-alive",
+        "Content-Length": "1803917",
+        "Content-Type": "text/javascript",
+        "Date": "Tue, 02 Dec 2025 05:04:39 GMT",
+        "Etag": "W/\"1b868d-b6vhKQ9TZtix1NiTDGo1svrgmgw\"",
+        "Keep-Alive": "timeout=5",
+        "Vary": "Origin"
+      },
+      "timestamp": 1764651882.5941856,
+      "type": "response"
+    },
+    {
+      "url": "http://localhost:13086/node_modules/.vite/deps/naive-ui.js?v=1f40ca87",
+      "status": 200,
+      "headers": {
+        "Access-Control-Allow-Origin": "http://localhost:13086",
+        "Cache-Control": "max-age=31536000,immutable",
+        "Connection": "keep-alive",
+        "Content-Length": "3839161",
+        "Content-Type": "text/javascript",
+        "Date": "Tue, 02 Dec 2025 05:04:39 GMT",
+        "Etag": "W/\"3a94b9-4OPiCxAsTQOhKE96AsJR2ihUoAQ\"",
+        "Keep-Alive": "timeout=5",
+        "Vary": "Origin"
+      },
+      "timestamp": 1764651882.594252,
+      "type": "response"
+    },
+    {
+      "url": "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==",
+      "method": "GET",
+      "headers": {
+        "Referer": "http://localhost:13086/",
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/142.0.0.0 Safari/537.36"
+      },
+      "timestamp": 1764651882.5943198,
+      "type": "request"
+    },
+    {
+      "url": "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==",
+      "status": 200,
+      "headers": {
+        "Content-Type": "image/gif"
+      },
+      "timestamp": 1764651882.5943367,
+      "type": "response"
+    },
+    {
+      "url": "http://localhost:13086/vite.svg",
+      "method": "GET",
+      "headers": {
+        "Referer": "http://localhost:13086/login",
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/142.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not_A Brand\";v=\"99\", \"Chromium\";v=\"142\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Linux\""
+      },
+      "timestamp": 1764651882.5943775,
+      "type": "request"
+    },
+    {
+      "url": "http://localhost:13086/vite.svg",
+      "status": 200,
+      "headers": {
+        "Cache-Control": "no-cache",
+        "Connection": "keep-alive",
+        "Content-Length": "460",
+        "Content-Type": "text/html",
+        "Date": "Tue, 02 Dec 2025 05:04:39 GMT",
+        "Etag": "W/\"1cc-/P8ec5j5G4WlEkWrTvyqTNjlQ40\"",
+        "Keep-Alive": "timeout=5",
+        "Vary": "Origin"
+      },
+      "timestamp": 1764651882.5944247,
+      "type": "response"
+    }
+  ],
+  "summary": {
+    "total_requests": 32,
+    "api_calls": 0,
+    "login_calls": 6
+  }
+}

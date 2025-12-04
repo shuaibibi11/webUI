@@ -1,0 +1,7 @@
+/data/webUI-java/admin-api/src/main/java/com/example/webui/adminapi/controller/HealthController.java
+/data/webUI-java/admin-api/src/main/java/com/example/webui/adminapi/controller/HomeController.java
+/data/webUI-java/admin-api/src/main/java/com/example/webui/adminapi/config/CorsConfig.java
+/data/webUI-java/admin-api/src/main/java/com/example/webui/adminapi/controller/AdminController.java
+/data/webUI-java/admin-api/src/main/java/com/example/webui/adminapi/controller/AdminAuthController.java
+/data/webUI-java/admin-api/src/main/java/com/example/webui/adminapi/WebUiAdminApplication.java
+/data/webUI-java/admin-api/src/main/java/com/example/webui/adminapi/config/SecurityConfig.java
