@@ -532,7 +532,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, h, onMounted, computed, nextTick } from 'vue'
-import { useMessage, useDialog } from 'naive-ui'
+import { useMessage, useDialog, NButton, NTag } from 'naive-ui'
 import {
   Eye as EyeIcon,
   Check as ProcessIcon,
@@ -555,8 +555,21 @@ const replyModalVisible = ref(false)
 const editModalVisible = ref(false)
 const replyLoading = ref(false)
 const editLoading = ref(false)
-const currentFeedback = ref(null)
-const selectedRowKeys = ref([])
+
+// Feedback 类型定义
+interface Feedback {
+  id: string
+  type: string
+  content: string
+  status: string
+  username?: string
+  reply?: string
+  createdAt: string
+  updatedAt?: string
+}
+
+const currentFeedback = ref<Feedback | null>(null)
+const selectedRowKeys = ref<string[]>([])
 
 // 模态框状态
 const advancedSearchModalVisible = ref(false)
@@ -628,9 +641,9 @@ const pagination = reactive({
 
 // 反馈类型选项
 const typeOptions = [
-  { label: '功能建议', value: 'feature' },
-  { label: '问题反馈', value: 'bug' },
-  { label: '内容投诉', value: 'content' },
+  { label: '投诉', value: 'complaint' },
+  { label: '举报', value: 'report' },
+  { label: '建议', value: 'suggestion' },
   { label: '其他', value: 'other' }
 ]
 
@@ -642,142 +655,142 @@ const statusOptions = [
   { label: '已关闭', value: 'closed' }
 ]
 
+// 优先级选项
+const priorityOptions = [
+  { label: '高', value: 1 },
+  { label: '中', value: 2 },
+  { label: '低', value: 3 }
+]
+
+// 显示高级搜索模态框
+const showAdvancedSearch = () => {
+  advancedSearchModalVisible.value = true
+}
+
+// 显示统计分析模态框
+const showStatisticsModal = () => {
+  statisticsModalVisible.value = true
+  nextTick(() => {
+    initCharts()
+  })
+}
+
+// 清除选择
+const handleClearSelection = () => {
+  selectedRowKeys.value = []
+}
+
+// 批量处理
+const handleBatchProcess = () => {
+  batchProcess()
+}
+
+// 批量关闭
+const handleBatchClose = () => {
+  batchClose()
+}
+
+// 批量回复
+const handleBatchReply = () => {
+  batchReply()
+}
+
+// 批量回复提交
+const handleBatchReplySubmit = () => {
+  submitBatchReply()
+}
+
 // 表格列定义
 const columns = [
   {
     type: 'selection',
-    fixed: 'left',
     width: 50
   },
   {
     title: 'ID',
     key: 'id',
-    width: 80,
-    fixed: 'left',
-    className: 'id-column'
+    width: 100,
+    ellipsis: { tooltip: true }
   },
   {
     title: '用户名',
     key: 'username',
-    width: 120,
-    fixed: 'left',
-    className: 'username-column',
-    render(row: any) {
-      return h('div', { class: 'username-cell' }, [
-        h('n-avatar', { size: 'small', round: true, style: { marginRight: '8px' } }, () => row.username.charAt(0).toUpperCase()),
-        h('span', { class: 'username-text' }, row.username)
-      ])
-    }
+    width: 100
   },
   {
     title: '反馈类型',
     key: 'type',
     width: 100,
-    className: 'type-column',
     render(row: any) {
-      const typeMap = {
-        feature: { type: 'info', text: '功能建议', icon: '💡' },
-        bug: { type: 'warning', text: '问题反馈', icon: '🐛' },
-        content: { type: 'error', text: '内容投诉', icon: '⚠️' },
-        other: { type: 'default', text: '其他', icon: '📝' }
+      const typeMap: { [key: string]: { type: string; text: string } } = {
+        complaint: { type: 'error', text: '投诉' },
+        report: { type: 'warning', text: '举报' },
+        suggestion: { type: 'success', text: '建议' },
+        other: { type: 'default', text: '其他' }
       }
-      const type = typeMap[row.type] || { type: 'default', text: '未知', icon: '❓' }
-      return h('div', { class: 'type-cell' }, [
-        h('span', { class: 'type-icon' }, type.icon),
-        h('n-tag', { type: type.type, size: 'small' }, () => type.text)
-      ])
-    }
-  },
-  {
-    title: '优先级',
-    key: 'priority',
-    width: 100,
-    className: 'priority-column',
-    render(row: any) {
-      const priorityMap = {
-        1: { type: 'error', text: '高', icon: '🔴' },
-        2: { type: 'warning', text: '中', icon: '🟡' },
-        3: { type: 'info', text: '低', icon: '🟢' }
-      }
-      const priority = priorityMap[row.priority] || { type: 'default', text: '未知', icon: '⚪' }
-      return h('div', { class: 'priority-cell' }, [
-        h('span', { class: 'priority-icon' }, priority.icon),
-        h('n-tag', { type: priority.type, size: 'small' }, () => priority.text)
-      ])
+      const typeInfo = typeMap[row.type] || { type: 'default', text: row.type || '未知' }
+      return h(NTag, { type: typeInfo.type, size: 'small' }, () => typeInfo.text)
     }
   },
   {
     title: '状态',
     key: 'status',
     width: 100,
-    className: 'status-column',
     render(row: any) {
-      const statusMap = {
-        pending: { type: 'warning', text: '未处理', icon: '⏳' },
-        processing: { type: 'info', text: '处理中', icon: '🔄' },
-        processed: { type: 'success', text: '处理完成', icon: '✅' },
-        closed: { type: 'error', text: '已关闭', icon: '❌' }
+      const statusMap: { [key: string]: { type: string; text: string } } = {
+        pending: { type: 'warning', text: '未处理' },
+        processing: { type: 'info', text: '处理中' },
+        processed: { type: 'success', text: '已处理' },
+        closed: { type: 'error', text: '已关闭' }
       }
-      const status = statusMap[row.status] || { type: 'default', text: '未知', icon: '❓' }
-      return h('div', { class: 'status-cell' }, [
-        h('span', { class: 'status-icon' }, status.icon),
-        h('n-tag', { type: status.type, size: 'small' }, () => status.text)
-      ])
+      const statusInfo = statusMap[row.status] || { type: 'default', text: row.status || '未知' }
+      return h(NTag, { type: statusInfo.type, size: 'small' }, () => statusInfo.text)
     }
   },
   {
     title: '反馈内容',
     key: 'content',
-    width: 300,
-    className: 'content-column',
-    ellipsis: {
-      tooltip: true
-    }
+    width: 200,
+    ellipsis: { tooltip: true }
   },
   {
     title: '联系方式',
     key: 'contact',
     width: 150,
-    className: 'contact-column',
-    ellipsis: {
-      tooltip: true
-    }
+    ellipsis: { tooltip: true }
   },
   {
     title: '提交时间',
     key: 'createdAt',
-    width: 180,
-    className: 'date-column',
+    width: 160,
     render(row: any) {
-      return h('div', { class: 'date-cell' }, [
-        h('n-icon', { size: '16', style: { marginRight: '4px', color: '#18a058' } }, () => h('svg', { viewBox: '0 0 24 24', fill: 'currentColor' }, 
-          h('path', { d: 'M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z' })
-        )),
-        h('span', new Date(row.createdAt).toLocaleString())
-      ])
-    }
-  },
-  {
-    title: '处理时间',
-    key: 'processedAt',
-    width: 180,
-    className: 'date-column',
-    render(row: any) {
-      if (!row.processedAt) return h('span', { class: 'no-date' }, '-')
-      return h('div', { class: 'date-cell' }, [
-        h('n-icon', { size: '16', style: { marginRight: '4px', color: '#2080f0' } }, () => h('svg', { viewBox: '0 0 24 24', fill: 'currentColor' }, 
-          h('path', { d: 'M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z' })
-        )),
-        h('span', new Date(row.processedAt).toLocaleString())
-      ])
+      return h('span', {}, new Date(row.createdAt).toLocaleString())
     }
   },
   {
     title: '操作',
     key: 'actions',
-    width: 250,
+    width: 220,
     fixed: 'right',
-    className: 'actions-column'
+    render(row: any) {
+      return h('div', { style: { display: 'flex', gap: '4px' } }, [
+        h(NButton, {
+          size: 'small',
+          type: row.status === 'pending' ? 'warning' : 'default',
+          onClick: () => handleStatusChange(row.id, 'pending')
+        }, () => '未处理'),
+        h(NButton, {
+          size: 'small',
+          type: row.status === 'processing' ? 'info' : 'default',
+          onClick: () => handleStatusChange(row.id, 'processing')
+        }, () => '处理中'),
+        h(NButton, {
+          size: 'small',
+          type: row.status === 'processed' ? 'success' : 'default',
+          onClick: () => handleStatusChange(row.id, 'processed')
+        }, () => '已处理')
+      ])
+    }
   }
 ]
 
@@ -1223,10 +1236,10 @@ const handleExport = async () => {
 
 // 获取类型标签类型
 const getTypeTagType = (type: string) => {
-  const typeMap = {
-    feature: 'info',
-    bug: 'warning',
-    content: 'error',
+  const typeMap: Record<string, string> = {
+    complaint: 'error',
+    report: 'warning',
+    suggestion: 'success',
     other: 'default'
   }
   return typeMap[type] || 'default'
@@ -1234,10 +1247,10 @@ const getTypeTagType = (type: string) => {
 
 // 获取类型文本
 const getTypeText = (type: string) => {
-  const typeMap = {
-    feature: '功能建议',
-    bug: '问题反馈',
-    content: '内容投诉',
+  const typeMap: Record<string, string> = {
+    complaint: '投诉',
+    report: '举报',
+    suggestion: '建议',
     other: '其他'
   }
   return typeMap[type] || '未知'
@@ -1255,7 +1268,7 @@ const getStatusTagType = (status: string) => {
 
 // 获取状态文本
 const getStatusText = (status: string) => {
-  const statusMap = {
+  const statusMap: Record<string, string> = {
     pending: '待处理',
     processed: '已处理',
     closed: '已关闭'
@@ -1274,24 +1287,10 @@ const detailModalTitle = computed(() => {
 })
 
 // 计算属性
-const hasSelectedRows = computed(() => selectedRowKeys.value.length > 0)
-const selectedRowsCount = computed(() => selectedRowKeys.value.length)
 const hasPendingFeedbacks = computed(() => stats.pending > 0)
-const hasProcessedFeedbacks = computed(() => stats.processed > 0)
-const hasClosedFeedbacks = computed(() => stats.closed > 0)
 
-// 获取优先级类型
-const getPriorityType = (priority: number) => {
-  switch (priority) {
-    case 1: return 'error'
-    case 2: return 'warning'
-    case 3: return 'info'
-    default: return 'default'
-  }
-}
-
-// 获取优先级文本
-const getPriorityText = (priority: number) => {
+// 格式化优先级
+const _formatPriority = (priority: number) => {
   switch (priority) {
     case 1: return '高'
     case 2: return '中'
@@ -1300,13 +1299,11 @@ const getPriorityText = (priority: number) => {
   }
 }
 
-// 表格行键值
-const rowKey = (row: any) => row.id
-
 // 图标定义
 const downloadIcon = () => h(DownloadIcon)
 const searchIcon = () => h(SearchIcon)
 const refreshIcon = () => h(RefreshIcon)
+const filterIcon = () => h(FilterIcon)
 
 // 组件挂载
 onMounted(() => {

@@ -42,10 +42,12 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/users/login", "/users/register", "/users/password-reset/**", 
-                            "/api/users/login", "/api/users/register", "/api/users/password-reset/**", 
+                .requestMatchers("/users/login", "/users/register", "/users/password-reset/**",
+                            "/api/users/login", "/api/users/register", "/api/users/password-reset/**",
                             "/user/auth/login", "/api/user/auth/login",
-                            "/users/bootstrap-admin", "/api/users/bootstrap-admin", 
+                            "/users/bootstrap-admin", "/api/users/bootstrap-admin",
+                            "/users/check-username", "/users/check-phone", "/users/check-idcard",
+                            "/api/users/check-username", "/api/users/check-phone", "/api/users/check-idcard",
                             "/health", "/api/health").permitAll()
                 .requestMatchers("/api/messages/**", "/api/conversations/**", "/api/feedbacks/**").authenticated()
                 .requestMatchers("/users/**", "/api/users/**").authenticated()

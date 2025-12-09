@@ -36,21 +36,14 @@ public class ConversationController {
             return ResponseEntity.status(401).body(error);
         }
         
-        System.out.println("DEBUG: Authentication details: " + auth.getDetails());
-        System.out.println("DEBUG: Authentication principal: " + auth.getPrincipal());
-        System.out.println("DEBUG: Authentication authorities: " + auth.getAuthorities());
-        
         String userId = null;
         String username = null;
         
-        if (auth.getDetails() instanceof Map) {
+        if (auth.getDetails() != null && auth.getDetails() instanceof Map) {
             Map<?,?> details = (Map<?,?>) auth.getDetails();
             userId = java.util.Objects.toString(details.get("userId"), null);
             username = java.util.Objects.toString(details.get("username"), null);
         }
-        
-        System.out.println("DEBUG: Extracted userId: " + userId);
-        System.out.println("DEBUG: Extracted username: " + username);
         
         User user = null;
         if (username != null && !username.isEmpty()) {
@@ -67,8 +60,6 @@ public class ConversationController {
             error.put("error", "用户不存在");
             return ResponseEntity.status(404).body(error);
         }
-        
-        System.out.println("DEBUG: Found user: " + user.getUsername() + " with ID: " + user.getId());
         
         // 只获取未删除的会话（用户看不到已删除的会话）
         Page<Conversation> p = conversationRepo.findByUserAndIsDeletedFalse(user, PageRequest.of(Math.max(0, page-1), limit));
@@ -187,14 +178,27 @@ public class ConversationController {
             return ResponseEntity.status(404).body(error);
         }
         
-        Conversation c = conversationRepo.findByIdAndUser(id, user).orElse(null);
+        Conversation c = conversationRepo.findByIdAndUserAndIsDeletedFalse(id, user).orElse(null);
         if (c == null) return ResponseEntity.status(404).body(err("对话不存在"));
         Map<String,Object> conv = new HashMap<>();
         conv.put("id", c.getId());
         conv.put("title", c.getTitle());
         conv.put("createdAt", toStr(c.getCreatedAt()));
         conv.put("updatedAt", toStr(c.getUpdatedAt()));
-        conv.put("messages", c.getMessages());
+
+        // 手动构建消息列表，避免循环引用
+        List<Map<String,Object>> messagesList = new ArrayList<>();
+        for (Message msg : c.getMessages()) {
+            Map<String,Object> msgMap = new HashMap<>();
+            msgMap.put("id", msg.getId());
+            msgMap.put("role", msg.getRole());
+            msgMap.put("content", msg.getContent());
+            msgMap.put("status", msg.getStatus());
+            msgMap.put("createdAt", toStr(msg.getCreatedAt()));
+            messagesList.add(msgMap);
+        }
+        conv.put("messages", messagesList);
+
         Map<String,Object> res = new HashMap<>();
         res.put("code", 200);
         res.put("conversation", conv);
@@ -219,7 +223,7 @@ public class ConversationController {
             return ResponseEntity.status(404).body(error);
         }
         
-        Conversation c = conversationRepo.findByIdAndUser(id, user).orElse(null);
+        Conversation c = conversationRepo.findByIdAndUserAndIsDeletedFalse(id, user).orElse(null);
         if (c == null) return ResponseEntity.status(404).body(err("对话不存在"));
         String title = Optional.ofNullable(body.get("title")).map(Object::toString).orElse(c.getTitle());
         c.setTitle(title);
@@ -248,7 +252,7 @@ public class ConversationController {
             return ResponseEntity.status(404).body(error);
         }
         
-        Conversation c = conversationRepo.findByIdAndUser(id, user).orElse(null);
+        Conversation c = conversationRepo.findByIdAndUserAndIsDeletedFalse(id, user).orElse(null);
         if (c == null) return ResponseEntity.status(404).body(err("对话不存在"));
         // 软删除：只标记为已删除，不真正删除数据
         c.setDeleted(true);
@@ -276,7 +280,7 @@ public class ConversationController {
             return ResponseEntity.status(404).body(error);
         }
         
-        Conversation c = conversationRepo.findByIdAndUser(id, user).orElse(null);
+        Conversation c = conversationRepo.findByIdAndUserAndIsDeletedFalse(id, user).orElse(null);
         if (c == null) return ResponseEntity.status(404).body(err("对话不存在"));
         
         // 这里可以添加停止对话的具体逻辑，比如停止正在进行的AI生成等

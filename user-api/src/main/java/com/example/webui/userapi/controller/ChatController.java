@@ -427,31 +427,33 @@ public class ChatController {
                                 break;
                                 
                         case "output_msg":
-                                // 输出事件：追加消息内容
+                                // 输出事件：设置消息内容并标记为sent（工作流输出完成）
                                 com.fasterxml.jackson.databind.JsonNode outputSchema = dataNode.path("output_schema");
                                 if (!outputSchema.isMissingNode()) {
                                     com.fasterxml.jackson.databind.JsonNode messageNode = outputSchema.path("message");
                                     String message = "";
-                                    
+
                                     if (messageNode.isTextual()) {
                                         message = messageNode.asText();
                                     } else if (messageNode.isArray() && messageNode.size() > 0) {
                                         message = messageNode.get(0).asText();
                                     }
-                                    
+
                                     if (!message.isEmpty() && !message.equals("['']") && !message.equals("[]")) {
                                         String currentContent = aiMsg.getContent() != null ? aiMsg.getContent() : "";
                                         aiMsg.setContent(currentContent.isEmpty() ? message : currentContent + message);
-                                     messageRepo.save(aiMsg);
-                                     try {
-                                            System.out.println("发送output_msg: " + message);
-                                         emitter.send(SseEmitter.event().name("message").data(mapMsg(aiMsg, userId)));
-                                     } catch (Exception ex) {
+                                        // output_msg事件表示输出完成，设置状态为sent
+                                        aiMsg.setStatus("sent");
+                                        messageRepo.save(aiMsg);
+                                        try {
+                                            System.out.println("发送output_msg: " + message + ", 状态: sent");
+                                            emitter.send(SseEmitter.event().name("message").data(mapMsg(aiMsg, userId)));
+                                        } catch (Exception ex) {
                                             System.err.println("发送SSE消息失败: " + ex.getMessage());
                                         }
-                                     }
-                                 }
-                                 break;
+                                    }
+                                }
+                                break;
                                 
                              case "close":
                             case "end":
@@ -481,10 +483,11 @@ public class ChatController {
                                 
                             case "input":
                                 // 等待输入事件：保存session_id、message_id和node_id用于后续调用
+                                // 同时，收到input事件表示当前轮对话完成，将消息状态设为sent
                                 String inputSessionId = eventData.path("session_id").asText();
                                 String inputMessageId = dataNode.path("message_id").asText();
                                 String inputNodeId = dataNode.path("node_id").asText();
-                                
+
                                 if (!inputSessionId.isEmpty() && !inputMessageId.isEmpty() && !inputNodeId.isEmpty()) {
                                     String convId = aiMsg.getConversation().getId();
                                     java.util.Map<String, String> sessInfo = new HashMap<>();
@@ -493,6 +496,19 @@ public class ChatController {
                                     sessInfo.put("nodeId", inputNodeId);
                                     bishengSessions.put(convId, sessInfo);
                                     System.out.println("保存bisheng session信息: conversationId=" + convId + ", session_id=" + inputSessionId + ", message_id=" + inputMessageId + ", node_id=" + inputNodeId);
+                                }
+
+                                // 收到input事件表示工作流等待新输入，当前轮对话完成
+                                // 如果消息有内容，设置状态为sent
+                                if (aiMsg.getContent() != null && !aiMsg.getContent().isEmpty() && "generating".equals(aiMsg.getStatus())) {
+                                    aiMsg.setStatus("sent");
+                                    messageRepo.save(aiMsg);
+                                    try {
+                                        System.out.println("收到input事件，设置消息状态为sent");
+                                        emitter.send(SseEmitter.event().name("message").data(mapMsg(aiMsg, userId)));
+                                    } catch (Exception ex) {
+                                        System.err.println("发送SSE消息失败: " + ex.getMessage());
+                                    }
                                 }
                                 break;
                                 

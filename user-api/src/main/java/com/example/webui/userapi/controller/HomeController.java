@@ -10,9 +10,4 @@ public class HomeController {
     public Map<String, String> root() { 
         return Map.of("status", "ok", "message", "WebUI User API Service"); 
     }
-    
-    @GetMapping("/")
-    public Map<String, String> home() { 
-        return Map.of("status", "ok", "message", "WebUI User API Service"); 
-    }
 }

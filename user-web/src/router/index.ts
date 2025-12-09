@@ -10,7 +10,8 @@ const router = createRouter({
     { path: '/chat', component: Chat, meta: { requiresAuth: true } },
     { path: '/register', component: () => import('../views/Register.vue') },
     { path: '/forgot-password', component: () => import('../views/ForgotPassword.vue') },
-    { path: '/feedback', component: () => import('../views/Feedback.vue') }
+    { path: '/feedback', component: () => import('../views/Feedback.vue') },
+    { path: '/share/:id', component: () => import('../views/Share.vue') }
   ]
 })
 

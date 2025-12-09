@@ -1,52 +1,28 @@
 <template>
   <div class="feedback-container">
     <!-- 右下角悬浮按钮 - 长方形显示"意见反馈"文字 -->
-    <n-button
+    <!-- <n-button
       type="primary"
       size="large"
       :icon="ChatboxEllipsesIcon"
       @click="showFeedbackForm"
       class="floating-btn"
-    >意见反馈</n-button>
-    
+    >意见反馈</n-button> -->
+
     <!-- 反馈表单弹窗 - 使用正确的NModal组件 -->
-    <n-modal
-      v-model:show="formVisible"
-      preset="card"
-      title="意见反馈"
-      size="large"
-      :mask-closable="true"
-      :close-on-esc="true"
-      style="width: 500px"
-    >
-      <n-form
-        :model="form"
-        :rules="rules"
-        ref="formRef"
-        class="feedback-form"
-      >
+    <n-modal v-model:show="formVisible" preset="card" title="意见反馈" size="large" :mask-closable="true"
+      :close-on-esc="true" style="width: 500px">
+
+      <n-form :model="form" :rules="rules" ref="formRef" class="feedback-form">
         <n-form-item path="type" label="反馈类型">
-          <n-select
-            v-model:value="form.type"
-            placeholder="请选择反馈类型"
-            :options="feedbackTypes"
-          />
+          <n-select v-model:value="form.type" placeholder="请选择反馈类型" :options="feedbackTypes" />
         </n-form-item>
         <n-form-item path="content" label="反馈内容">
-          <n-input
-            v-model:value="form.content"
-            type="textarea"
-            placeholder="请详细描述您的问题或建议..."
-            :autosize="{ minRows: 6, maxRows: 12 }"
-          />
+          <n-input v-model:value="form.content" type="textarea" placeholder="请详细描述您的问题或建议..."
+            :autosize="{ minRows: 6, maxRows: 12 }" />
         </n-form-item>
         <n-form-item>
-          <n-button
-            type="primary"
-            block
-            @click="handleSubmit"
-            :loading="submitting"
-          >
+          <n-button type="primary" block @click="handleSubmit" :loading="submitting">
             提交反馈
           </n-button>
         </n-form-item>
@@ -56,9 +32,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, h } from 'vue'
-import { NIcon, NModal, NButton, NForm, NFormItem, NSelect, NInput, useMessage } from 'naive-ui'
-import { ChatboxEllipses } from '@vicons/ionicons5'
+import { ref, reactive } from 'vue'
+import { NModal, NButton, NForm, NFormItem, NSelect, NInput, useMessage } from 'naive-ui'
 // 使用useMessage
 const message = useMessage()
 
@@ -66,9 +41,6 @@ const message = useMessage()
 const formVisible = ref(false)
 const submitting = ref(false)
 const formRef = ref()
-
-// 图标定义
-const ChatboxEllipsesIcon = { render() { return h(NIcon, null, { default: () => h(ChatboxEllipses) }) } }
 
 const feedbackTypes = [
   { label: 'Bug报告', value: 'bug' },
@@ -92,29 +64,24 @@ const rules = {
   ]
 }
 
-// 点击按钮时才显示弹窗
-const showFeedbackForm = () => {
-  formVisible.value = true
-}
-
 const handleSubmit = async () => {
   if (!formRef.value) return
-  
+
   try {
     await formRef.value.validate()
     submitting.value = true
-    
+
     // 这里应该调用API提交反馈
     console.log('提交反馈', form)
-    
+
     // 模拟提交成功
     await new Promise(resolve => setTimeout(resolve, 1000))
-    
+
     // 重置表单和关闭弹窗
     form.type = ''
     form.content = ''
     formVisible.value = false
-    
+
     // 显示成功提示 - 使用Naive UI消息组件
     message.success('反馈成功，感谢您的支持！')
   } catch (error) {

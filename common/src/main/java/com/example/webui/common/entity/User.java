@@ -51,6 +51,16 @@ public class User {
     @Column(nullable = false)
     private String status = "ACTIVE";
 
+    // 临时封禁相关字段
+    @Column(name = "banned_until")
+    private Instant bannedUntil;  // 临时封禁到期时间
+
+    @Column(name = "banned_at")
+    private Instant bannedAt;  // 封禁开始时间
+
+    @Column(name = "ban_count")
+    private Integer banCount = 0;  // 系统自动封禁次数
+
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
@@ -113,6 +123,12 @@ public class User {
     }
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+    public Instant getBannedUntil() { return bannedUntil; }
+    public void setBannedUntil(Instant bannedUntil) { this.bannedUntil = bannedUntil; }
+    public Instant getBannedAt() { return bannedAt; }
+    public void setBannedAt(Instant bannedAt) { this.bannedAt = bannedAt; }
+    public Integer getBanCount() { return banCount != null ? banCount : 0; }
+    public void setBanCount(Integer banCount) { this.banCount = banCount; }
     public Instant getCreatedAt() { return createdAt; }
     public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
     public Instant getUpdatedAt() { return updatedAt; }

@@ -6,7 +6,7 @@
         <div v-if="isLoginPage" class="login-page-container">
           <router-view />
         </div>
-        
+
         <!-- 其他页面显示完整布局 -->
         <div v-else class="admin-container">
           <!-- 侧边栏导航 -->
@@ -19,11 +19,11 @@
                 :options="menuOptions"
                 v-model:value="currentMenu"
                 @update:value="handleMenuChange"
-                :default-expanded-keys="['system']"
+                :default-expanded-keys="['system', 'approvals']"
               />
             </div>
           </div>
-          
+
           <!-- 主内容区域 -->
           <div class="main-content">
             <!-- 顶部导航栏 -->
@@ -32,6 +32,54 @@
                 <h3 class="page-title">{{ currentPageTitle }}</h3>
               </div>
               <div class="nav-right">
+                <!-- 通知铃铛 -->
+                <n-popover trigger="click" placement="bottom-end" :width="360" @update:show="handleNotificationShow">
+                  <template #trigger>
+                    <n-badge :value="notificationCount" :max="99" :show="notificationCount > 0">
+                      <n-button quaternary circle size="medium">
+                        <template #icon>
+                          <n-icon size="20"><NotificationsOutline /></n-icon>
+                        </template>
+                      </n-button>
+                    </n-badge>
+                  </template>
+                  <div class="notification-panel">
+                    <div class="notification-header">
+                      <span class="notification-title">通知提醒</span>
+                      <n-button text size="small" @click="fetchNotifications">刷新</n-button>
+                    </div>
+                    <div v-if="notifications.length === 0" class="notification-empty">
+                      <n-icon size="40" color="#ccc"><CheckmarkCircleOutline /></n-icon>
+                      <p>暂无待处理事项</p>
+                    </div>
+                    <div v-else class="notification-list">
+                      <div
+                        v-for="notification in notifications"
+                        :key="notification.id"
+                        class="notification-item"
+                        :class="notification.level"
+                        @click="handleNotificationClick(notification)"
+                      >
+                        <div class="notification-icon">
+                          <n-icon size="20" :color="getNotificationColor(notification.level)">
+                            <AlertCircleOutline v-if="notification.level === 'warning'" />
+                            <InformationCircleOutline v-else />
+                          </n-icon>
+                        </div>
+                        <div class="notification-content">
+                          <div class="notification-item-title">{{ notification.title }}</div>
+                          <div class="notification-message">{{ notification.message }}</div>
+                        </div>
+                        <div class="notification-badge">
+                          <n-tag :type="notification.level === 'warning' ? 'warning' : 'info'" size="small">
+                            {{ notification.count }}
+                          </n-tag>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </n-popover>
+
                 <n-dropdown trigger="hover" :options="dropdownOptions" @select="handleDropdownSelect">
                   <n-button type="primary" ghost>
                     <template #icon>
@@ -42,7 +90,7 @@
                 </n-dropdown>
               </div>
             </div>
-            
+
             <!-- 页面内容 -->
             <div class="page-content">
               <router-view />
@@ -55,17 +103,23 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, h } from 'vue'
+import { ref, computed, h, onMounted, onUnmounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { NIcon, NDropdown } from 'naive-ui'
+import { NIcon, NDropdown, NBadge, NPopover, NTag, NButton } from 'naive-ui'
 import {
   PersonCircle,
   Settings,
   DocumentText,
   Chatbubble,
   ChevronDown,
-  ChatboxEllipses
+  ChatboxEllipses,
+  NotificationsOutline,
+  AlertCircleOutline,
+  InformationCircleOutline,
+  CheckmarkCircleOutline,
+  KeyOutline
 } from '@vicons/ionicons5'
+import { get } from './utils/api'
 
 const router = useRouter()
 const route = useRoute()
@@ -81,10 +135,18 @@ const pageTitles = ref({
   workflows: '工作流配置',
   logs: '日志管理',
   feedbacks: '反馈管理',
-  conversations: '对话历史'
+  conversations: '对话历史',
+  'password-resets': '密码重置审批',
+  'action-logs': '用户操作日志',
+  'system-configs': '系统配置'
 })
 
 const currentPageTitle = computed(() => pageTitles.value[currentMenu.value as keyof typeof pageTitles.value] || '控制台')
+
+// 通知相关
+const notifications = ref<any[]>([])
+const notificationCount = computed(() => notifications.value.reduce((sum, n) => sum + (n.count || 0), 0))
+let notificationInterval: ReturnType<typeof setInterval> | null = null
 
 const menuOptions = [
   {
@@ -111,6 +173,23 @@ const menuOptions = [
         label: '工作流配置',
         key: 'workflows',
         icon: () => h(NIcon, null, { default: () => h(Settings) })
+      },
+      {
+        label: '系统配置',
+        key: 'system-configs',
+        icon: () => h(NIcon, null, { default: () => h(Settings) })
+      }
+    ]
+  },
+  {
+    label: '审批管理',
+    key: 'approvals',
+    icon: () => h(NIcon, null, { default: () => h(KeyOutline) }),
+    children: [
+      {
+        label: '密码重置审批',
+        key: 'password-resets',
+        icon: () => h(NIcon, null, { default: () => h(KeyOutline) })
       }
     ]
   },
@@ -122,6 +201,11 @@ const menuOptions = [
   {
     label: '日志管理',
     key: 'logs',
+    icon: () => h(NIcon, null, { default: () => h(DocumentText) })
+  },
+  {
+    label: '用户操作日志',
+    key: 'action-logs',
     icon: () => h(NIcon, null, { default: () => h(DocumentText) })
   },
   {
@@ -152,6 +236,64 @@ const handleLogout = () => {
   localStorage.removeItem('admin_token')
   router.push('/login')
 }
+
+// 获取通知
+const fetchNotifications = async () => {
+  try {
+    const response = await get('/admin/notifications')
+    if (response && response.code === 200 && response.data) {
+      notifications.value = response.data.notifications || []
+    }
+  } catch (error) {
+    console.error('获取通知失败:', error)
+  }
+}
+
+// 通知面板显示时刷新
+const handleNotificationShow = (show: boolean) => {
+  if (show) {
+    fetchNotifications()
+  }
+}
+
+// 点击通知
+const handleNotificationClick = (notification: any) => {
+  if (notification.link) {
+    // 从 link 中提取路由路径
+    const path = notification.link.split('?')[0]
+    currentMenu.value = path.replace('/', '')
+    router.push(notification.link)
+  }
+}
+
+// 获取通知颜色
+const getNotificationColor = (level: string) => {
+  const colors: { [key: string]: string } = {
+    warning: '#fb6340',
+    info: '#5e72e4',
+    success: '#2dce89',
+    error: '#f5365c'
+  }
+  return colors[level] || '#5e72e4'
+}
+
+// 组件挂载
+onMounted(() => {
+  // 只在非登录页面加载通知
+  if (!isLoginPage.value) {
+    fetchNotifications()
+    // 每60秒刷新一次通知
+    notificationInterval = setInterval(fetchNotifications, 60000)
+  }
+})
+
+// 组件卸载
+onUnmounted(() => {
+  if (notificationInterval) {
+    clearInterval(notificationInterval)
+    notificationInterval = null
+  }
+})
 </script>
 
 <style scoped>
@@ -238,5 +380,101 @@ const handleLogout = () => {
   overflow-y: auto;
   padding: 24px;
   background-color: #F5F7FA;
+}
+
+/* 通知面板样式 */
+.notification-panel {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.notification-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 1;
+}
+
+.notification-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+}
+
+.notification-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  color: #999;
+}
+
+.notification-empty p {
+  margin-top: 12px;
+  font-size: 14px;
+}
+
+.notification-list {
+  padding: 8px 0;
+}
+
+.notification-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.notification-item:last-child {
+  border-bottom: none;
+}
+
+.notification-item:hover {
+  background-color: #f5f7fa;
+}
+
+.notification-item.warning {
+  border-left: 3px solid #fb6340;
+}
+
+.notification-item.info {
+  border-left: 3px solid #5e72e4;
+}
+
+.notification-icon {
+  flex-shrink: 0;
+  margin-right: 12px;
+  margin-top: 2px;
+}
+
+.notification-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.notification-item-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.notification-message {
+  font-size: 12px;
+  color: #666;
+  line-height: 1.4;
+}
+
+.notification-badge {
+  flex-shrink: 0;
+  margin-left: 12px;
 }
 </style>

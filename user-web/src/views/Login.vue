@@ -1,5 +1,20 @@
 <template>
   <div class="login-container">
+    <!-- 顶部反馈按钮 -->
+    <div class="top-nav">
+      <div></div>
+      <n-button text type="primary" @click="$router.push('/feedback')" class="nav-btn feedback-btn">
+        意见反馈
+        <template #icon>
+          <n-icon size="18">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/>
+            </svg>
+          </n-icon>
+        </template>
+      </n-button>
+    </div>
+
     <!-- 背景动画元素 -->
     <div class="bg-animation">
       <div class="floating-shapes">
@@ -10,14 +25,15 @@
         <div class="shape shape-5"></div>
       </div>
     </div>
-    
+
     <div class="login-content">
       <div class="login-header">
         <div class="logo">
           <div class="logo-icon">
             <n-icon size="48">
               <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+                <path
+                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" />
               </svg>
             </n-icon>
           </div>
@@ -25,63 +41,35 @@
           <p class="logo-subtitle">便捷、灵活、可靠的企业级大模型应用开发平台</p>
         </div>
       </div>
-      
+
       <div class="login-form-wrapper">
         <div class="login-tabs">
-          <div 
-            class="tab-item" 
-            :class="{ active: loginType === 'account' }" 
-            @click="switchTab('account')"
-          >
+          <div class="tab-item" :class="{ active: loginType === 'account' }" @click="switchTab('account')">
             账号登录
           </div>
-          <div 
-            class="tab-item" 
-            :class="{ active: loginType === 'phone' }" 
-            @click="switchTab('phone')"
-          >
+          <div class="tab-item" :class="{ active: loginType === 'phone' }" @click="switchTab('phone')">
             手机登录
           </div>
         </div>
-        
+
         <n-form :model="form" :rules="rules" ref="formRef" class="login-form">
           <!-- 账号登录 -->
           <n-form-item v-if="loginType === 'account'" path="username">
-            <n-input
-              v-model:value="form.username"
-              placeholder="请输入用户名或邮箱"
-              :prefix="userIcon"
-              class="login-input"
-              size="large"
-              @keydown.enter="handleLogin"
-            />
+            <n-input v-model:value="form.username" placeholder="请输入用户名或邮箱" :prefix="userIcon" class="login-input"
+              size="large" @keydown.enter="handleLogin" />
           </n-form-item>
-          
+
           <!-- 手机登录 -->
           <n-form-item v-else path="phone">
-            <n-input
-              v-model:value="form.phone"
-              placeholder="请输入手机号"
-              :prefix="phoneIcon"
-              class="login-input"
-              size="large"
-              @keydown.enter="handleLogin"
-            />
+            <n-input v-model:value="form.phone" placeholder="请输入手机号" :prefix="phoneIcon" class="login-input"
+              size="large" @keydown.enter="handleLogin" />
           </n-form-item>
-          
+
           <n-form-item path="password">
-            <n-input
-              v-model:value="form.password"
-              type="password"
-              placeholder="请输入密码"
-              :prefix="lockIcon"
-              show-password-on="mousedown"
-              class="login-input"
-              size="large"
-              @keydown.enter="handleLogin"
-            />
+            <n-input v-model:value="form.password" type="password" placeholder="请输入密码" :prefix="lockIcon"
+              show-password-on="mousedown" class="login-input" size="large" @keydown.enter="handleLogin" />
           </n-form-item>
-          
+
           <div class="login-options">
             <n-checkbox v-model:checked="form.remember">
               记住我
@@ -90,34 +78,27 @@
               忘记密码?
             </n-text>
           </div>
-          
+
           <n-form-item>
-            <n-button
-              type="primary"
-              block
-              @click="handleLogin"
-              :loading="loading"
-              class="login-button"
-              size="large"
-            >
+            <n-button type="primary" block @click="handleLogin" :loading="loading" class="login-button" size="large">
               <template #icon>
                 <n-icon v-if="!loading">
                   <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M10 17l5-5-5-5v10z"/>
+                    <path d="M10 17l5-5-5-5v10z" />
                   </svg>
                 </n-icon>
               </template>
               登录
             </n-button>
           </n-form-item>
-          
+
           <div class="login-footer">
             <span>没有账号?</span>
             <n-text type="primary" @click="$router.push('/register')" class="register-link">
               立即注册
             </n-text>
           </div>
-          
+
           <div class="agreement">
             <n-checkbox v-model:checked="form.agree" class="agree-checkbox">
               我已阅读并同意
@@ -128,22 +109,23 @@
           </div>
         </n-form>
       </div>
-      
+
       <div class="login-version">
         v1.3.1
       </div>
     </div>
-    
-  <!-- 协议弹窗 -->
-    <n-modal v-model:show="agreementVisible" preset="dialog" title="服务协议" positive-text="同意" negative-text="关闭" :mask-closable="false">
+
+    <!-- 协议弹窗 -->
+    <n-modal v-model:show="agreementVisible" preset="dialog" title="服务协议" positive-text="同意" negative-text="关闭"
+      :mask-closable="false">
       <div class="agreement-content">
         <h3>服务协议</h3>
         <p>这里是服务协议的内容...</p>
       </div>
     </n-modal>
-    
+
     <!-- 隐私政策弹窗 -->
-    <n-modal v-model:show="privacyVisible" preset="dialog" title="隐私政策"  negative-text="关闭" :mask-closable="false">
+    <n-modal v-model:show="privacyVisible" preset="dialog" title="隐私政策" negative-text="关闭" :mask-closable="false">
       <div class="agreement-content">
         <h3>隐私政策</h3>
         <p>这里是隐私政策的内容...</p>
@@ -155,7 +137,7 @@
 <script setup lang="ts">
 import { ref, reactive, computed, h } from 'vue'
 import { useRouter } from 'vue-router'
-import { NIcon, useMessage, NModal } from 'naive-ui' 
+import { NIcon, useMessage, NModal } from 'naive-ui'
 import { Person, LockClosed, PhonePortrait } from '@vicons/ionicons5'
 import { post } from '../utils/api'
 
@@ -204,14 +186,14 @@ const rules = computed(() => {
 // 切换登录方式
 const switchTab = (type: 'account' | 'phone') => {
   if (loading.value) return
-  
+
   loginType.value = type
-  
+
   // 清空表单验证错误
   if (formRef.value) {
     formRef.value.restoreValidation()
   }
-  
+
   // 清空表单数据
   form.username = ''
   form.phone = ''
@@ -223,13 +205,13 @@ const handleLogin = async () => {
     message.warning('请先同意服务条款和隐私政策')
     return
   }
-  
+
   if (!formRef.value) return
-  
+
   try {
     await formRef.value.validate()
     loading.value = true
-    
+
     // 调用登录API
     const response = await post('/users/login', {
       ...(loginType.value === 'account' ? {
@@ -240,18 +222,22 @@ const handleLogin = async () => {
       password: form.password,
       remember: form.remember
     })
-    
+
     // 检查响应状态码
     if (response.code !== 200) {
       throw new Error(response.message || response.error || '登录失败')
     }
-    
-    // 保存token
+
+    // 保存token和用户信息
     localStorage.setItem('token', response.token || response.data?.token)
-    
+    if (response.user) {
+      localStorage.setItem('username', response.user.username || '')
+      localStorage.setItem('role', response.user.role || 'USER')
+    }
+
     // 登录成功提示
     message.success('登录成功')
-    
+
     // 登录成功，直接跳转到聊天页面
     router.push('/chat')
   } catch (error) {
@@ -362,15 +348,20 @@ const showPrivacy = () => {
 }
 
 @keyframes float {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0) rotate(0deg);
   }
+
   25% {
     transform: translateY(-20px) rotate(90deg);
   }
+
   50% {
     transform: translateY(0) rotate(180deg);
   }
+
   75% {
     transform: translateY(20px) rotate(270deg);
   }
@@ -398,6 +389,7 @@ const showPrivacy = () => {
     opacity: 0;
     transform: translateY(-20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -469,6 +461,7 @@ const showPrivacy = () => {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -518,6 +511,7 @@ const showPrivacy = () => {
   from {
     transform: scaleX(0);
   }
+
   to {
     transform: scaleX(1);
   }
@@ -640,17 +634,51 @@ const showPrivacy = () => {
     max-width: 100%;
     padding: 0 16px;
   }
-  
+
   .login-form-wrapper {
     padding: 24px;
   }
-  
+
   .logo-text {
     font-size: 24px;
   }
-  
+
   .logo-subtitle {
     font-size: 12px;
   }
+
+  .top-nav {
+    padding: 12px 16px;
+  }
+}
+
+/* 顶部导航样式 */
+.top-nav {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 24px;
+  z-index: 10;
+}
+
+.nav-btn {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1677FF;
+  transition: all 0.3s ease;
+}
+
+.nav-btn:hover {
+  opacity: 0.8;
+  transform: translateY(-1px);
+}
+
+.feedback-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 </style>

@@ -6,8 +6,8 @@ services:
     ports:
       - "13089:80"
     volumes:
-      - ./admin-web/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./user-api/src/main/resources/static:/usr/share/nginx/html:ro
+      - ./user-web/nginx-app.conf:/etc/nginx/nginx.conf:ro
+      - ./user-web/dist:/usr/share/nginx/html:ro
     depends_on:
       user-api:
         condition: service_started
@@ -19,13 +19,12 @@ services:
       context: ./user-api
       dockerfile: Dockerfile
     ports:
-      - "13088:13088"
+      - "11031:11031"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/chatbot?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/chatbot?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&useUnicode=true
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=tvi888TVI
       - JWT_SECRET=your-secret-key-change-in-production
-      - WS_PORT=13088
     depends_on:
       mysql:
         condition: service_healthy
@@ -35,10 +34,10 @@ services:
   admin-web:
     image: nginx:alpine
     ports:
-      - "13081:80"
+      - "13085:80"
     volumes:
       - ./admin-web/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./admin-api/src/main/resources/static:/usr/share/nginx/html:ro
+      - ./admin-web/dist:/usr/share/nginx/html:ro
     depends_on:
       admin-api:
         condition: service_started
@@ -49,9 +48,10 @@ services:
     build:
       context: ./admin-api
       dockerfile: Dockerfile
-    ports: []
+    ports:
+      - "11025:11025"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/chatbot?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/chatbot?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&useUnicode=true
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=tvi888TVI
       - JWT_SECRET=your-secret-key-change-in-production
@@ -64,8 +64,9 @@ services:
 
   mysql:
     image: mysql:8.0
-    ports:
-      - "3306:3306"
+    # 不映射端口到宿主机，容器内通过服务名 mysql:3306 访问即可
+    expose:
+      - "3306"
     environment:
       - MYSQL_ROOT_PASSWORD=tvi888TVI
       - MYSQL_DATABASE=chatbot

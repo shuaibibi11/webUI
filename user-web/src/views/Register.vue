@@ -43,7 +43,7 @@
 
           <!-- 姓名 -->
           <n-form-item label="姓名 (实名认证)" path="realName">
-            <n-input v-model:value="form.realName" placeholder="中文或英文（可含空格）" :prefix="personIcon"
+            <n-input v-model:value="form.realName" placeholder="中文姓名" :prefix="personIcon"
               class="register-input" />
             <template #feedback>
               <div class="form-hint">不允许数字或符号</div>
@@ -55,7 +55,7 @@
             <n-input v-model:value="form.idCard" placeholder="15-18位数字，末位可为X" :prefix="idCardIcon"
               class="register-input" @blur="checkIdCardUnique" />
             <template #feedback>
-              <div class="form-hint">示例: 440981200003014556 或 440981200003014556X</div>
+              <div class="form-hint">示例: 3401111976****451X</div>
               <n-text v-if="idCardCheckStatus === 'checking'" type="info">正在检查...</n-text>
               <n-text v-else-if="idCardCheckStatus === 'exist'" type="error">该身份证号不可用</n-text>
               <n-text v-else-if="idCardCheckStatus === 'unique'" type="success">该身份证号可用</n-text>

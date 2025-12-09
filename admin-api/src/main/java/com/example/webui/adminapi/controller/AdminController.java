@@ -26,6 +26,10 @@ public class AdminController {
     @Autowired private FeedbackRepository feedbackRepo;
     @Autowired private AuditLogRepository auditRepo;
     @Autowired private WorkflowConfigRepository workflowRepo;
+    @Autowired private PasswordResetRepository passwordResetRepo;
+    @Autowired private UserActionLogRepository userActionLogRepo;
+    @Autowired private SystemConfigRepository systemConfigRepo;
+    @Autowired private ViolationRecordRepository violationRecordRepo;
     @PersistenceContext private EntityManager entityManager;
 
     @GetMapping("/stats")
@@ -73,14 +77,67 @@ public class AdminController {
     }
 
     @GetMapping("/users")
-    public ResponseEntity<?> users() {
+    public ResponseEntity<?> users(
+            @RequestParam(name = "username", required = false) String username,
+            @RequestParam(name = "phone", required = false) String phone,
+            @RequestParam(name = "email", required = false) String email,
+            @RequestParam(name = "status", required = false) String status,
+            @RequestParam(name = "role", required = false) String role,
+            @RequestParam(name = "page", defaultValue = "1") int page,
+            @RequestParam(name = "limit", defaultValue = "50") int limit) {
         try {
-            // 使用自定义查询，获取需要的字段，包括角色信息
-            List<Map<String, Object>> users = entityManager.createQuery("SELECT u.id, u.username, u.phone, u.email, u.realName, u.role, u.createdAt FROM User u", Object[].class)
-                .getResultList()
+            // 构建动态查询，包含封禁相关字段
+            StringBuilder jpql = new StringBuilder("SELECT u.id, u.username, u.phone, u.email, u.realName, u.role, u.status, u.createdAt, u.banCount, u.bannedUntil, u.bannedAt FROM User u WHERE 1=1");
+            List<Object> params = new ArrayList<>();
+            int paramIndex = 1;
+
+            if (username != null && !username.isBlank()) {
+                jpql.append(" AND LOWER(u.username) LIKE LOWER(?").append(paramIndex++).append(")");
+                params.add("%" + username + "%");
+            }
+            if (phone != null && !phone.isBlank()) {
+                jpql.append(" AND u.phone LIKE ?").append(paramIndex++);
+                params.add("%" + phone + "%");
+            }
+            if (email != null && !email.isBlank()) {
+                jpql.append(" AND LOWER(u.email) LIKE LOWER(?").append(paramIndex++).append(")");
+                params.add("%" + email + "%");
+            }
+            if (status != null && !status.isBlank()) {
+                jpql.append(" AND UPPER(u.status) = UPPER(?").append(paramIndex++).append(")");
+                params.add(status);
+            }
+            if (role != null && !role.isBlank()) {
+                jpql.append(" AND UPPER(u.role) = UPPER(?").append(paramIndex++).append(")");
+                params.add(role);
+            }
+
+            jpql.append(" ORDER BY u.createdAt DESC");
+
+            // 执行查询
+            var query = entityManager.createQuery(jpql.toString(), Object[].class);
+            for (int i = 0; i < params.size(); i++) {
+                query.setParameter(i + 1, params.get(i));
+            }
+
+            // 获取总数（用于分页）
+            String countJpql = jpql.toString().replace("SELECT u.id, u.username, u.phone, u.email, u.realName, u.role, u.status, u.createdAt, u.banCount, u.bannedUntil, u.bannedAt", "SELECT COUNT(u.id)");
+            countJpql = countJpql.replaceFirst(" ORDER BY u.createdAt DESC", "");
+            var countQuery = entityManager.createQuery(countJpql, Long.class);
+            for (int i = 0; i < params.size(); i++) {
+                countQuery.setParameter(i + 1, params.get(i));
+            }
+            long total = countQuery.getSingleResult();
+
+            // 分页
+            if (page < 1) page = 1;
+            query.setFirstResult((page - 1) * limit);
+            query.setMaxResults(limit);
+
+            List<Map<String, Object>> users = query.getResultList()
                 .stream()
                 .map(result -> {
-                    // 转换查询结果为Map，包含用户角色信息
+                    // 转换查询结果为Map，包含用户角色、状态和封禁信息
                     Map<String, Object> userMap = new HashMap<>();
                     userMap.put("id", result[0]);
                     userMap.put("username", result[1]);
@@ -88,13 +145,28 @@ public class AdminController {
                     userMap.put("email", result[3]);
                     userMap.put("realName", result[4]);
                     userMap.put("role", result[5]);
-                    userMap.put("createdAt", result[6] != null ? result[6].toString() : null);
+                    userMap.put("status", result[6]);
+                    userMap.put("createdAt", result[7] != null ? result[7].toString() : null);
+                    userMap.put("banCount", result[8] != null ? result[8] : 0);
+                    userMap.put("bannedUntil", result[9] != null ? result[9].toString() : null);
+                    userMap.put("bannedAt", result[10] != null ? result[10].toString() : null);
                     return userMap;
                 })
                 .collect(java.util.stream.Collectors.toList());
+
             Map<String,Object> res = new HashMap<>();
             res.put("code", 200);
-            res.put("data", Map.of("users", users));
+
+            Map<String, Object> data = new HashMap<>();
+            data.put("users", users);
+            data.put("pagination", Map.of(
+                "page", page,
+                "limit", limit,
+                "total", total,
+                "totalPages", (int) Math.ceil((double) total / limit)
+            ));
+            res.put("data", data);
+
             return ResponseEntity.ok(res);
         } catch (Exception e) {
             // 记录详细错误信息
@@ -116,15 +188,10 @@ public class AdminController {
         // 审批通过，设置用户状态为ACTIVE
         u.setStatus("ACTIVE");
         userRepo.save(u);
-        try {
-            AuditLog log = new AuditLog();
-            String actorId = getActorId(auth);
-            User actor = new User(); actor.setId(actorId); log.setUser(actor);
-            log.setAction("user_approve");
-            log.setDetails("approve:"+id);
-            log.setIp(request.getHeader("X-Forwarded-For") != null ? request.getHeader("X-Forwarded-For") : request.getRemoteAddr());
-            auditRepo.save(log);
-        } catch (Exception ignored) {}
+
+        // 记录审计日志（使用独立方法，不影响主事务）
+        saveAuditLogSafe(auth, request, "user_approve", "approve:"+id);
+
         Map<String,Object> res = new HashMap<>();
         res.put("code", 200);
         res.put("message", "审批通过");
@@ -139,15 +206,10 @@ public class AdminController {
         // 拒绝审批，设置用户状态为REJECTED
         u.setStatus("REJECTED");
         userRepo.save(u);
-        try {
-            AuditLog log = new AuditLog();
-            String actorId = getActorId(auth);
-            User actor = new User(); actor.setId(actorId); log.setUser(actor);
-            log.setAction("user_reject");
-            log.setDetails("reject:"+id);
-            log.setIp(request.getHeader("X-Forwarded-For") != null ? request.getHeader("X-Forwarded-For") : request.getRemoteAddr());
-            auditRepo.save(log);
-        } catch (Exception ignored) {}
+
+        // 记录审计日志（使用独立方法，不影响主事务）
+        saveAuditLogSafe(auth, request, "user_reject", "reject:"+id);
+
         Map<String,Object> res = new HashMap<>();
         res.put("code", 200);
         res.put("message", "已拒绝");
@@ -159,15 +221,10 @@ public class AdminController {
     public ResponseEntity<?> delete(@PathVariable("id") String id, Authentication auth, HttpServletRequest request) {
         if (!userRepo.existsById(id)) return ResponseEntity.status(404).body(err("用户不存在"));
         userRepo.deleteById(id);
-        try {
-            AuditLog log = new AuditLog();
-            String actorId = getActorId(auth);
-            User actor = new User(); actor.setId(actorId); log.setUser(actor);
-            log.setAction("user_delete");
-            log.setDetails("delete:"+id);
-            log.setIp(request.getHeader("X-Forwarded-For") != null ? request.getHeader("X-Forwarded-For") : request.getRemoteAddr());
-            auditRepo.save(log);
-        } catch (Exception ignored) {}
+
+        // 记录审计日志（使用独立方法，不影响主事务）
+        saveAuditLogSafe(auth, request, "user_delete", "delete:"+id);
+
         Map<String,Object> res = new HashMap<>();
         res.put("code", 200);
         res.put("message", "已删除");
@@ -179,7 +236,7 @@ public class AdminController {
     public ResponseEntity<?> updateUser(@PathVariable("id") String id, @RequestBody Map<String,Object> patch, Authentication auth, HttpServletRequest request) {
         User user = userRepo.findById(id).orElse(null);
         if (user == null) return ResponseEntity.status(404).body(err("用户不存在"));
-        
+
         // 支持修改用户的基本信息和角色
         if (patch.containsKey("username")) user.setUsername(patch.get("username").toString());
         if (patch.containsKey("phone")) user.setPhone(patch.get("phone").toString());
@@ -211,19 +268,12 @@ public class AdminController {
                 return ResponseEntity.badRequest().body(err("状态只能是PENDING、ACTIVE、REJECTED或BANNED"));
             }
         }
-        
+
         userRepo.save(user);
-        
-        try {
-            AuditLog log = new AuditLog();
-            String actorId = getActorId(auth);
-            User actor = new User(); actor.setId(actorId); log.setUser(actor);
-            log.setAction("user_update");
-            log.setDetails(id+":"+user.getRole()+":"+user.getStatus());
-            log.setIp(request.getHeader("X-Forwarded-For") != null ? request.getHeader("X-Forwarded-For") : request.getRemoteAddr());
-            auditRepo.save(log);
-        } catch (Exception ignored) {}
-        
+
+        // 记录审计日志（使用独立方法，不影响主事务）
+        saveAuditLogSafe(auth, request, "user_update", id+":"+user.getRole()+":"+user.getStatus());
+
         Map<String,Object> res = new HashMap<>();
         res.put("code", 200);
         res.put("message", "已更新");
@@ -235,41 +285,34 @@ public class AdminController {
     public ResponseEntity<?> banUser(@PathVariable("id") String id, Authentication auth, HttpServletRequest request) {
         User u = userRepo.findById(id).orElse(null);
         if (u == null) return ResponseEntity.status(404).body(err("用户不存在"));
-        // 封禁用户，设置状态为BANNED
+        // 封禁用户，设置状态为BANNED，记录封禁时间
         u.setStatus("BANNED");
+        u.setBannedAt(java.time.Instant.now());
         userRepo.save(u);
-        try {
-            AuditLog log = new AuditLog();
-            String actorId = getActorId(auth);
-            User actor = new User(); actor.setId(actorId); log.setUser(actor);
-            log.setAction("user_ban");
-            log.setDetails("ban:"+id);
-            log.setIp(request.getHeader("X-Forwarded-For") != null ? request.getHeader("X-Forwarded-For") : request.getRemoteAddr());
-            auditRepo.save(log);
-        } catch (Exception ignored) {}
+
+        // 记录审计日志（使用独立方法，不影响主事务）
+        saveAuditLogSafe(auth, request, "user_ban", "ban:"+id);
+
         Map<String,Object> res = new HashMap<>();
         res.put("code", 200);
         res.put("message", "用户已封禁");
         return ResponseEntity.ok(res);
     }
-    
+
     @PutMapping("/users/{id}/unban")
     @Transactional
     public ResponseEntity<?> unbanUser(@PathVariable("id") String id, Authentication auth, HttpServletRequest request) {
         User u = userRepo.findById(id).orElse(null);
         if (u == null) return ResponseEntity.status(404).body(err("用户不存在"));
-        // 解封用户，设置状态为ACTIVE
+        // 解封用户，设置状态为ACTIVE，清除封禁时间
         u.setStatus("ACTIVE");
+        u.setBannedUntil(null);
+        u.setBannedAt(null);
         userRepo.save(u);
-        try {
-            AuditLog log = new AuditLog();
-            String actorId = getActorId(auth);
-            User actor = new User(); actor.setId(actorId); log.setUser(actor);
-            log.setAction("user_unban");
-            log.setDetails("unban:"+id);
-            log.setIp(request.getHeader("X-Forwarded-For") != null ? request.getHeader("X-Forwarded-For") : request.getRemoteAddr());
-            auditRepo.save(log);
-        } catch (Exception ignored) {}
+
+        // 记录审计日志（使用独立方法，不影响主事务）
+        saveAuditLogSafe(auth, request, "user_unban", "unban:"+id);
+
         Map<String,Object> res = new HashMap<>();
         res.put("code", 200);
         res.put("message", "用户已解封");
@@ -299,19 +342,23 @@ public class AdminController {
     @GetMapping("/conversations")
     public ResponseEntity<?> conversations(@RequestParam(name = "page", defaultValue = "1") int page,
                                           @RequestParam(name = "limit", defaultValue = "50") int limit,
-                                          @RequestParam(name = "query", required = false) String query) {
+                                          @RequestParam(name = "query", required = false) String query,
+                                          @RequestParam(name = "sortOrder", defaultValue = "desc") String sortOrder) {
         Map<String, Object> response = new HashMap<>();
         response.put("code", 200);
-        
+
         // 确保page参数至少为1，避免负数页码
         if (page < 1) {
             page = 1;
         }
-        
-        // 使用PageRequest进行分页查询，Spring Data的页码从0开始
-        PageRequest pageable = PageRequest.of(page - 1, limit);
+
+        // 使用PageRequest进行分页查询，Spring Data的页码从0开始，支持排序
+        org.springframework.data.domain.Sort sort = "asc".equalsIgnoreCase(sortOrder)
+            ? org.springframework.data.domain.Sort.by("createdAt").ascending()
+            : org.springframework.data.domain.Sort.by("createdAt").descending();
+        PageRequest pageable = PageRequest.of(page - 1, limit, sort);
         Page<Conversation> conversationPage;
-        
+
         // 如果有查询参数，则进行模糊查询
         if (query != null && !query.isBlank()) {
             // 按标题模糊查询
@@ -326,10 +373,28 @@ public class AdminController {
         List<Map<String, Object>> conversations = conversationPage.getContent().stream().map(conv -> {
             Map<String, Object> convMap = new HashMap<>();
             convMap.put("id", conv.getId());
-            convMap.put("title", conv.getTitle());
+
+            // 获取标题，如果为空或"新会话"则从第一条用户消息自动生成
+            String title = conv.getTitle();
+            if (title == null || title.isBlank() || title.equals("新会话") || title.equals("新对话")) {
+                // 从第一条用户消息生成标题
+                Message firstUserMessage = conv.getMessages().stream()
+                        .filter(m -> "user".equals(m.getRole()))
+                        .min(Comparator.comparing(Message::getCreatedAt))
+                        .orElse(null);
+                if (firstUserMessage != null && firstUserMessage.getContent() != null) {
+                    String content = firstUserMessage.getContent().trim();
+                    // 取前30个字符作为标题
+                    title = content.length() > 30 ? content.substring(0, 30) + "..." : content;
+                } else {
+                    title = "对话 " + conv.getId().substring(0, 8);
+                }
+            }
+            convMap.put("title", title);
+
             convMap.put("createdAt", conv.getCreatedAt().toString());
             convMap.put("updatedAt", conv.getUpdatedAt().toString());
-            
+
             // 获取用户信息
             if (conv.getUser() != null) {
                 convMap.put("userId", conv.getUser().getId());
@@ -338,17 +403,17 @@ public class AdminController {
                 convMap.put("userId", null);
                 convMap.put("username", "未知用户");
             }
-            
+
             // 获取最后一条消息
             Message lastMessage = conv.getMessages().stream()
                     .max(Comparator.comparing(Message::getCreatedAt))
                     .orElse(null);
-            
+
             if (lastMessage != null) {
                 convMap.put("lastMessage", Map.of(
                     "id", lastMessage.getId(),
-                    "content", lastMessage.getContent().length() > 50 ? 
-                            lastMessage.getContent().substring(0, 50) + "..." : 
+                    "content", lastMessage.getContent().length() > 50 ?
+                            lastMessage.getContent().substring(0, 50) + "..." :
                             lastMessage.getContent(),
                     "createdAt", lastMessage.getCreatedAt().toString()
                 ));
@@ -357,7 +422,7 @@ public class AdminController {
                 convMap.put("lastMessage", null);
                 convMap.put("messageCount", 0);
             }
-            
+
             return convMap;
         }).toList();
         
@@ -380,20 +445,13 @@ public class AdminController {
     public ResponseEntity<?> deleteConversation(@PathVariable("id") String id, Authentication auth, HttpServletRequest request) {
         Conversation conv = conversationRepo.findById(id).orElse(null);
         if (conv == null) return ResponseEntity.status(404).body(err("对话不存在"));
-        
+
         // 删除对话及其所有消息（由于设置了级联删除，消息会自动删除）
         conversationRepo.deleteById(id);
-        
-        try {
-            AuditLog log = new AuditLog();
-            String actorId = getActorId(auth);
-            User actor = new User(); actor.setId(actorId); log.setUser(actor);
-            log.setAction("conversation_delete");
-            log.setDetails("delete:" + id + ":" + conv.getTitle());
-            log.setIp(request.getHeader("X-Forwarded-For") != null ? request.getHeader("X-Forwarded-For") : request.getRemoteAddr());
-            auditRepo.save(log);
-        } catch (Exception ignored) {}
-        
+
+        // 记录审计日志（使用独立方法，不影响主事务）
+        saveAuditLogSafe(auth, request, "conversation_delete", "delete:" + id + ":" + conv.getTitle());
+
         Map<String,Object> res = new HashMap<>();
         res.put("code", 200);
         res.put("message", "对话已删除");
@@ -527,15 +585,29 @@ public class AdminController {
 
     @GetMapping("/conversations/{id}/messages")
     public ResponseEntity<?> conversationMessages(@PathVariable("id") String id,
-                                                  @RequestParam(defaultValue = "1") int page,
-                                                  @RequestParam(defaultValue = "50") int limit) {
+                                                  @RequestParam(name = "page", defaultValue = "1") int page,
+                                                  @RequestParam(name = "limit", defaultValue = "50") int limit) {
         Conversation c = conversationRepo.findById(id).orElse(null);
         if (c == null) return ResponseEntity.status(404).body(err("会话不存在"));
         List<Message> list = c.getMessages();
         list.sort(Comparator.comparing(Message::getCreatedAt));
+
+        // 手动构建消息列表，避免循环引用
+        List<Map<String,Object>> messagesList = new ArrayList<>();
+        for (Message msg : list) {
+            Map<String,Object> msgMap = new HashMap<>();
+            msgMap.put("id", msg.getId());
+            msgMap.put("role", msg.getRole());
+            msgMap.put("content", msg.getContent());
+            msgMap.put("status", msg.getStatus());
+            msgMap.put("createdAt", msg.getCreatedAt() != null ? msg.getCreatedAt().toString() : null);
+            msgMap.put("conversationId", id);
+            messagesList.add(msgMap);
+        }
+
         Map<String,Object> res = new HashMap<>();
         res.put("code", 200);
-        res.put("data", Map.of("messages", list, "pagination", Map.of("total", list.size())));
+        res.put("data", Map.of("messages", messagesList, "pagination", Map.of("total", list.size())));
         return ResponseEntity.ok(res);
     }
 
@@ -659,6 +731,7 @@ public class AdminController {
         return ResponseEntity.ok(res);
     }
     
+    // 注意：/feedbacks/stats 必须在 /feedbacks 之前定义，否则会被 /feedbacks 拦截
     @GetMapping("/feedbacks/stats")
     public ResponseEntity<?> feedbackStats() {
         try {
@@ -691,65 +764,124 @@ public class AdminController {
 
     @GetMapping("/feedbacks")
     public ResponseEntity<?> feedbacks(@RequestParam(name = "page", defaultValue = "1") int page,
-                                      @RequestParam(name = "limit", defaultValue = "50") int limit) {
-        // 修复：查询实际的反馈数据
-        Map<String, Object> response = new HashMap<>();
-        response.put("code", 200);
-        
-        // 使用PageRequest进行分页查询
-        PageRequest pageable = PageRequest.of(page - 1, limit);
-        Page<Feedback> feedbackPage = feedbackRepo.findAll(pageable);
-        
-        Map<String, Object> data = new HashMap<>();
-        
-        // 转换反馈数据，避免循环引用
-        List<Map<String, Object>> feedbacks = feedbackPage.getContent().stream().map(f -> {
-            Map<String, Object> feedbackMap = new HashMap<>();
-            feedbackMap.put("id", f.getId());
-            feedbackMap.put("userId", f.getUser().getId());
-            feedbackMap.put("username", f.getUser().getUsername());
-            feedbackMap.put("type", f.getType());
-            feedbackMap.put("content", f.getContent());
-            feedbackMap.put("contact", f.getContact());
-            feedbackMap.put("status", f.getStatus());
-            feedbackMap.put("createdAt", f.getCreatedAt().toString());
-            feedbackMap.put("handlerId", f.getHandlerId());
-            feedbackMap.put("handledAt", f.getHandledAt() != null ? f.getHandledAt().toString() : null);
-            feedbackMap.put("resolution", f.getResolution());
-            return feedbackMap;
-        }).collect(java.util.stream.Collectors.toList());
-        
-        data.put("feedbacks", feedbacks);
-        
-        Map<String, Object> pagination = new HashMap<>();
-        pagination.put("page", page);
-        pagination.put("limit", limit);
-        pagination.put("total", feedbackPage.getTotalElements());
-        pagination.put("totalPages", feedbackPage.getTotalPages());
-        
-        data.put("pagination", pagination);
-        response.put("data", data);
-        
-        return ResponseEntity.ok(response);
+                                      @RequestParam(name = "limit", defaultValue = "50") int limit,
+                                      @RequestParam(name = "username", required = false) String username,
+                                      @RequestParam(name = "type", required = false) String type,
+                                      @RequestParam(name = "status", required = false) String status,
+                                      @RequestParam(name = "keyword", required = false) String keyword) {
+        try {
+            // 构建动态查询
+            StringBuilder jpql = new StringBuilder("SELECT f FROM Feedback f WHERE 1=1");
+            StringBuilder countJpql = new StringBuilder("SELECT COUNT(f) FROM Feedback f WHERE 1=1");
+            List<Object> params = new ArrayList<>();
+            int paramIndex = 1;
+
+            if (username != null && !username.isBlank()) {
+                jpql.append(" AND LOWER(f.user.username) LIKE LOWER(?").append(paramIndex).append(")");
+                countJpql.append(" AND LOWER(f.user.username) LIKE LOWER(?").append(paramIndex++).append(")");
+                params.add("%" + username + "%");
+            }
+            if (type != null && !type.isBlank()) {
+                jpql.append(" AND f.type = ?").append(paramIndex);
+                countJpql.append(" AND f.type = ?").append(paramIndex++);
+                params.add(type);
+            }
+            if (status != null && !status.isBlank()) {
+                jpql.append(" AND f.status = ?").append(paramIndex);
+                countJpql.append(" AND f.status = ?").append(paramIndex++);
+                params.add(status);
+            }
+            if (keyword != null && !keyword.isBlank()) {
+                jpql.append(" AND LOWER(f.content) LIKE LOWER(?").append(paramIndex).append(")");
+                countJpql.append(" AND LOWER(f.content) LIKE LOWER(?").append(paramIndex++).append(")");
+                params.add("%" + keyword + "%");
+            }
+
+            jpql.append(" ORDER BY f.createdAt DESC");
+
+            // 获取总数
+            var countQuery = entityManager.createQuery(countJpql.toString(), Long.class);
+            for (int i = 0; i < params.size(); i++) {
+                countQuery.setParameter(i + 1, params.get(i));
+            }
+            long total = countQuery.getSingleResult();
+
+            // 执行分页查询
+            if (page < 1) page = 1;
+            var query = entityManager.createQuery(jpql.toString(), Feedback.class);
+            for (int i = 0; i < params.size(); i++) {
+                query.setParameter(i + 1, params.get(i));
+            }
+            query.setFirstResult((page - 1) * limit);
+            query.setMaxResults(limit);
+
+            List<Feedback> feedbackList = query.getResultList();
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("code", 200);
+
+            Map<String, Object> data = new HashMap<>();
+
+            // 转换反馈数据，避免循环引用
+            List<Map<String, Object>> feedbacks = feedbackList.stream().map(f -> {
+                Map<String, Object> feedbackMap = new HashMap<>();
+                feedbackMap.put("id", f.getId());
+                feedbackMap.put("userId", f.getUser().getId());
+                feedbackMap.put("username", f.getUser().getUsername());
+                feedbackMap.put("type", f.getType());
+                feedbackMap.put("content", f.getContent());
+                feedbackMap.put("contact", f.getContact());
+                feedbackMap.put("status", f.getStatus());
+                feedbackMap.put("createdAt", f.getCreatedAt().toString());
+                feedbackMap.put("handlerId", f.getHandlerId());
+                feedbackMap.put("handledAt", f.getHandledAt() != null ? f.getHandledAt().toString() : null);
+                feedbackMap.put("resolution", f.getResolution());
+                return feedbackMap;
+            }).collect(java.util.stream.Collectors.toList());
+
+            data.put("feedbacks", feedbacks);
+
+            Map<String, Object> pagination = new HashMap<>();
+            pagination.put("page", page);
+            pagination.put("limit", limit);
+            pagination.put("total", total);
+            pagination.put("totalPages", (int) Math.ceil((double) total / limit));
+
+            data.put("pagination", pagination);
+            response.put("data", data);
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            System.err.println("获取反馈列表失败: " + e.getMessage());
+            e.printStackTrace();
+            Map<String, Object> errorRes = new HashMap<>();
+            errorRes.put("code", 500);
+            errorRes.put("error", "获取反馈列表失败: " + e.getMessage());
+            return ResponseEntity.status(500).body(errorRes);
+        }
     }
 
     @GetMapping("/logs")
     public ResponseEntity<?> logs(@RequestParam(name = "page", defaultValue = "1") int page,
                                   @RequestParam(name = "limit", defaultValue = "50") int limit,
-                                  @RequestParam(name = "query", required = false) String query) {
+                                  @RequestParam(name = "query", required = false) String query,
+                                  @RequestParam(name = "sortOrder", defaultValue = "desc") String sortOrder) {
         // 修复：查询实际的审计日志数据
         Map<String, Object> response = new HashMap<>();
         response.put("code", 200);
-        
+
         // 确保page参数至少为1，避免负数页码
         if (page < 1) {
             page = 1;
         }
-        
-        // 使用PageRequest进行分页查询，Spring Data的页码从0开始
-        PageRequest pageable = PageRequest.of(page - 1, limit);
+
+        // 使用PageRequest进行分页查询，Spring Data的页码从0开始，支持排序
+        org.springframework.data.domain.Sort sort = "asc".equalsIgnoreCase(sortOrder)
+            ? org.springframework.data.domain.Sort.by("createdAt").ascending()
+            : org.springframework.data.domain.Sort.by("createdAt").descending();
+        PageRequest pageable = PageRequest.of(page - 1, limit, sort);
         Page<AuditLog> auditLogPage;
-        
+
         // 如果有查询参数，则进行模糊查询
         if (query != null && !query.isBlank()) {
             // 目前没有实现查询功能，先返回所有日志
@@ -882,15 +1014,10 @@ public class AdminController {
         if (patch.containsKey("status")) f.setStatus(patch.get("status").toString());
         if (patch.containsKey("resolution")) f.setResolution(Objects.toString(patch.get("resolution"), null));
         feedbackRepo.save(f);
-        try {
-            AuditLog log = new AuditLog();
-            String actorId = getActorId(auth);
-            User actor = new User(); actor.setId(actorId); log.setUser(actor);
-            log.setAction("feedback_update");
-            log.setDetails(id+":"+f.getStatus());
-            log.setIp(request.getHeader("X-Forwarded-For") != null ? request.getHeader("X-Forwarded-For") : request.getRemoteAddr());
-            auditRepo.save(log);
-        } catch (Exception ignored) {}
+
+        // 记录审计日志（使用独立方法，不影响主事务）
+        saveAuditLogSafe(auth, request, "feedback_update", id+":"+f.getStatus());
+
         Map<String,Object> res = new HashMap<>();
         res.put("code", 200);
         res.put("message", "已更新");
@@ -910,22 +1037,10 @@ public class AdminController {
     @Transactional
     public ResponseEntity<?> createWorkflow(@RequestBody WorkflowConfig w, Authentication auth, HttpServletRequest request) {
         w.setId(null); workflowRepo.save(w);
-        try {
-            AuditLog log = new AuditLog();
-            String actorId = getActorId(auth);
-            // 检查用户是否存在于当前数据库
-            Optional<User> userOpt = userRepo.findById(actorId);
-            if (userOpt.isPresent()) {
-                log.setUser(userOpt.get());
-            } else {
-                // 如果用户不存在，跳过审计日志保存
-                return ResponseEntity.status(201).body(Map.of("code", 201, "message", "已创建"));
-            }
-            log.setAction("workflow_create");
-            log.setDetails(w.getName()+"/"+w.getWorkflowId());
-            log.setIp(request.getHeader("X-Forwarded-For") != null ? request.getHeader("X-Forwarded-For") : request.getRemoteAddr());
-            auditRepo.save(log);
-        } catch (Exception ignored) {}
+
+        // 记录审计日志（使用独立方法，不影响主事务）
+        saveAuditLogSafe(auth, request, "workflow_create", w.getName()+"/"+w.getWorkflowId());
+
         Map<String,Object> res = new HashMap<>();
         res.put("code", 201);
         res.put("message", "已创建");
@@ -945,15 +1060,10 @@ public class AdminController {
         wc.setEnabled(w.isEnabled());
         wc.setConfigJson(w.getConfigJson());
         workflowRepo.save(wc);
-        try {
-            AuditLog log = new AuditLog();
-            String actorId = getActorId(auth);
-            User actor = new User(); actor.setId(actorId); log.setUser(actor);
-            log.setAction("workflow_update");
-            log.setDetails(wc.getName()+"/"+wc.getWorkflowId());
-            log.setIp(request.getHeader("X-Forwarded-For") != null ? request.getHeader("X-Forwarded-For") : request.getRemoteAddr());
-            auditRepo.save(log);
-        } catch (Exception ignored) {}
+
+        // 记录审计日志（使用独立方法，不影响主事务）
+        saveAuditLogSafe(auth, request, "workflow_update", wc.getName()+"/"+wc.getWorkflowId());
+
         Map<String,Object> res = new HashMap<>();
         res.put("code", 200);
         res.put("message", "已更新");
@@ -965,15 +1075,10 @@ public class AdminController {
     public ResponseEntity<?> deleteWorkflow(@PathVariable("id") String id, Authentication auth, HttpServletRequest request) {
         if (!workflowRepo.existsById(id)) return ResponseEntity.status(404).body(err("工作流不存在"));
         workflowRepo.deleteById(id);
-        try {
-            AuditLog log = new AuditLog();
-            String actorId = getActorId(auth);
-            User actor = new User(); actor.setId(actorId); log.setUser(actor);
-            log.setAction("workflow_delete");
-            log.setDetails(id);
-            log.setIp(request.getHeader("X-Forwarded-For") != null ? request.getHeader("X-Forwarded-For") : request.getRemoteAddr());
-            auditRepo.save(log);
-        } catch (Exception ignored) {}
+
+        // 记录审计日志（使用独立方法，不影响主事务）
+        saveAuditLogSafe(auth, request, "workflow_delete", id);
+
         Map<String,Object> res = new HashMap<>();
         res.put("code", 200);
         res.put("message", "已删除");
@@ -986,22 +1091,15 @@ public class AdminController {
             // 模拟工作流测试，实际应该调用Bisheng工作流API
             String workflowId = Objects.toString(testData.get("workflowId"), "");
             String endpoint = Objects.toString(testData.get("endpoint"), "");
-            
+
             Map<String,Object> res = new HashMap<>();
             res.put("code", 200);
             res.put("success", true);
             res.put("message", "工作流测试成功 - 工作流ID: " + workflowId + ", 端点: " + endpoint);
-            
-            try {
-                AuditLog log = new AuditLog();
-                String actorId = getActorId(auth);
-                User actor = new User(); actor.setId(actorId); log.setUser(actor);
-                log.setAction("workflow_test");
-                log.setDetails(workflowId);
-                log.setIp(request.getHeader("X-Forwarded-For") != null ? request.getHeader("X-Forwarded-For") : request.getRemoteAddr());
-                auditRepo.save(log);
-            } catch (Exception ignored) {}
-            
+
+            // 记录审计日志（使用独立方法，不影响主事务）
+            saveAuditLogSafe(auth, request, "workflow_test", workflowId);
+
             return ResponseEntity.ok(res);
         } catch (Exception e) {
             Map<String,Object> res = new HashMap<>();
@@ -1009,6 +1107,371 @@ public class AdminController {
             res.put("success", false);
             res.put("message", "工作流测试失败: " + e.getMessage());
             return ResponseEntity.status(400).body(res);
+        }
+    }
+
+    // ==================== 密码重置审批 API ====================
+
+    @GetMapping("/password-resets/stats")
+    public ResponseEntity<?> passwordResetStats() {
+        try {
+            Map<String,Object> res = new HashMap<>();
+            res.put("code", 200);
+
+            // 统计各种状态的密码重置申请数量
+            long total = passwordResetRepo.count();
+            long pending = passwordResetRepo.countByStatus("pending");
+            long approved = passwordResetRepo.countByStatus("approved");
+            long rejected = passwordResetRepo.countByStatus("rejected");
+
+            Map<String,Object> data = new HashMap<>();
+            data.put("total", total);
+            data.put("pending", pending);
+            data.put("approved", approved);
+            data.put("rejected", rejected);
+
+            res.put("data", data);
+            return ResponseEntity.ok(res);
+        } catch (Exception e) {
+            System.err.println("获取密码重置统计数据失败: " + e.getMessage());
+            e.printStackTrace();
+            Map<String, Object> errorRes = new HashMap<>();
+            errorRes.put("code", 500);
+            errorRes.put("error", "获取密码重置统计数据失败: " + e.getMessage());
+            return ResponseEntity.status(500).body(errorRes);
+        }
+    }
+
+    @GetMapping("/password-resets")
+    public ResponseEntity<?> passwordResets(@RequestParam(name = "page", defaultValue = "1") int page,
+                                            @RequestParam(name = "limit", defaultValue = "50") int limit,
+                                            @RequestParam(name = "status", required = false) String status) {
+        try {
+            Map<String, Object> response = new HashMap<>();
+            response.put("code", 200);
+
+            // 确保page参数至少为1
+            if (page < 1) {
+                page = 1;
+            }
+
+            // 使用PageRequest进行分页查询
+            PageRequest pageable = PageRequest.of(page - 1, limit);
+            Page<PasswordReset> resetPage;
+
+            // 如果有状态筛选
+            if (status != null && !status.isBlank()) {
+                resetPage = passwordResetRepo.findByStatus(status, pageable);
+            } else {
+                resetPage = passwordResetRepo.findAllByOrderByCreatedAtDesc(pageable);
+            }
+
+            Map<String, Object> data = new HashMap<>();
+
+            // 转换数据，避免循环引用
+            List<Map<String, Object>> resets = resetPage.getContent().stream().map(pr -> {
+                Map<String, Object> resetMap = new HashMap<>();
+                resetMap.put("id", pr.getId());
+                resetMap.put("userId", pr.getUser().getId());
+                resetMap.put("username", pr.getUser().getUsername());
+                resetMap.put("realName", pr.getUser().getRealName());
+                resetMap.put("phone", pr.getUser().getPhone());
+                resetMap.put("email", pr.getUser().getEmail());
+                resetMap.put("contact", pr.getContact());
+                resetMap.put("status", pr.getStatus());
+                resetMap.put("createdAt", pr.getCreatedAt().toString());
+                resetMap.put("expiresAt", pr.getExpiresAt().toString());
+                resetMap.put("processedAt", pr.getProcessedAt() != null ? pr.getProcessedAt().toString() : null);
+                resetMap.put("processedBy", pr.getProcessedBy());
+                resetMap.put("processRemark", pr.getProcessRemark());
+                resetMap.put("used", pr.isUsed());
+                return resetMap;
+            }).collect(java.util.stream.Collectors.toList());
+
+            data.put("resets", resets);
+
+            Map<String, Object> pagination = new HashMap<>();
+            pagination.put("page", page);
+            pagination.put("limit", limit);
+            pagination.put("total", resetPage.getTotalElements());
+            pagination.put("totalPages", resetPage.getTotalPages());
+
+            data.put("pagination", pagination);
+            response.put("data", data);
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            System.err.println("获取密码重置列表失败: " + e.getMessage());
+            e.printStackTrace();
+            Map<String, Object> errorRes = new HashMap<>();
+            errorRes.put("code", 500);
+            errorRes.put("error", "获取密码重置列表失败: " + e.getMessage());
+            return ResponseEntity.status(500).body(errorRes);
+        }
+    }
+
+    @PutMapping("/password-resets/{id}/approve")
+    @Transactional
+    public ResponseEntity<?> approvePasswordReset(@PathVariable("id") String id,
+                                                   @RequestBody(required = false) Map<String,Object> body,
+                                                   Authentication auth, HttpServletRequest request) {
+        try {
+            PasswordReset pr = passwordResetRepo.findById(id).orElse(null);
+            if (pr == null) return ResponseEntity.status(404).body(err("密码重置申请不存在"));
+
+            if (!"pending".equals(pr.getStatus())) {
+                return ResponseEntity.badRequest().body(err("该申请已被处理，状态: " + pr.getStatus()));
+            }
+
+            // 检查是否过期
+            if (pr.getExpiresAt().isBefore(java.time.Instant.now())) {
+                return ResponseEntity.badRequest().body(err("该申请已过期"));
+            }
+
+            // 更新用户密码
+            User user = pr.getUser();
+            if (pr.getNewPassword() != null && !pr.getNewPassword().isEmpty()) {
+                // 新密码已经在申请时加密存储，直接使用
+                user.setPassword(pr.getNewPassword());
+                userRepo.save(user);
+            }
+
+            // 更新申请状态
+            pr.setStatus("approved");
+            pr.setUsed(true);
+            pr.setProcessedAt(java.time.Instant.now());
+            pr.setProcessedBy(getActorId(auth));
+            if (body != null && body.containsKey("remark")) {
+                pr.setProcessRemark(Objects.toString(body.get("remark"), null));
+            }
+            passwordResetRepo.save(pr);
+
+            // 记录审计日志
+            saveAuditLogSafe(auth, request, "password_reset_approve", "approve:" + id + ":" + user.getUsername());
+
+            Map<String,Object> res = new HashMap<>();
+            res.put("code", 200);
+            res.put("message", "密码重置申请已通过，用户密码已更新");
+            return ResponseEntity.ok(res);
+        } catch (Exception e) {
+            System.err.println("审批密码重置申请失败: " + e.getMessage());
+            e.printStackTrace();
+            Map<String, Object> errorRes = new HashMap<>();
+            errorRes.put("code", 500);
+            errorRes.put("error", "审批失败: " + e.getMessage());
+            return ResponseEntity.status(500).body(errorRes);
+        }
+    }
+
+    @PutMapping("/password-resets/{id}/reject")
+    @Transactional
+    public ResponseEntity<?> rejectPasswordReset(@PathVariable("id") String id,
+                                                  @RequestBody(required = false) Map<String,Object> body,
+                                                  Authentication auth, HttpServletRequest request) {
+        try {
+            PasswordReset pr = passwordResetRepo.findById(id).orElse(null);
+            if (pr == null) return ResponseEntity.status(404).body(err("密码重置申请不存在"));
+
+            if (!"pending".equals(pr.getStatus())) {
+                return ResponseEntity.badRequest().body(err("该申请已被处理，状态: " + pr.getStatus()));
+            }
+
+            // 更新申请状态
+            pr.setStatus("rejected");
+            pr.setProcessedAt(java.time.Instant.now());
+            pr.setProcessedBy(getActorId(auth));
+            if (body != null && body.containsKey("remark")) {
+                pr.setProcessRemark(Objects.toString(body.get("remark"), null));
+            }
+            passwordResetRepo.save(pr);
+
+            // 记录审计日志
+            saveAuditLogSafe(auth, request, "password_reset_reject", "reject:" + id + ":" + pr.getUser().getUsername());
+
+            Map<String,Object> res = new HashMap<>();
+            res.put("code", 200);
+            res.put("message", "密码重置申请已拒绝");
+            return ResponseEntity.ok(res);
+        } catch (Exception e) {
+            System.err.println("拒绝密码重置申请失败: " + e.getMessage());
+            e.printStackTrace();
+            Map<String, Object> errorRes = new HashMap<>();
+            errorRes.put("code", 500);
+            errorRes.put("error", "拒绝失败: " + e.getMessage());
+            return ResponseEntity.status(500).body(errorRes);
+        }
+    }
+
+    // ==================== 通知/提醒 API ====================
+
+    @GetMapping("/notifications")
+    public ResponseEntity<?> getNotifications() {
+        try {
+            Map<String,Object> res = new HashMap<>();
+            res.put("code", 200);
+
+            List<Map<String, Object>> notifications = new ArrayList<>();
+
+            // 1. 待审核的用户注册
+            long pendingUsers = userRepo.countByStatus("PENDING");
+            if (pendingUsers > 0) {
+                Map<String, Object> notification = new HashMap<>();
+                notification.put("id", "pending_users");
+                notification.put("type", "user_register");
+                notification.put("title", "用户注册审核");
+                notification.put("message", "有 " + pendingUsers + " 个用户等待审核");
+                notification.put("count", pendingUsers);
+                notification.put("level", "warning");
+                notification.put("link", "/users?status=PENDING");
+                notifications.add(notification);
+            }
+
+            // 2. 待处理的反馈
+            long pendingFeedbacks = feedbackRepo.countByStatus("pending");
+            if (pendingFeedbacks > 0) {
+                Map<String, Object> notification = new HashMap<>();
+                notification.put("id", "pending_feedbacks");
+                notification.put("type", "feedback");
+                notification.put("title", "用户反馈处理");
+                notification.put("message", "有 " + pendingFeedbacks + " 条反馈等待处理");
+                notification.put("count", pendingFeedbacks);
+                notification.put("level", "info");
+                notification.put("link", "/feedbacks?status=pending");
+                notifications.add(notification);
+            }
+
+            // 3. 待审核的密码重置申请
+            long pendingPasswordResets = passwordResetRepo.countByStatus("pending");
+            if (pendingPasswordResets > 0) {
+                Map<String, Object> notification = new HashMap<>();
+                notification.put("id", "pending_password_resets");
+                notification.put("type", "password_reset");
+                notification.put("title", "密码重置审核");
+                notification.put("message", "有 " + pendingPasswordResets + " 个密码重置申请等待审核");
+                notification.put("count", pendingPasswordResets);
+                notification.put("level", "warning");
+                notification.put("link", "/password-resets?status=pending");
+                notifications.add(notification);
+            }
+
+            Map<String, Object> data = new HashMap<>();
+            data.put("notifications", notifications);
+            data.put("total", notifications.size());
+            data.put("hasUnread", notifications.size() > 0);
+
+            res.put("data", data);
+            return ResponseEntity.ok(res);
+        } catch (Exception e) {
+            System.err.println("获取通知失败: " + e.getMessage());
+            e.printStackTrace();
+            Map<String, Object> errorRes = new HashMap<>();
+            errorRes.put("code", 500);
+            errorRes.put("error", "获取通知失败: " + e.getMessage());
+            return ResponseEntity.status(500).body(errorRes);
+        }
+    }
+
+    // ==================== 用户操作日志 API ====================
+
+    @GetMapping("/action-logs/stats")
+    public ResponseEntity<?> actionLogStats() {
+        try {
+            Map<String,Object> res = new HashMap<>();
+            res.put("code", 200);
+
+            // 统计各种操作类型的数量
+            long total = userActionLogRepo.count();
+            long likeCount = userActionLogRepo.countByAction("like");
+            long dislikeCount = userActionLogRepo.countByAction("dislike");
+            long copyCount = userActionLogRepo.countByAction("copy");
+            long forwardCount = userActionLogRepo.countByAction("forward");
+
+            Map<String,Object> data = new HashMap<>();
+            data.put("total", total);
+            data.put("like", likeCount);
+            data.put("dislike", dislikeCount);
+            data.put("copy", copyCount);
+            data.put("forward", forwardCount);
+
+            res.put("data", data);
+            return ResponseEntity.ok(res);
+        } catch (Exception e) {
+            System.err.println("获取操作日志统计数据失败: " + e.getMessage());
+            e.printStackTrace();
+            Map<String, Object> errorRes = new HashMap<>();
+            errorRes.put("code", 500);
+            errorRes.put("error", "获取操作日志统计数据失败: " + e.getMessage());
+            return ResponseEntity.status(500).body(errorRes);
+        }
+    }
+
+    @GetMapping("/action-logs")
+    public ResponseEntity<?> actionLogs(@RequestParam(name = "page", defaultValue = "1") int page,
+                                        @RequestParam(name = "limit", defaultValue = "50") int limit,
+                                        @RequestParam(name = "action", required = false) String action,
+                                        @RequestParam(name = "username", required = false) String username) {
+        try {
+            Map<String, Object> response = new HashMap<>();
+            response.put("code", 200);
+
+            // 确保page参数至少为1
+            if (page < 1) {
+                page = 1;
+            }
+
+            // 使用PageRequest进行分页查询
+            PageRequest pageable = PageRequest.of(page - 1, limit);
+            Page<com.example.webui.common.entity.UserActionLog> logPage;
+
+            // 根据筛选条件查询
+            if (action != null && !action.isBlank()) {
+                logPage = userActionLogRepo.findByActionOrderByCreatedAtDesc(action, pageable);
+            } else {
+                logPage = userActionLogRepo.findAllByOrderByCreatedAtDesc(pageable);
+            }
+
+            Map<String, Object> data = new HashMap<>();
+
+            // 转换数据，避免循环引用
+            List<Map<String, Object>> logs = logPage.getContent().stream().map(log -> {
+                Map<String, Object> logMap = new HashMap<>();
+                logMap.put("id", log.getId());
+                if (log.getUser() != null) {
+                    logMap.put("userId", log.getUser().getId());
+                    logMap.put("username", log.getUser().getUsername());
+                } else {
+                    logMap.put("userId", null);
+                    logMap.put("username", "未知用户");
+                }
+                logMap.put("action", log.getAction());
+                logMap.put("messageId", log.getMessageId());
+                logMap.put("conversationId", log.getConversationId());
+                logMap.put("details", log.getDetails());
+                logMap.put("ipAddress", log.getIpAddress());
+                logMap.put("userAgent", log.getUserAgent());
+                logMap.put("createdAt", log.getCreatedAt() != null ? log.getCreatedAt().toString() : null);
+                return logMap;
+            }).collect(java.util.stream.Collectors.toList());
+
+            data.put("logs", logs);
+
+            Map<String, Object> pagination = new HashMap<>();
+            pagination.put("page", page);
+            pagination.put("limit", limit);
+            pagination.put("total", logPage.getTotalElements());
+            pagination.put("totalPages", logPage.getTotalPages());
+
+            data.put("pagination", pagination);
+            response.put("data", data);
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            System.err.println("获取操作日志列表失败: " + e.getMessage());
+            e.printStackTrace();
+            Map<String, Object> errorRes = new HashMap<>();
+            errorRes.put("code", 500);
+            errorRes.put("error", "获取操作日志列表失败: " + e.getMessage());
+            return ResponseEntity.status(500).body(errorRes);
         }
     }
 
@@ -1025,10 +1488,254 @@ public class AdminController {
         }
     }
 
-    private static Map<String,Object> err(String msg){ 
-        Map<String,Object> m = new HashMap<>(); 
+    // 安全保存审计日志，不影响主事务
+    private void saveAuditLogSafe(Authentication auth, HttpServletRequest request, String action, String details) {
+        try {
+            String actorId = getActorId(auth);
+            Optional<User> actorOpt = userRepo.findById(actorId);
+            if (actorOpt.isPresent()) {
+                AuditLog log = new AuditLog();
+                log.setUser(actorOpt.get());
+                log.setAction(action);
+                log.setDetails(details);
+                log.setIp(request.getHeader("X-Forwarded-For") != null ? request.getHeader("X-Forwarded-For") : request.getRemoteAddr());
+                auditRepo.save(log);
+            }
+        } catch (Exception e) {
+            System.err.println("保存审计日志失败: " + e.getMessage());
+        }
+    }
+
+    private static Map<String,Object> err(String msg){
+        Map<String,Object> m = new HashMap<>();
         m.put("code", 400);
-        m.put("error", msg); 
-        return m; 
+        m.put("error", msg);
+        return m;
+    }
+
+    // ==================== 系统配置 API ====================
+
+    @GetMapping("/system-configs")
+    public ResponseEntity<?> getSystemConfigs() {
+        List<SystemConfig> configs = systemConfigRepo.findAll();
+        Map<String, Object> res = new HashMap<>();
+        res.put("code", 200);
+
+        List<Map<String, Object>> configList = configs.stream().map(c -> {
+            Map<String, Object> configMap = new HashMap<>();
+            configMap.put("id", c.getId());
+            configMap.put("configKey", c.getConfigKey());
+            configMap.put("configValue", c.getConfigValue());
+            configMap.put("description", c.getDescription());
+            configMap.put("enabled", c.getEnabled());
+            configMap.put("createdAt", c.getCreatedAt() != null ? c.getCreatedAt().toString() : null);
+            configMap.put("updatedAt", c.getUpdatedAt() != null ? c.getUpdatedAt().toString() : null);
+            return configMap;
+        }).toList();
+
+        res.put("data", Map.of("configs", configList));
+        return ResponseEntity.ok(res);
+    }
+
+    @PostMapping("/system-configs")
+    @Transactional
+    public ResponseEntity<?> createSystemConfig(@RequestBody Map<String, Object> body, Authentication auth, HttpServletRequest request) {
+        String configKey = Objects.toString(body.get("configKey"), "");
+        String configValue = Objects.toString(body.get("configValue"), "");
+        String description = Objects.toString(body.get("description"), null);
+        Boolean enabled = body.get("enabled") != null ? Boolean.parseBoolean(body.get("enabled").toString()) : true;
+
+        if (configKey.isBlank()) {
+            return ResponseEntity.badRequest().body(err("配置键不能为空"));
+        }
+
+        // 检查是否已存在
+        if (systemConfigRepo.findByConfigKey(configKey).isPresent()) {
+            return ResponseEntity.status(409).body(err("配置键已存在"));
+        }
+
+        SystemConfig config = new SystemConfig();
+        config.setConfigKey(configKey);
+        config.setConfigValue(configValue);
+        config.setDescription(description);
+        config.setEnabled(enabled);
+        systemConfigRepo.save(config);
+
+        saveAuditLogSafe(auth, request, "system_config_create", "创建配置:" + configKey);
+
+        Map<String, Object> res = new HashMap<>();
+        res.put("code", 201);
+        res.put("message", "配置创建成功");
+        res.put("data", Map.of("id", config.getId()));
+        return ResponseEntity.status(201).body(res);
+    }
+
+    @PutMapping("/system-configs/{id}")
+    @Transactional
+    public ResponseEntity<?> updateSystemConfig(@PathVariable("id") String id, @RequestBody Map<String, Object> body, Authentication auth, HttpServletRequest request) {
+        SystemConfig config = systemConfigRepo.findById(id).orElse(null);
+        if (config == null) {
+            return ResponseEntity.status(404).body(err("配置不存在"));
+        }
+
+        if (body.containsKey("configValue")) {
+            config.setConfigValue(Objects.toString(body.get("configValue"), null));
+        }
+        if (body.containsKey("description")) {
+            config.setDescription(Objects.toString(body.get("description"), null));
+        }
+        if (body.containsKey("enabled")) {
+            config.setEnabled(Boolean.parseBoolean(body.get("enabled").toString()));
+        }
+
+        systemConfigRepo.save(config);
+        saveAuditLogSafe(auth, request, "system_config_update", "更新配置:" + config.getConfigKey());
+
+        Map<String, Object> res = new HashMap<>();
+        res.put("code", 200);
+        res.put("message", "配置更新成功");
+        return ResponseEntity.ok(res);
+    }
+
+    @DeleteMapping("/system-configs/{id}")
+    @Transactional
+    public ResponseEntity<?> deleteSystemConfig(@PathVariable("id") String id, Authentication auth, HttpServletRequest request) {
+        SystemConfig config = systemConfigRepo.findById(id).orElse(null);
+        if (config == null) {
+            return ResponseEntity.status(404).body(err("配置不存在"));
+        }
+
+        String configKey = config.getConfigKey();
+        systemConfigRepo.delete(config);
+        saveAuditLogSafe(auth, request, "system_config_delete", "删除配置:" + configKey);
+
+        Map<String, Object> res = new HashMap<>();
+        res.put("code", 200);
+        res.put("message", "配置删除成功");
+        return ResponseEntity.ok(res);
+    }
+
+    // ==================== 违规记录 API ====================
+
+    @GetMapping("/violations/stats")
+    public ResponseEntity<?> violationStats() {
+        try {
+            Map<String, Object> res = new HashMap<>();
+            res.put("code", 200);
+
+            long total = violationRecordRepo.count();
+            long resultedInBan = violationRecordRepo.countByResultedInBan(true);
+            long bannedUsers = userRepo.countByStatus("BANNED");
+
+            Map<String, Object> data = new HashMap<>();
+            data.put("total", total);
+            data.put("resultedInBan", resultedInBan);
+            data.put("currentlyBannedUsers", bannedUsers);
+
+            res.put("data", data);
+            return ResponseEntity.ok(res);
+        } catch (Exception e) {
+            System.err.println("获取违规统计失败: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(err("获取违规统计失败: " + e.getMessage()));
+        }
+    }
+
+    @GetMapping("/violations")
+    public ResponseEntity<?> getViolations(@RequestParam(name = "page", defaultValue = "1") int page,
+                                           @RequestParam(name = "limit", defaultValue = "50") int limit,
+                                           @RequestParam(name = "username", required = false) String username) {
+        try {
+            Map<String, Object> response = new HashMap<>();
+            response.put("code", 200);
+
+            if (page < 1) page = 1;
+            PageRequest pageable = PageRequest.of(page - 1, limit);
+            Page<ViolationRecord> violationPage;
+
+            if (username != null && !username.isBlank()) {
+                violationPage = violationRecordRepo.findByUsernameContaining(username, pageable);
+            } else {
+                violationPage = violationRecordRepo.findAllByOrderByCreatedAtDesc(pageable);
+            }
+
+            List<Map<String, Object>> violations = violationPage.getContent().stream().map(v -> {
+                Map<String, Object> vMap = new HashMap<>();
+                vMap.put("id", v.getId());
+                vMap.put("userId", v.getUser().getId());
+                vMap.put("username", v.getUser().getUsername());
+                vMap.put("conversationId", v.getConversationId());
+                vMap.put("messageId", v.getMessageId());
+                vMap.put("violationType", v.getViolationType());
+                vMap.put("content", v.getContent());
+                vMap.put("aiResponse", v.getAiResponse());
+                vMap.put("ipAddress", v.getIpAddress());
+                vMap.put("resultedInBan", v.getResultedInBan());
+                vMap.put("createdAt", v.getCreatedAt() != null ? v.getCreatedAt().toString() : null);
+                return vMap;
+            }).toList();
+
+            Map<String, Object> data = new HashMap<>();
+            data.put("violations", violations);
+            data.put("pagination", Map.of(
+                "page", page,
+                "limit", limit,
+                "total", violationPage.getTotalElements(),
+                "totalPages", violationPage.getTotalPages()
+            ));
+
+            response.put("data", data);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            System.err.println("获取违规记录失败: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(err("获取违规记录失败: " + e.getMessage()));
+        }
+    }
+
+    // ==================== 用户封禁管理 ====================
+
+    @PutMapping("/users/{id}/temp-ban")
+    @Transactional
+    public ResponseEntity<?> tempBanUser(@PathVariable("id") String id,
+                                         @RequestBody Map<String, Object> body,
+                                         Authentication auth, HttpServletRequest request) {
+        User u = userRepo.findById(id).orElse(null);
+        if (u == null) return ResponseEntity.status(404).body(err("用户不存在"));
+
+        int minutes = body.containsKey("minutes") ? Integer.parseInt(body.get("minutes").toString()) : 10;
+        String reason = Objects.toString(body.get("reason"), "管理员操作");
+
+        u.setStatus("BANNED");
+        u.setBannedAt(java.time.Instant.now());
+        u.setBannedUntil(java.time.Instant.now().plusSeconds(minutes * 60L));
+        u.setBanCount(u.getBanCount() + 1);
+        userRepo.save(u);
+
+        saveAuditLogSafe(auth, request, "user_temp_ban", "临时封禁用户:" + id + ",时长:" + minutes + "分钟,原因:" + reason);
+
+        Map<String, Object> res = new HashMap<>();
+        res.put("code", 200);
+        res.put("message", "用户已被临时封禁" + minutes + "分钟");
+        return ResponseEntity.ok(res);
+    }
+
+    @PutMapping("/users/{id}/lift-ban")
+    @Transactional
+    public ResponseEntity<?> liftBan(@PathVariable("id") String id, Authentication auth, HttpServletRequest request) {
+        User u = userRepo.findById(id).orElse(null);
+        if (u == null) return ResponseEntity.status(404).body(err("用户不存在"));
+
+        u.setStatus("ACTIVE");
+        u.setBannedUntil(null);
+        u.setBannedAt(null);
+        userRepo.save(u);
+
+        saveAuditLogSafe(auth, request, "user_lift_ban", "解除封禁:" + id);
+
+        Map<String, Object> res = new HashMap<>();
+        res.put("code", 200);
+        res.put("message", "已解除用户封禁");
+        return ResponseEntity.ok(res);
     }
 }

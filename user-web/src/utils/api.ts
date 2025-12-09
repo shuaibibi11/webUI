@@ -231,7 +231,6 @@ export const sseRequest = (config: RequestConfig, onMessage: (data: any) => void
       
       // 构建请求选项
       const headers = new Headers(processedConfig.headers)
-      const token = localStorage.getItem('token')
       
       // 设置请求选项
       const fetchOptions: RequestInit = {

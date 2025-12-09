@@ -55,7 +55,14 @@
               @clear="handleSearch"
             />
           </n-form-item-gi>
-          <n-form-item-gi :span="16">
+          <n-form-item-gi :span="6" label="排序">
+            <n-select
+              v-model:value="searchForm.sortOrder"
+              :options="sortOptions"
+              @update:value="handleSearch"
+            />
+          </n-form-item-gi>
+          <n-form-item-gi :span="10">
             <n-space>
               <n-button type="primary" @click="handleSearch" :icon="searchIcon">
                 搜索
@@ -105,8 +112,15 @@ const searchForm = reactive({
   userId: '',
   action: null,
   ip: '',
-  dateRange: null
+  dateRange: null,
+  sortOrder: 'desc' as string
 })
+
+// 排序选项
+const sortOptions = [
+  { label: '最新优先', value: 'desc' },
+  { label: '最早优先', value: 'asc' }
+]
 
 // 分页参数
 const pagination = reactive({
@@ -152,8 +166,8 @@ const columns = [
         create_conversation: { type: 'primary', text: '创建对话' },
         send_message: { type: 'primary', text: '发送消息' },
         submit_feedback: { type: 'warning', text: '提交反馈' },
-        other: { type: 'default', text: '其他' }
-      }
+        other: { type: 'default', text: '未知' }
+      } as Record<string, { type: string; text: string }>
       const action = actionMap[row.action] || { type: 'default', text: '未知' }
       return h('n-tag', { type: action.type }, () => action.text)
     }
@@ -185,17 +199,22 @@ const columns = [
 const fetchLogs = async () => {
   loading.value = true
   try {
-    const params = {
+    // 构建查询参数 - 后端支持 page, limit, query, sortOrder
+    const params: Record<string, any> = {
       page: pagination.page,
-      pageSize: pagination.pageSize,
-      userId: searchForm.userId,
-      action: searchForm.action,
-      ip: searchForm.ip,
-      startDate: searchForm.dateRange ? searchForm.dateRange[0] : null,
-      endDate: searchForm.dateRange ? searchForm.dateRange[1] : null
+      limit: pagination.pageSize,
+      sortOrder: searchForm.sortOrder
     }
 
-    const response = await get('/admin/logs', { params })
+    // 如果有��户ID或操作类型，使用query参数
+    if (searchForm.userId) {
+      params.query = searchForm.userId
+    } else if (searchForm.action) {
+      params.query = searchForm.action
+    }
+
+    console.log('搜索参数:', params)
+    const response = await get('/admin/logs', params)
     tableData.value = response.data?.logs || []
     pagination.itemCount = response.data?.pagination?.total || 0
   } catch (error) {
@@ -218,6 +237,7 @@ const handleReset = () => {
   searchForm.action = null
   searchForm.ip = ''
   searchForm.dateRange = null
+  searchForm.sortOrder = 'desc'
   pagination.page = 1
   fetchLogs()
 }

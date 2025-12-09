@@ -4871,3 +4871,117 @@ Hibernate:
         u1_0.id=?
 2025-12-04T18:07:38.435+08:00  WARN 2845628 --- [io-11025-exec-4] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'GET' is not supported]
 2025-12-04T18:07:38.470+08:00  WARN 2845628 --- [io-11025-exec-1] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'GET' is not supported]
+2025-12-04T18:42:07.535+08:00  WARN 2845628 --- [io-11025-exec-3] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'GET' is not supported]
+Hibernate: 
+    select
+        f1_0.id,
+        f1_0.contact,
+        f1_0.content,
+        f1_0.created_at,
+        f1_0.handled_at,
+        f1_0.handler_id,
+        f1_0.resolution,
+        f1_0.status,
+        f1_0.type,
+        f1_0.user_id 
+    from
+        feedbacks f1_0 
+    limit
+        ?, ?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.id_card,
+        u1_0.last_login_at,
+        u1_0.last_login_ip,
+        u1_0.password,
+        u1_0.phone,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.status,
+        u1_0.tokens_used,
+        u1_0.updated_at,
+        u1_0.username 
+    from
+        users u1_0 
+    where
+        u1_0.id=?
+2025-12-04T18:42:07.571+08:00  WARN 2845628 --- [io-11025-exec-5] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'GET' is not supported]
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.username,
+        u1_0.phone,
+        u1_0.email,
+        u1_0.real_name,
+        u1_0.role,
+        u1_0.created_at 
+    from
+        users u1_0
+Hibernate: 
+    select
+        count(*) 
+    from
+        users u1_0
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        count(u1_0.id) 
+    from
+        users u1_0 
+    where
+        u1_0.status=?
+Hibernate: 
+    select
+        mc1_0.id,
+        mc1_0.api_key,
+        mc1_0.created_at,
+        mc1_0.enabled,
+        mc1_0.endpoint,
+        mc1_0.max_tokens,
+        mc1_0.model_name,
+        mc1_0.protocol,
+        mc1_0.provider,
+        mc1_0.tag,
+        mc1_0.temperature,
+        mc1_0.topp,
+        mc1_0.updated_at,
+        mc1_0.created_by 
+    from
+        model_configs mc1_0
+Hibernate: 
+    select
+        wc1_0.id,
+        wc1_0.api_key,
+        wc1_0.config_json,
+        wc1_0.created_at,
+        wc1_0.description,
+        wc1_0.enabled,
+        wc1_0.endpoint,
+        wc1_0.name,
+        wc1_0.updated_at,
+        wc1_0.workflow_id 
+    from
+        workflow_configs wc1_0

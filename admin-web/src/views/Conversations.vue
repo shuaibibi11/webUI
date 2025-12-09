@@ -34,6 +34,13 @@
               format="yyyy-MM-dd"
             />
           </n-form-item>
+          <n-form-item label="排序">
+            <n-select
+              v-model:value="searchForm.sortOrder"
+              :options="sortOptions"
+              style="width: 140px"
+            />
+          </n-form-item>
           <n-form-item>
             <n-button type="primary" @click="handleSearch">
               <template #icon>
@@ -152,8 +159,15 @@ const currentConversation = ref<Conversation>({} as Conversation)
 const searchForm = reactive({
   username: '',
   title: '',
-  dateRange: null as any
+  dateRange: null as any,
+  sortOrder: 'desc' as string
 })
+
+// 排序选项
+const sortOptions = [
+  { label: '最新优先', value: 'desc' },
+  { label: '最早优先', value: 'asc' }
+]
 
 // 分页参数
 const pagination = reactive({
@@ -258,19 +272,20 @@ const columns = [
 const fetchConversations = async () => {
   loading.value = true
   try {
-    const params: any = {
+    // 构建查询参数 - 后端支持 page, limit, query(标题搜索), sortOrder
+    const params: Record<string, any> = {
       page: pagination.page,
       limit: pagination.pageSize,
-      username: searchForm.username,
-      title: searchForm.title
+      sortOrder: searchForm.sortOrder
     }
 
-    if (searchForm.dateRange && searchForm.dateRange.length === 2) {
-      params.startDate = formatDateForApi(searchForm.dateRange[0])
-      params.endDate = formatDateForApi(searchForm.dateRange[1])
+    // 如果有标题搜索，使用query参数
+    if (searchForm.title) {
+      params.query = searchForm.title
     }
 
-    const response = await get<any>('/conversations', params)
+    console.log('搜索参数:', params)
+    const response = await get<any>('/admin/conversations', params)
     
     if (response && response.code === 200) {
       tableData.value = response.data?.conversations || []
@@ -316,6 +331,7 @@ const handleReset = () => {
   searchForm.username = ''
   searchForm.title = ''
   searchForm.dateRange = null
+  searchForm.sortOrder = 'desc'
   pagination.page = 1
   fetchConversations()
 }
@@ -348,7 +364,7 @@ const deleteConversation = (row: Conversation) => {
     negativeText: '取消',
     onPositiveClick: async () => {
       try {
-        const response = await del<any>(`/conversations/${row.id}`)
+        const response = await del<any>(`/admin/conversations/${row.id}`)
         
         if (response && response.code === 200) {
           message.success('对话删除成功')
@@ -378,7 +394,7 @@ const handleExport = async () => {
       params.endDate = formatDateForApi(searchForm.dateRange[1])
     }
 
-    const response = await get<any>('/conversations/export', params)
+    const response = await get<any>('/admin/conversations/export', params)
     
     if (response && response.code === 200) {
       // 创建下载链接

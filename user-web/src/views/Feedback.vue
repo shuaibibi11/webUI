@@ -10,17 +10,11 @@
         <div class="shape shape-5"></div>
       </div>
     </div>
-    
+
     <div class="feedback-content">
       <div class="feedback-header">
         <div class="header-left">
-          <n-button
-            quaternary
-            @click="handleBack"
-            :icon="ArrowBackIcon"
-            class="back-btn"
-            size="large"
-          >
+          <n-button quaternary @click="handleBack" :icon="ArrowBackIcon" class="back-btn" size="large">
             返回
           </n-button>
         </div>
@@ -28,7 +22,8 @@
           <div class="feedback-icon">
             <n-icon size="36">
               <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/>
+                <path
+                  d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z" />
               </svg>
             </n-icon>
           </div>
@@ -36,94 +31,35 @@
           <p class="feedback-subtitle">我们重视您的每一条反馈，帮助我们不断改进</p>
         </div>
       </div>
-      
+
       <div class="feedback-form-wrapper">
-        <n-form :model="form" :rules="rules" ref="formRef" class="feedback-form">
-          <n-form-item path="type">
-            <div class="form-label">
-              <n-icon class="label-icon">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
-                </svg>
-              </n-icon>
-              反馈类型
-            </div>
-            <n-select
-              v-model:value="form.type"
-              placeholder="请选择反馈类型"
-              :options="feedbackTypes"
-              class="feedback-input"
-              size="large"
-              :render-label="renderSelectLabel"
-            />
+        <n-form :model="form" :rules="rules" ref="formRef" class="feedback-form" label-placement="top" label-width="auto">
+          <n-form-item label="反馈类型" path="type">
+            <n-select v-model:value="form.type" placeholder="请选择反馈类型" :options="feedbackTypes" class="feedback-input"
+              size="large" />
           </n-form-item>
-          
-          <n-form-item path="content">
-            <div class="form-label">
-              <n-icon class="label-icon">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
-                </svg>
-              </n-icon>
-              内容
-            </div>
-            <n-input
-              v-model:value="form.content"
-              type="textarea"
-              placeholder="请详细描述您的问题或建议，您的反馈对我们非常重要..."
-              :autosize="{ minRows: 6, maxRows: 12 }"
-              class="feedback-input"
-              size="large"
-              show-count
-              maxlength="500"
-            />
-            <div class="input-hint">请至少输入10个字符，最多500字符</div>
+
+          <n-form-item label="反馈内容" path="content">
+            <n-input v-model:value="form.content" type="textarea" placeholder="请详细描述您的问题或建议，您的反馈对我们非常重要..."
+              :autosize="{ minRows: 5, maxRows: 10 }" class="feedback-input" size="large" show-count maxlength="500" />
           </n-form-item>
-          
-          <n-form-item path="contact">
-            <div class="form-label">
-              <n-icon class="label-icon">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
-                </svg>
-              </n-icon>
-              联系方式 (选填)
-            </div>
-            <n-input
-              v-model:value="form.contact"
-              placeholder="邮箱 / 手机 / 微信"
-              class="feedback-input"
-              size="large"
-            />
-            <div class="input-hint">提供联系方式有助于我们更好地回复您的反馈</div>
+
+          <n-form-item label="联系方式" path="contact">
+            <n-input v-model:value="form.contact" placeholder="请输入邮箱、手机号或微信号" class="feedback-input" size="large" />
           </n-form-item>
-          
+
           <n-form-item>
-            <n-button
-              type="primary"
-              block
-              @click="handleSubmit"
-              :loading="loading"
-              class="submit-button"
-              size="large"
-            >
-              <template #icon>
-                <n-icon v-if="!loading">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-                  </svg>
-                </n-icon>
-              </template>
+            <n-button type="primary" block @click="handleSubmit" :loading="loading" class="submit-button" size="large">
               提交反馈
             </n-button>
           </n-form-item>
         </n-form>
-        
+
         <div class="feedback-footer">
           <div class="footer-text">
             <n-icon>
               <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
+                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
               </svg>
             </n-icon>
             您的反馈将被安全处理，我们承诺保护您的隐私
@@ -154,24 +90,20 @@ const form = reactive({
 })
 
 const feedbackTypes = [
-  { label: '功能问题', value: 'bug' },
-  { label: '使用建议', value: 'suggestion' },
-  { label: '界面反馈', value: 'ui' },
-  { label: '性能问题', value: 'performance' },
+  { label: '投诉', value: 'complaint' },
+  { label: '举报', value: 'report' },
+  { label: '建议', value: 'suggestion' },
   { label: '其他', value: 'other' }
 ]
 
-// 自定义选择器标签渲染
+// 不使用图标的简单选择器标签渲染
 const renderSelectLabel = (option: any) => {
-  return h('div', { class: 'select-option' }, [
-    h('span', { class: 'option-icon', innerHTML: getIconForType(option.value) }),
-    h('span', { class: 'option-label' }, option.label)
-  ])
+  return h('span', { style: { padding: '4px 0' } }, option.label)
 }
 
 // 根据类型获取图标
 const getIconForType = (type: string) => {
-  const icons = {
+  const icons: Record<string, string> = {
     bug: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 8h-2.81c-.45-.78-1.07-1.45-1.82-1.96L17 4.41 15.59 3l-2.17 2.17C12.96 5.06 12.49 5 12 5s-.96.06-1.42.17L8.41 3 7 4.41l1.62 1.63C7.88 6.55 7.26 7.22 6.81 8H4v2h2.09c-.05.33-.09.66-.09 1v1H4v2h2v1c0 .34.04.67.09 1H4v2h2.81c1.04 1.79 2.97 3 5.19 3s4.15-1.21 5.19-3H20v-2h-2.09c.05-.33.09-.66.09-1v-1h2v-2h-2v-1c0-.34-.04-.67-.09-1H20V8zm-6 8h-4v-2h4v2zm0-4h-4v-2h4v2z"/></svg>',
     suggestion: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6A4.997 4.997 0 0 1 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1z"/></svg>',
     ui: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14zM5 15h14v2H5z"/></svg>',
@@ -205,7 +137,12 @@ const rules: FormRules = {
   ],
   contact: [
     {
-      pattern: /^(?:[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}|1[3-9]\d{9}|[a-zA-Z0-9_-]{6,20})?$/,
+      required: true,
+      message: '请输入联系方式',
+      trigger: ['input', 'blur']
+    },
+    {
+      pattern: /^(?:[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}|1[3-9]\d{9}|[a-zA-Z0-9_-]{6,20})$/,
       message: '请输入有效的邮箱、手机号或微信号',
       trigger: ['input', 'blur']
     }
@@ -218,36 +155,36 @@ const handleBack = () => {
 
 const handleSubmit = () => {
   if (!formRef.value) return
-  
+
   formRef.value.validate((errors) => {
     if (!errors) {
       loading.value = true
-      
+
       // 发送实际API请求
       post('/feedbacks', {
         type: form.type,
         content: form.content,
         contact: form.contact
       })
-      .then(() => {
-        loading.value = false
-        message.success('反馈提交成功，我们会尽快处理您的反馈！')
-        
-        // 重置表单
-        form.type = ''
-        form.content = ''
-        form.contact = ''
-        
-        // 返回上一页
-        setTimeout(() => {
-          router.back()
-        }, 1500)
-      })
-      .catch(error => {
-        loading.value = false
-        message.error('反馈提交失败，请稍后重试')
-        console.error('反馈提交失败', error)
-      })
+        .then(() => {
+          loading.value = false
+          message.success('反馈提交成功，我们会尽快处理您的反馈！')
+
+          // 重置表单
+          form.type = ''
+          form.content = ''
+          form.contact = ''
+
+          // 返回上一页
+          setTimeout(() => {
+            router.back()
+          }, 1500)
+        })
+        .catch(error => {
+          loading.value = false
+          message.error('反馈提交失败，请稍后重试')
+          console.error('反馈提交失败', error)
+        })
     } else {
       message.error('请填写完整的反馈信息')
     }
@@ -336,15 +273,20 @@ const handleSubmit = () => {
 }
 
 @keyframes float {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translate(0, 0) rotate(0deg);
   }
+
   25% {
     transform: translate(30px, -30px) rotate(90deg);
   }
+
   50% {
     transform: translate(-20px, 20px) rotate(180deg);
   }
+
   75% {
     transform: translate(-30px, -20px) rotate(270deg);
   }
@@ -500,10 +442,40 @@ const handleSubmit = () => {
   font-size: 14px;
 }
 
+/* 表单项样式优化 */
+:deep(.n-form-item) {
+  margin-bottom: 20px;
+}
+
+:deep(.n-form-item-label) {
+  font-size: 15px;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 8px;
+}
+
+:deep(.n-form-item-blank) {
+  display: block;
+  width: 100%;
+}
+:deep(.n-select) {
+  .n-base-selection-input__content {
+    height: 40px;
+
+    .select-option {
+      width: 20px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+    }
+  }
+}
+
 /* 自定义选择器样式 */
 :deep(.n-base-selection) {
   border-radius: 8px;
   transition: all 0.3s ease;
+
 }
 
 :deep(.n-base-selection:hover) {
@@ -518,6 +490,7 @@ const handleSubmit = () => {
 :deep(.n-input) {
   border-radius: 8px;
   transition: all 0.3s ease;
+
 }
 
 :deep(.n-input:hover) {
@@ -543,49 +516,56 @@ const handleSubmit = () => {
   .feedback-form-wrapper {
     padding: 15px;
   }
-  
+
   .feedback-form {
     padding: 20px;
   }
-  
+
   .feedback-title {
     font-size: 20px;
   }
-  
+
   .shape {
     filter: blur(30px);
   }
-  
-  .shape-1, .shape-2 {
+
+  .shape-1,
+  .shape-2 {
     width: 200px;
     height: 200px;
   }
-  
-  .shape-3, .shape-4, .shape-5 {
+
+  .shape-3,
+  .shape-4,
+  .shape-5 {
     width: 120px;
     height: 120px;
   }
+
+
 }
 
 @media (max-width: 480px) {
   .feedback-header {
     padding: 15px;
   }
-  
+
   .feedback-form-wrapper {
     padding: 10px;
   }
-  
+
   .feedback-form {
     padding: 15px;
   }
-  
+
   .feedback-title {
     font-size: 18px;
   }
-  
+
   .feedback-subtitle {
     font-size: 12px;
   }
+
+
 }
 </style>

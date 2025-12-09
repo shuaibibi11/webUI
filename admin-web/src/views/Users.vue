@@ -10,14 +10,15 @@
         <div class="shape shape-5"></div>
       </div>
     </div>
-    
+
     <!-- 页面标题和操作区域 -->
     <div class="page-header">
       <div class="header-left">
         <div class="page-icon">
           <n-icon size="32">
             <svg viewBox="0 0 24 24" fill="currentColor">
-              <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+              <path
+                d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
             </svg>
           </n-icon>
         </div>
@@ -45,7 +46,8 @@
               <template #prefix>
                 <n-icon size="24" color="#5e72e4">
                   <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+                    <path
+                      d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
                   </svg>
                 </n-icon>
               </template>
@@ -58,7 +60,8 @@
               <template #prefix>
                 <n-icon size="24" color="#2dce89">
                   <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    <path
+                      d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
                   </svg>
                 </n-icon>
               </template>
@@ -71,7 +74,8 @@
               <template #prefix>
                 <n-icon size="24" color="#fb6340">
                   <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                    <path
+                      d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
                   </svg>
                 </n-icon>
               </template>
@@ -84,7 +88,8 @@
               <template #prefix>
                 <n-icon size="24" color="#f5365c">
                   <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.56c-.23.66-.46 1.33-.7 1.99-.17.49-.35.98-.53 1.47-.08.22-.16.44-.25.65-.04.1-.08.2-.13.3-.02.05-.05.1-.07.15-.01.02-.02.04-.03.06-.01.01-.01.02-.02.03-.01 0-.01.01-.02.01-.01 0-.02 0-.03-.01-.02-.01-.04-.02-.06-.03-.05-.02-.1-.05-.15-.07-.1-.04-.2-.09-.3-.13-.22-.08-.44-.16-.65-.25-.49-.18-.98-.36-1.47-.53-.66-.24-1.33-.47-1.99-.7.66-.23 1.33-.46 1.99-.7.49-.17.98-.35 1.47-.53.22-.08.44-.16.65-.25.1-.04.2-.08.3-.13.05-.02.1-.05.15-.07.02-.01.04-.02.06-.03.01 0 .02 0 .03-.01.01 0 .01 0 .02.01.01.01.01.02.02.03.01.02.02.04.03.06.02.05.05.1.07.15.04.1.09.2.13.3.08.22.16.44.25.65.18.49.36.98.53 1.47.24.66.47 1.33.7 1.99zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/>
+                    <path
+                      d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.56c-.23.66-.46 1.33-.7 1.99-.17.49-.35.98-.53 1.47-.08.22-.16.44-.25.65-.04.1-.08.2-.13.3-.02.05-.05.1-.07.15-.01.02-.02.04-.03.06-.01.01-.01.02-.02.03-.01 0-.01.01-.02.01-.01 0-.02 0-.03-.01-.02-.01-.04-.02-.06-.03-.05-.02-.1-.05-.15-.07-.1-.04-.2-.09-.3-.13-.22-.08-.44-.16-.65-.25-.49-.18-.98-.36-1.47-.53-.66-.24-1.33-.47-1.99-.7.66-.23 1.33-.46 1.99-.7.49-.17.98-.35 1.47-.53.22-.08.44-.16.65-.25.1-.04.2-.08.3-.13.05-.02.1-.05.15-.07.02-.01.04-.02.06-.03.01 0 .02 0 .03-.01.01 0 .01 0 .02.01.01.01.01.02.02.03.01.02.02.04.03.06.02.05.05.1.07.15.04.1.09.2.13.3.08.22.16.44.25.65.18.49.36.98.53 1.47.24.66.47 1.33.7 1.99zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z" />
                   </svg>
                 </n-icon>
               </template>
@@ -99,63 +104,28 @@
       <n-form :model="searchForm" label-placement="left" label-width="80">
         <n-grid :cols="24" :x-gap="24">
           <n-form-item-gi :span="6" label="用户名">
-            <n-input
-              v-model:value="searchForm.username"
-              placeholder="请输入用户名"
-              clearable
-              @clear="handleSearch"
-              @keyup.enter="handleSearch"
-              class="search-input"
-            />
+            <n-input v-model:value="searchForm.username" placeholder="请输入用户名" clearable @clear="handleSearch"
+              @keyup.enter="handleSearch" class="search-input" />
           </n-form-item-gi>
           <n-form-item-gi :span="6" label="手机号">
-            <n-input
-              v-model:value="searchForm.phone"
-              placeholder="请输入手机号"
-              clearable
-              @clear="handleSearch"
-              @keyup.enter="handleSearch"
-              class="search-input"
-            />
+            <n-input v-model:value="searchForm.phone" placeholder="请输入手机号" clearable @clear="handleSearch"
+              @keyup.enter="handleSearch" class="search-input" />
           </n-form-item-gi>
           <n-form-item-gi :span="6" label="邮箱">
-            <n-input
-              v-model:value="searchForm.email"
-              placeholder="请输入邮箱"
-              clearable
-              @clear="handleSearch"
-              @keyup.enter="handleSearch"
-              class="search-input"
-            />
+            <n-input v-model:value="searchForm.email" placeholder="请输入邮箱" clearable @clear="handleSearch"
+              @keyup.enter="handleSearch" class="search-input" />
           </n-form-item-gi>
           <n-form-item-gi :span="6" label="状态">
-            <n-select
-              v-model:value="searchForm.status"
-              placeholder="请选择状态"
-              clearable
-              :options="statusOptions"
-              @clear="handleSearch"
-              class="search-select"
-            />
+            <n-select v-model:value="searchForm.status" placeholder="请选择状态" clearable :options="statusOptions"
+              @clear="handleSearch" class="search-select" />
           </n-form-item-gi>
           <n-form-item-gi :span="6" label="角色">
-            <n-select
-              v-model:value="searchForm.role"
-              placeholder="请选择角色"
-              clearable
-              :options="roleOptions"
-              @clear="handleSearch"
-              class="search-select"
-            />
+            <n-select v-model:value="searchForm.role" placeholder="请选择角色" clearable :options="roleOptions"
+              @clear="handleSearch" class="search-select" />
           </n-form-item-gi>
           <n-form-item-gi :span="6" label="注册时间">
-            <n-date-picker
-              v-model:value="searchForm.dateRange"
-              type="daterange"
-              clearable
-              @clear="handleSearch"
-              class="search-date"
-            />
+            <n-date-picker v-model:value="searchForm.dateRange" type="daterange" clearable @clear="handleSearch"
+              class="search-date" />
           </n-form-item-gi>
           <n-form-item-gi :span="12">
             <n-space>
@@ -183,121 +153,53 @@
         </div>
         <div class="table-actions">
           <n-space>
-            <n-button 
-              v-if="selectedRowKeys.length > 0" 
-              type="primary" 
-              ghost 
-              @click="handleBatchApprove" 
-              :disabled="!hasPendingUsers"
-              class="batch-btn"
-            >
+            <n-button v-if="selectedRowKeys.length > 0" type="primary" ghost @click="handleBatchApprove"
+              :disabled="!hasPendingUsers" class="batch-btn">
               批量批准 ({{ getPendingSelectedCount() }})
             </n-button>
-            <n-button 
-              v-if="selectedRowKeys.length > 0" 
-              type="warning" 
-              ghost 
-              @click="handleBatchReject" 
-              :disabled="!hasPendingUsers"
-              class="batch-btn"
-            >
+            <n-button v-if="selectedRowKeys.length > 0" type="warning" ghost @click="handleBatchReject"
+              :disabled="!hasPendingUsers" class="batch-btn">
               批量拒绝 ({{ getPendingSelectedCount() }})
             </n-button>
-            <n-button 
-              v-if="selectedRowKeys.length > 0" 
-              type="error" 
-              ghost 
-              @click="handleBatchBan" 
-              :disabled="!hasActiveUsers"
-              class="batch-btn"
-            >
+            <n-button v-if="selectedRowKeys.length > 0" type="error" ghost @click="handleBatchBan"
+              :disabled="!hasActiveUsers" class="batch-btn">
               批量封禁 ({{ getActiveSelectedCount() }})
             </n-button>
-            <n-button 
-              v-if="selectedRowKeys.length > 0" 
-              type="success" 
-              ghost 
-              @click="handleBatchUnban" 
-              :disabled="!hasBannedUsers"
-              class="batch-btn"
-            >
+            <n-button v-if="selectedRowKeys.length > 0" type="success" ghost @click="handleBatchUnban"
+              :disabled="!hasBannedUsers" class="batch-btn">
               批量解封 ({{ getBannedSelectedCount() }})
             </n-button>
-            <n-button 
-              v-if="selectedRowKeys.length > 0" 
-              @click="handleClearSelection" 
-              class="clear-selection-btn"
-            >
+            <n-button v-if="selectedRowKeys.length > 0" @click="handleClearSelection" class="clear-selection-btn">
               清除选择
             </n-button>
           </n-space>
         </div>
       </div>
-      <n-data-table
-        :columns="columns"
-        :data="tableData"
-        :pagination="pagination"
-        :loading="loading"
-        :scroll-x="1400"
-        :row-key="rowKey"
-        :checked-row-keys="selectedRowKeys"
-        @update:checked-row-keys="handleSelectionChange"
-        @update:page="handlePageChange"
-        @update:page-size="handlePageSizeChange"
-        class="user-table"
-      >
+      <n-data-table :columns="columns" :data="tableData" :pagination="pagination" :loading="loading" :scroll-x="1400"
+        :row-key="rowKey" :checked-row-keys="selectedRowKeys" @update:checked-row-keys="handleSelectionChange"
+        @update:page="handlePageChange" @update:page-size="handlePageSizeChange" class="user-table">
         <template #body-cell-actions="{ row }">
           <div class="action-buttons">
-            <n-button
-              size="small"
-              type="info"
-              @click="handleViewDetail(row)"
-              class="action-btn view-btn"
-            >
+            <n-button size="small" type="info" @click="handleViewDetail(row)" class="action-btn view-btn">
               详情
             </n-button>
-            <n-button
-              size="small"
-              type="primary"
-              @click="handleEdit(row)"
-              class="action-btn edit-btn"
-            >
+            <n-button size="small" type="primary" @click="handleEdit(row)" class="action-btn edit-btn">
               编辑
             </n-button>
-            <n-button
-              v-if="(row.status && (row.status.toUpperCase() === 'PENDING'))"
-              size="small"
-              type="success"
-              @click="handleApprove(row.id)"
-              class="action-btn approve-btn"
-            >
+            <n-button v-if="(row.status && (row.status.toUpperCase() === 'PENDING'))" size="small" type="success"
+              @click="handleApprove(row.id)" class="action-btn approve-btn">
               批准
             </n-button>
-            <n-button
-              v-if="(row.status && (row.status.toUpperCase() === 'PENDING'))"
-              size="small"
-              type="warning"
-              @click="handleReject(row.id)"
-              class="action-btn reject-btn"
-            >
+            <n-button v-if="(row.status && (row.status.toUpperCase() === 'PENDING'))" size="small" type="warning"
+              @click="handleReject(row.id)" class="action-btn reject-btn">
               拒绝
             </n-button>
-            <n-button
-              v-if="(row.status && (row.status.toUpperCase() === 'ACTIVE'))"
-              size="small"
-              type="error"
-              @click="handleBan(row.id)"
-              class="action-btn ban-btn"
-            >
+            <n-button v-if="(row.status && (row.status.toUpperCase() === 'ACTIVE'))" size="small" type="error"
+              @click="handleBan(row.id)" class="action-btn ban-btn">
               封禁
             </n-button>
-            <n-button
-              v-if="(row.status && (row.status.toUpperCase() === 'BANNED'))"
-              size="small"
-              type="success"
-              @click="handleUnban(row.id)"
-              class="action-btn unban-btn"
-            >
+            <n-button v-if="(row.status && (row.status.toUpperCase() === 'BANNED'))" size="small" type="success"
+              @click="handleUnban(row.id)" class="action-btn unban-btn">
               解封
             </n-button>
           </div>
@@ -307,15 +209,8 @@
 
     <!-- 编辑用户模态框 -->
     <n-modal v-model:show="editModalVisible" preset="dialog" :title="editModalTitle" class="edit-modal">
-      <n-form
-        ref="formRef"
-        :model="editForm"
-        :rules="formRules"
-        label-placement="left"
-        label-width="80"
-        require-mark-placement="right-hanging"
-        class="edit-form"
-      >
+      <n-form ref="formRef" :model="editForm" :rules="formRules" label-placement="left" label-width="80"
+        require-mark-placement="right-hanging" class="edit-form">
         <n-form-item label="用户名" path="username">
           <n-input v-model:value="editForm.username" placeholder="请输入用户名" class="form-input" />
         </n-form-item>
@@ -326,32 +221,17 @@
           <n-input v-model:value="editForm.email" placeholder="请输入邮箱" class="form-input" />
         </n-form-item>
         <n-form-item label="状态" path="status">
-          <n-select
-            v-model:value="editForm.status"
-            placeholder="请选择状态"
-            :options="statusOptions"
-            class="form-select"
-          />
+          <n-select v-model:value="editForm.status" placeholder="请选择状态" :options="statusOptions" class="form-select" />
         </n-form-item>
         <n-form-item label="角色" path="role">
-          <n-select
-            v-model:value="editForm.role"
-            placeholder="请选择角色"
-            :options="roleOptions"
-            class="form-select"
-          />
+          <n-select v-model:value="editForm.role" placeholder="请选择角色" :options="roleOptions" class="form-select" />
         </n-form-item>
         <n-form-item label="真实姓名" path="realName">
           <n-input v-model:value="editForm.realName" placeholder="请输入真实姓名" class="form-input" />
         </n-form-item>
         <n-form-item label="修改密码" path="password">
-          <n-input 
-            v-model:value="editForm.password" 
-            placeholder="留空则不修改密码，至少8个字符" 
-            type="password" 
-            show-password-on="mousedown"
-            class="form-input" 
-          />
+          <n-input v-model:value="editForm.password" placeholder="留空则不修改密码，至少8个字符" type="password"
+            show-password-on="mousedown" class="form-input" />
         </n-form-item>
       </n-form>
       <template #action>
@@ -381,9 +261,9 @@
             </n-tag>
           </div>
         </div>
-        
+
         <n-divider />
-        
+
         <div class="detail-content">
           <n-descriptions :column="2" bordered>
             <n-descriptions-item label="用户ID">
@@ -415,44 +295,28 @@
               {{ selectedUser.lastLoginAt ? formatDate(selectedUser.lastLoginAt) : '从未登录' }}
             </n-descriptions-item>
           </n-descriptions>
-          
+
           <n-divider />
-          
+
           <div class="detail-actions">
             <n-space>
               <n-button type="primary" @click="handleEditFromDetail" class="edit-from-detail-btn">
                 编辑用户
               </n-button>
-              <n-button 
-                v-if="selectedUser.status === 'pending'" 
-                type="success" 
-                @click="handleApproveFromDetail" 
-                class="approve-from-detail-btn"
-              >
+              <n-button v-if="selectedUser.status === 'pending'" type="success" @click="handleApproveFromDetail"
+                class="approve-from-detail-btn">
                 批准
               </n-button>
-              <n-button 
-                v-if="selectedUser.status === 'pending'" 
-                type="warning" 
-                @click="handleRejectFromDetail" 
-                class="reject-from-detail-btn"
-              >
+              <n-button v-if="selectedUser.status === 'pending'" type="warning" @click="handleRejectFromDetail"
+                class="reject-from-detail-btn">
                 拒绝
               </n-button>
-              <n-button 
-                v-if="selectedUser.status === 'active'" 
-                type="error" 
-                @click="handleBanFromDetail" 
-                class="ban-from-detail-btn"
-              >
+              <n-button v-if="selectedUser.status === 'active'" type="error" @click="handleBanFromDetail"
+                class="ban-from-detail-btn">
                 封禁
               </n-button>
-              <n-button 
-                v-if="selectedUser.status === 'banned'" 
-                type="success" 
-                @click="handleUnbanFromDetail" 
-                class="unban-from-detail-btn"
-              >
+              <n-button v-if="selectedUser.status === 'banned'" type="success" @click="handleUnbanFromDetail"
+                class="unban-from-detail-btn">
                 解封
               </n-button>
             </n-space>
@@ -465,19 +329,11 @@
 
 <script setup lang="ts">
 import { ref, reactive, h, onMounted, computed } from 'vue'
-import { useMessage, useDialog } from 'naive-ui'
+import { useMessage, useDialog, NButton, NTag } from 'naive-ui'
 import {
-  Edit as EditIcon,
-  Trash as DeleteIcon,
-  CircleCheck as ApproveIcon,
-  CircleX as RejectIcon,
-  Ban as BanIcon,
-  Check as UnbanIcon,
   Download as DownloadIcon,
   Search as SearchIcon,
-  Refresh as RefreshIcon,
-  Eye as EyeIcon,
-  Filter as FilterIcon
+  Refresh as RefreshIcon
 } from '@vicons/tabler'
 import { get, post, put } from '../utils/api'
 
@@ -485,7 +341,21 @@ const message = useMessage()
 const dialog = useDialog()
 
 // 表格数据
-const tableData = ref([])
+interface User {
+  id: string
+  username: string
+  realName?: string
+  email?: string
+  phone?: string
+  idCard?: string
+  role: string
+  status: string
+  tokensUsed: number
+  createdAt: string
+  lastLoginAt?: string
+  lastLoginIp?: string
+}
+const tableData = ref<User[]>([])
 const loading = ref(false)
 const editModalVisible = ref(false)
 const detailModalVisible = ref(false)
@@ -644,123 +514,196 @@ const rowKey = (row: any) => row.id
 const columns = [
   {
     type: 'selection',
-    fixed: 'left'
-  },
-  {
-    title: 'ID',
-    key: 'id',
-    width: 80,
-    fixed: 'left',
-    className: 'id-column'
+    width: 50
   },
   {
     title: '用户名',
     key: 'username',
-    width: 150,
-    fixed: 'left',
-    className: 'username-column',
+    width: 120,
     render(row: any) {
-      return h('div', { class: 'user-info' }, [
-        h('div', { class: 'user-avatar' }, row.username.charAt(0).toUpperCase()),
-        h('div', { class: 'user-details' }, [
-          h('div', { class: 'user-name' }, row.username),
-          h('div', { class: 'user-role' }, getRoleText(row.role))
-        ])
-      ])
+      return h('span', { style: { fontWeight: '500' } }, row.username)
     }
   },
   {
     title: '手机号',
     key: 'phone',
-    width: 150,
-    className: 'phone-column'
+    width: 130
   },
   {
     title: '邮箱',
     key: 'email',
-    width: 200,
-    ellipsis: {
-      tooltip: true
-    },
-    className: 'email-column'
+    width: 180,
+    ellipsis: { tooltip: true }
   },
   {
     title: '状态',
     key: 'status',
-    width: 100,
-    className: 'status-column',
+    width: 90,
     render(row: any) {
-      const statusMap: { [key: string]: { type: string; text: string; icon: string } } = {
-        PENDING: { type: 'warning', text: '待审核', icon: '⏳' },
-        ACTIVE: { type: 'success', text: '正常', icon: '✓' },
-        BANNED: { type: 'error', text: '已封禁', icon: '✕' },
-        REJECTED: { type: 'error', text: '已拒绝', icon: '✕' },
-        pending: { type: 'warning', text: '待审核', icon: '⏳' },
-        active: { type: 'success', text: '正常', icon: '✓' },
-        banned: { type: 'error', text: '已封禁', icon: '✕' },
-        rejected: { type: 'error', text: '已拒绝', icon: '✕' }
+      const statusMap: { [key: string]: { type: string; text: string } } = {
+        PENDING: { type: 'warning', text: '待审核' },
+        ACTIVE: { type: 'success', text: '正常' },
+        BANNED: { type: 'error', text: '已封禁' },
+        REJECTED: { type: 'error', text: '已拒绝' },
+        pending: { type: 'warning', text: '待审核' },
+        active: { type: 'success', text: '正常' },
+        banned: { type: 'error', text: '已封禁' },
+        rejected: { type: 'error', text: '已拒绝' }
       }
-      const status = statusMap[row.status] || { type: 'default', text: '未知', icon: '?' }
-      return h('div', { class: 'status-badge' }, [
-        h('span', { class: 'status-icon' }, status.icon),
-        h('n-tag', { type: status.type, size: 'small' }, () => status.text)
-      ])
+      const status = statusMap[row.status] || { type: 'default', text: '未知' }
+      return h(NTag, { type: status.type, size: 'small' }, () => status.text)
+    }
+  },
+  {
+    title: '封禁次数',
+    key: 'banCount',
+    width: 90,
+    render(row: any) {
+      const count = row.banCount || 0
+      if (count > 0) {
+        return h(NTag, { type: 'error', size: 'small' }, () => `${count}次`)
+      }
+      return h('span', { style: { color: '#999' } }, '-')
+    }
+  },
+  {
+    title: '封禁信息',
+    key: 'bannedUntil',
+    width: 180,
+    render(row: any) {
+      if (!row.bannedUntil && !row.bannedAt) {
+        return h('span', { style: { color: '#999' } }, '-')
+      }
+
+      const elements = []
+
+      // 显示封禁开始时间
+      if (row.bannedAt) {
+        const bannedAt = new Date(row.bannedAt)
+        elements.push(
+          h('div', { style: { fontSize: '12px', color: '#666', marginBottom: '2px' } }, [
+            h('span', { style: { color: '#999' } }, '封禁于: '),
+            bannedAt.toLocaleString('zh-CN', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })
+          ])
+        )
+      }
+
+      // 显示封禁到期时间和剩余时间
+      if (row.bannedUntil) {
+        const bannedUntil = new Date(row.bannedUntil)
+        const now = new Date()
+
+        if (bannedUntil > now) {
+          // 计算剩余时间
+          const remainingMs = bannedUntil.getTime() - now.getTime()
+          const remainingMinutes = Math.ceil(remainingMs / 60000)
+          const hours = Math.floor(remainingMinutes / 60)
+          const mins = remainingMinutes % 60
+
+          let remainingText = ''
+          if (hours > 0) {
+            remainingText = `${hours}小时${mins}分钟`
+          } else {
+            remainingText = `${remainingMinutes}分钟`
+          }
+
+          elements.push(
+            h(NTag, { type: 'error', size: 'small', style: { marginBottom: '2px' } }, () => `剩余${remainingText}`)
+          )
+          elements.push(
+            h('div', { style: { fontSize: '11px', color: '#999' } }, [
+              h('span', {}, '解封于: '),
+              bannedUntil.toLocaleString('zh-CN', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })
+            ])
+          )
+        } else {
+          elements.push(
+            h(NTag, { type: 'success', size: 'small' }, () => '临时封禁已过期')
+          )
+        }
+      }
+
+      return h('div', { style: { lineHeight: '1.4' } }, elements)
     }
   },
   {
     title: '角色',
     key: 'role',
-    width: 100,
-    className: 'role-column',
+    width: 90,
     render(row: any) {
-      const roleMap: { [key: string]: { type: string; text: string; icon: string } } = {
-        USER: { type: 'info', text: '普通用户', icon: '👤' },
-        ADMIN: { type: 'primary', text: '管理员', icon: '👑' },
-        user: { type: 'info', text: '普通用户', icon: '👤' },
-        admin: { type: 'primary', text: '管理员', icon: '👑' }
+      const roleMap: { [key: string]: { type: string; text: string } } = {
+        USER: { type: 'info', text: '用户' },
+        ADMIN: { type: 'primary', text: '管理员' },
+        user: { type: 'info', text: '用户' },
+        admin: { type: 'primary', text: '管理员' }
       }
-      const role = roleMap[row.role] || { type: 'default', text: '未知', icon: '?' }
-      return h('div', { class: 'role-badge' }, [
-        h('span', { class: 'role-icon' }, role.icon),
-        h('n-tag', { type: role.type, size: 'small' }, () => role.text)
-      ])
+      const role = roleMap[row.role] || { type: 'default', text: '未知' }
+      return h(NTag, { type: role.type, size: 'small' }, () => role.text)
     }
   },
   {
     title: '注册时间',
     key: 'createdAt',
-    width: 180,
-    className: 'date-column',
+    width: 160,
     render(row: any) {
-      return h('div', { class: 'date-info' }, [
-        h('div', { class: 'date-value' }, formatDate(row.createdAt)),
-        h('div', { class: 'date-label' }, '注册时间')
-      ])
-    }
-  },
-  {
-    title: '最后登录',
-    key: 'lastLoginAt',
-    width: 180,
-    className: 'date-column',
-    render(row: any) {
-      if (!row.lastLoginAt) return h('div', { class: 'date-info' }, [
-        h('div', { class: 'date-value' }, '-'),
-        h('div', { class: 'date-label' }, '从未登录')
-      ])
-      
-      return h('div', { class: 'date-info' }, [
-        h('div', { class: 'date-value' }, formatDate(row.lastLoginAt)),
-        h('div', { class: 'date-label' }, '最后登录')
-      ])
+      return h('span', {}, formatDate(row.createdAt))
     }
   },
   {
     title: '操作',
     key: 'actions',
-    width: 400,
+    width: 280,
     fixed: 'right',
-    className: 'actions-column'
+
+    render(row: any) {
+      const buttons = [
+        h(NButton, {
+          size: 'small',
+          type: 'primary',
+          style: { marginRight: '4px' },
+          onClick: () => handleEdit(row)
+        }, () => '编辑')
+      ]
+
+      // 根据用户状态添加不同的操作按钮
+      const status = row.status?.toUpperCase()
+      if (status === 'PENDING') {
+        buttons.push(
+          h(NButton, {
+            size: 'small',
+            type: 'success',
+            style: { marginRight: '4px' },
+            onClick: () => handleApprove(row.id)
+          }, () => '批准'),
+          h(NButton, {
+            size: 'small',
+            type: 'warning',
+            style: { marginRight: '4px' },
+            onClick: () => handleReject(row.id)
+          }, () => '拒绝')
+        )
+      } else if (status === 'ACTIVE') {
+        buttons.push(
+          h(NButton, {
+            size: 'small',
+            type: 'error',
+            style: { marginRight: '4px' },
+            onClick: () => handleBan(row.id)
+          }, () => '封禁')
+        )
+      } else if (status === 'BANNED') {
+        buttons.push(
+          h(NButton, {
+            size: 'small',
+            type: 'success',
+            style: { marginRight: '4px' },
+            onClick: () => handleUnban(row.id)
+          }, () => '解封')
+        )
+      }
+
+      return h('div', { style: { display: 'flex', flexWrap: 'wrap', gap: '2px' } }, buttons)
+    }
   }
 ]
 
@@ -813,22 +756,26 @@ const formatDate = (dateString: string) => {
 const fetchUsers = async () => {
   loading.value = true
   try {
-    const params = {
+    // 构建查询参数，只传递非空值
+    const queryParams: Record<string, any> = {
       page: pagination.page,
-      pageSize: pagination.pageSize,
-      username: searchForm.username,
-      phone: searchForm.phone,
-      email: searchForm.email,
-      status: searchForm.status,
-      role: searchForm.role,
-      startDate: searchForm.dateRange ? searchForm.dateRange[0] : null,
-      endDate: searchForm.dateRange ? searchForm.dateRange[1] : null
+      limit: pagination.pageSize
     }
 
-    const response = await get('/admin/users', { params })
+    // 只添加有值的搜索参数
+    if (searchForm.username) queryParams.username = searchForm.username
+    if (searchForm.phone) queryParams.phone = searchForm.phone
+    if (searchForm.email) queryParams.email = searchForm.email
+    if (searchForm.status) queryParams.status = searchForm.status
+    if (searchForm.role) queryParams.role = searchForm.role
+
+    console.log('搜索参数:', queryParams)
+    const response = await get('/admin/users', queryParams)
+    console.log('用户列表响应:', response)
+
     tableData.value = response.data?.users || []
     pagination.itemCount = response.data?.pagination?.total || 0
-    
+
     // 更新统计数据
     stats.total = response.data?.stats?.total || 0
     stats.active = response.data?.stats?.active || 0
@@ -944,12 +891,12 @@ const handleBatchApprove = () => {
     const user = tableData.value.find(u => u.id === key)
     return user && user.status === 'pending'
   })
-  
+
   if (pendingUsers.length === 0) {
     message.warning('没有待审核的用户')
     return
   }
-  
+
   dialog.warning({
     title: '批量批准',
     content: `确定要批准选中的 ${pendingUsers.length} 个用户吗？`,
@@ -975,12 +922,12 @@ const handleBatchReject = () => {
     const user = tableData.value.find(u => u.id === key)
     return user && user.status === 'pending'
   })
-  
+
   if (pendingUsers.length === 0) {
     message.warning('没有待审核的用户')
     return
   }
-  
+
   dialog.warning({
     title: '批量拒绝',
     content: `确定要拒绝选中的 ${pendingUsers.length} 个用户吗？`,
@@ -1006,12 +953,12 @@ const handleBatchBan = () => {
     const user = tableData.value.find(u => u.id === key)
     return user && user.status === 'active'
   })
-  
+
   if (activeUsers.length === 0) {
     message.warning('没有活跃的用户')
     return
   }
-  
+
   dialog.warning({
     title: '批量封禁',
     content: `确定要封禁选中的 ${activeUsers.length} 个用户吗？`,
@@ -1037,12 +984,12 @@ const handleBatchUnban = () => {
     const user = tableData.value.find(u => u.id === key)
     return user && user.status === 'banned'
   })
-  
+
   if (bannedUsers.length === 0) {
     message.warning('没有已封禁的用户')
     return
   }
-  
+
   dialog.warning({
     title: '批量解封',
     content: `确定要解封选中的 ${bannedUsers.length} 个用户吗？`,
@@ -1089,12 +1036,12 @@ const handleSaveEdit = async () => {
       status: editForm.status,
       role: editForm.role
     }
-    
+
     // 如果填写了真实姓名，添加到更新数据
     if (editForm.realName) {
       updateData.realName = editForm.realName
     }
-    
+
     // 如果填写了密码，添加到更新数据（密码长度验证在后端）
     if (editForm.password && editForm.password.trim()) {
       if (editForm.password.length < 8) {
@@ -1105,7 +1052,7 @@ const handleSaveEdit = async () => {
     }
 
     const response = await put(`/admin/users/${editForm.id}`, updateData)
-    
+
     if (response.code === 200) {
       message.success('保存成功')
       editModalVisible.value = false
@@ -1154,12 +1101,16 @@ const handleReject = (id: string) => {
     negativeText: '取消',
     onPositiveClick: async () => {
       try {
-        await post(`/admin/users/${id}/reject`)
-        message.success('拒绝成功')
-        fetchUsers()
-      } catch (error) {
+        const response = await put(`/admin/users/${id}/reject`, {})
+        if (response.code === 200) {
+          message.success('拒绝成功')
+          fetchUsers()
+        } else {
+          message.error(response.message || '拒绝失败')
+        }
+      } catch (error: any) {
         console.error('拒绝失败', error)
-        message.error('拒绝失败')
+        message.error(error.message || '拒绝失败')
       }
     }
   })
@@ -1329,15 +1280,20 @@ onMounted(() => {
 }
 
 @keyframes float {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translate(0, 0) rotate(0deg);
   }
+
   25% {
     transform: translate(30px, -30px) rotate(90deg);
   }
+
   50% {
     transform: translate(-20px, 20px) rotate(180deg);
   }
+
   75% {
     transform: translate(-30px, -20px) rotate(270deg);
   }
@@ -1410,21 +1366,27 @@ onMounted(() => {
   border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
-.search-input, .search-select, .search-date {
+.search-input,
+.search-select,
+.search-date {
   transition: all 0.3s ease;
 }
 
-.search-input:focus-within, .search-select:focus-within, .search-date:focus-within {
+.search-input:focus-within,
+.search-select:focus-within,
+.search-date:focus-within {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(94, 114, 228, 0.15);
 }
 
-.search-btn, .reset-btn {
+.search-btn,
+.reset-btn {
   border-radius: 8px;
   transition: all 0.3s ease;
 }
 
-.search-btn:hover, .reset-btn:hover {
+.search-btn:hover,
+.reset-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
@@ -1621,21 +1583,25 @@ onMounted(() => {
   padding: 8px 0;
 }
 
-.form-input, .form-select {
+.form-input,
+.form-select {
   transition: all 0.3s ease;
 }
 
-.form-input:focus-within, .form-select:focus-within {
+.form-input:focus-within,
+.form-select:focus-within {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(94, 114, 228, 0.15);
 }
 
-.cancel-btn, .save-btn {
+.cancel-btn,
+.save-btn {
   border-radius: 8px;
   transition: all 0.3s ease;
 }
 
-.cancel-btn:hover, .save-btn:hover {
+.cancel-btn:hover,
+.save-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
@@ -1645,17 +1611,17 @@ onMounted(() => {
   .users-container {
     padding: 16px;
   }
-  
+
   .page-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 16px;
   }
-  
+
   .header-right {
     width: 100%;
   }
-  
+
   .export-btn {
     width: 100%;
   }
@@ -1665,29 +1631,32 @@ onMounted(() => {
   .users-container {
     padding: 12px;
   }
-  
+
   .page-header {
     padding: 16px;
   }
-  
+
   .search-card {
     padding: 16px;
   }
-  
+
   .table-card {
     padding: 16px;
   }
-  
+
   .shape {
     filter: blur(30px);
   }
-  
-  .shape-1, .shape-2 {
+
+  .shape-1,
+  .shape-2 {
     width: 200px;
     height: 200px;
   }
-  
-  .shape-3, .shape-4, .shape-5 {
+
+  .shape-3,
+  .shape-4,
+  .shape-5 {
     width: 120px;
     height: 120px;
   }

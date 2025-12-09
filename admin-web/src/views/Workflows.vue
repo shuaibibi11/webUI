@@ -13,37 +13,8 @@
         :loading="loading"
         :row-key="(row: Workflow) => row.id"
         :bordered="false"
-        :scroll-x="1200"
-      >
-        <template #body-cell-actions="{ row }">
-          <div class="action-buttons">
-            <n-button
-              type="primary"
-              size="small"
-              @click="handleEdit(row.id)"
-              :icon="editIcon"
-            >
-              编辑
-            </n-button>
-            <n-button
-              type="warning"
-              size="small"
-              @click="testWorkflow(row)"
-              :icon="checkIcon"
-            >
-              测试
-            </n-button>
-            <n-button
-              type="error"
-              size="small"
-              @click="handleDelete(row.id)"
-              :icon="deleteIcon"
-            >
-              删除
-            </n-button>
-          </div>
-        </template>
-      </n-data-table>
+        :scroll-x="1400"
+      />
     </n-card>
     
     <!-- 工作流配置模态框 -->
@@ -94,7 +65,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, onMounted, h } from 'vue'
-import { NIcon, NModal, NForm, NFormItem, NInput, NSwitch, NButton, NTag, useMessage, useDialog } from 'naive-ui'
+import { NIcon, NModal, NForm, NFormItem, NInput, NSwitch, NButton, useMessage, useDialog } from 'naive-ui'
 const message = useMessage()
 const dialog = useDialog()
 import { Pencil, Trash, Add, CheckmarkCircle } from '@vicons/ionicons5'
@@ -145,7 +116,25 @@ const columns = [
     })
   } },
   { title: '创建时间', key: 'createdAt', width: 200 },
-  { title: '操作', key: 'actions', width: 200, fixed: 'right' }
+  { title: '操作', key: 'actions', width: 240, fixed: 'right', render: (row: Workflow) => {
+    return h('div', { class: 'action-buttons' }, [
+      h(NButton, {
+        type: 'primary',
+        size: 'small',
+        onClick: () => handleEdit(row.id)
+      }, { default: () => '编辑', icon: editIcon }),
+      h(NButton, {
+        type: 'warning',
+        size: 'small',
+        onClick: () => testWorkflow(row)
+      }, { default: () => '测试', icon: checkIcon }),
+      h(NButton, {
+        type: 'error',
+        size: 'small',
+        onClick: () => handleDelete(row.id)
+      }, { default: () => '删除', icon: deleteIcon })
+    ])
+  }}
 ]
 
 // 图标定义
