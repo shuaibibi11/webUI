@@ -51,15 +51,96 @@ public class ChatController {
     // 临时存储bisheng工作流的session信息（conversationId -> {sessionId, messageId, nodeId}）
     private final java.util.concurrent.ConcurrentHashMap<String, java.util.Map<String, String>> bishengSessions = new java.util.concurrent.ConcurrentHashMap<>();
 
+    /**
+     * 预热工作流连接
+     * 在切换到使用工作流的会话时调用，提前唤醒工作流以减少首次响应延迟
+     */
+    @PostMapping("/warmup")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> warmupWorkflow(Authentication auth, @RequestBody Map<String, Object> body) {
+        String userId = getUserId(auth);
+        if (userId == null) return ResponseEntity.status(401).body(err("用户认证信息无效"));
+
+        String workflowId = getString(body, "workflowId");
+        if (workflowId == null || workflowId.isBlank()) {
+            return ResponseEntity.ok(Map.of("code", 200, "message", "无需预热"));
+        }
+
+        // 异步执行预热请求
+        executor.execute(() -> {
+            try {
+                WorkflowConfig workflowConfig = workflowConfigRepo.findById(workflowId).orElse(null);
+                if (workflowConfig == null || !workflowConfig.isEnabled()) {
+                    System.out.println("预热失败：工作流配置不存在或未启用: " + workflowId);
+                    return;
+                }
+
+                String apiUrl = workflowConfig.getEndpoint() != null ? workflowConfig.getEndpoint() : bishengApiUrl;
+                String apiKey = workflowConfig.getApiKey() != null ? workflowConfig.getApiKey() : bishengApiKey;
+                String actualWorkflowId = workflowConfig.getWorkflowId();
+
+                System.out.println("开始预热工作流: " + workflowConfig.getName() + ", workflowId: " + actualWorkflowId);
+
+                // 发送一个简单的预热请求到 bisheng
+                // 使用一个特殊的标记表示这是预热请求
+                String warmupUrl = apiUrl + "/api/v2/workflow/" + actualWorkflowId + "/stream";
+
+                // 创建预热请求
+                java.net.http.HttpClient client = java.net.http.HttpClient.newBuilder()
+                        .connectTimeout(java.time.Duration.ofSeconds(5))
+                        .build();
+
+                // 发送一个HEAD请求或OPTIONS请求来唤醒服务
+                java.net.http.HttpRequest request = java.net.http.HttpRequest.newBuilder()
+                        .uri(java.net.URI.create(warmupUrl.replace("/stream", "")))
+                        .header("Authorization", "Bearer " + apiKey)
+                        .timeout(java.time.Duration.ofSeconds(5))
+                        .method("OPTIONS", java.net.http.HttpRequest.BodyPublishers.noBody())
+                        .build();
+
+                client.sendAsync(request, java.net.http.HttpResponse.BodyHandlers.discarding())
+                        .thenAccept(response -> {
+                            System.out.println("预热完成，响应状态: " + response.statusCode());
+                        })
+                        .exceptionally(e -> {
+                            System.out.println("预热请求完成（可能服务未启动）: " + e.getMessage());
+                            return null;
+                        });
+
+            } catch (Exception e) {
+                System.out.println("预热请求失败: " + e.getMessage());
+            }
+        });
+
+        return ResponseEntity.ok(Map.of("code", 200, "message", "预热请求已发送"));
+    }
+
     @PostMapping
     @Transactional
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> chat(Authentication auth, @RequestBody Map<String, Object> body) {
         String userId = getUserId(auth);
         if (userId == null) return ResponseEntity.status(401).body(err("用户认证信息无效"));
-        
+
         User user = userRepo.findById(userId).orElseThrow(() -> new RuntimeException("用户不存在"));
-        
+
+        // 检查用户是否被封禁
+        if ("BANNED".equals(user.getStatus())) {
+            if (user.getBannedUntil() != null && user.getBannedUntil().isAfter(java.time.Instant.now())) {
+                // 临时封禁未过期
+                long remainingMinutes = java.time.Duration.between(java.time.Instant.now(), user.getBannedUntil()).toMinutes();
+                return ResponseEntity.status(403).body(err("您的账号因违规被临时封禁，剩余" + (remainingMinutes + 1) + "分钟后可继续使用"));
+            } else if (user.getBannedUntil() != null) {
+                // 临时封禁已过期，自动解封
+                user.setStatus("ACTIVE");
+                user.setBannedUntil(null);
+                userRepo.save(user);
+            } else {
+                // 永久封禁
+                return ResponseEntity.status(403).body(err("您的账号已被禁用，请联系管理员"));
+            }
+        }
+
         String conversationId = getString(body, "conversationId");
         String content = getString(body, "content");
         String modelId = getString(body, "modelId");
@@ -107,7 +188,26 @@ public class ChatController {
             sendError(emitter, "用户不存在");
             return emitter;
         }
-        
+
+        // 检查用户是否被封禁
+        if ("BANNED".equals(user.getStatus())) {
+            if (user.getBannedUntil() != null && user.getBannedUntil().isAfter(java.time.Instant.now())) {
+                // 临时封禁未过期
+                long remainingMinutes = java.time.Duration.between(java.time.Instant.now(), user.getBannedUntil()).toMinutes();
+                sendError(emitter, "您的账号因违规被临时封禁，剩余" + (remainingMinutes + 1) + "分钟后可继续使用");
+                return emitter;
+            } else if (user.getBannedUntil() != null) {
+                // 临时封禁已过期，自动解封
+                user.setStatus("ACTIVE");
+                user.setBannedUntil(null);
+                userRepo.save(user);
+            } else {
+                // 永久封禁
+                sendError(emitter, "您的账号已被禁用，请联系管理员");
+                return emitter;
+            }
+        }
+
         String conversationId = getString(body, "conversationId");
         String content = getString(body, "content");
         String modelId = getString(body, "modelId");
@@ -120,7 +220,18 @@ public class ChatController {
                     sendError(emitter, "对话不存在");
                     return;
                 }
-                
+
+                // 如果会话标题是"新会话"或为空，用用户第一句话更新标题
+                if (c.getTitle() == null || c.getTitle().isBlank() || "新会话".equals(c.getTitle())) {
+                    String newTitle = content.length() > 20 ? content.substring(0, 20) + "..." : content;
+                    c.setTitle(newTitle);
+                }
+
+                // 在保存消息之前计数，用于判断是否跳过欢迎语
+                final long existingMsgCountBeforeSave = messageRepo.countByConversation(c);
+                final boolean skipGuideWord = existingMsgCountBeforeSave > 0; // 如果已有消息，说明是历史对话
+                System.out.println("会话历史消息数（保存前）: " + existingMsgCountBeforeSave + ", 跳过欢迎语: " + skipGuideWord);
+
                 // 保存用户消息
                 Message userMsg = createMessage(c, "user", content, "sent");
                 messageRepo.save(userMsg);
@@ -183,12 +294,35 @@ public class ChatController {
                     isWorkflow = true;
                     System.out.println("未提供modelId或workflowId，使用默认工作流");
                 }
-                
+
+                // 更新会话的模型/工作流信息（只在会话首次使用时设置）
+                if (c.getModelId() == null && c.getWorkflowId() == null) {
+                    if (isWorkflow) {
+                        // 查找工作流配置获取名称
+                        String wfIdToUse = workflowId != null && !workflowId.isBlank() ? workflowId : modelId;
+                        if (wfIdToUse != null) {
+                            WorkflowConfig wfConfig = workflowConfigRepo.findById(wfIdToUse).orElse(null);
+                            if (wfConfig != null) {
+                                c.setWorkflowId(wfIdToUse);
+                                c.setWorkflowName(wfConfig.getName());
+                            }
+                        }
+                    } else if (modelId != null && !modelId.isBlank()) {
+                        // 查找模型配置获取名称
+                        ModelConfig mConfig = modelConfigRepo.findById(modelId).orElse(null);
+                        if (mConfig != null) {
+                            c.setModelId(modelId);
+                            // 优先使用tag作为显示名称，如果没有则使用modelName
+                            c.setModelName(mConfig.getTag() != null ? mConfig.getTag() : mConfig.getModelName());
+                        }
+                    }
+                }
+
                 // 根据判断结果选择输出方式
                 if (isWorkflow) {
                     // 工作流：流式输出
-                    System.out.println("调用工作流流式输出，workflowId: " + actualWorkflowId + ", apiUrl: " + actualBishengApiUrl);
-                    handleWorkflowStream(emitter, aiMsg, userId, content, actualWorkflowId, actualBishengApiUrl, actualBishengApiKey);
+                    System.out.println("调用工作流流式输出，workflowId: " + actualWorkflowId + ", apiUrl: " + actualBishengApiUrl + ", 跳过欢迎语: " + skipGuideWord);
+                    handleWorkflowStream(emitter, aiMsg, userId, content, actualWorkflowId, actualBishengApiUrl, actualBishengApiKey, skipGuideWord);
                 } else {
                      // 大模型：一次性输出
                     System.out.println("调用大模型非流式输出，modelId: " + modelId);
@@ -219,7 +353,7 @@ public class ChatController {
             String modelApiUrl = "http://43.192.114.202:8000/v1/chat/completions";
             String modelApiKey = "123";
             String modelName = "Qwen3-4B-Instruct-2507-FP8";
-            
+
             if (modelId != null && !modelId.isBlank()) {
                 ModelConfig modelConfig = modelConfigRepo.findById(modelId).orElse(null);
                 if (modelConfig != null && modelConfig.isEnabled()) {
@@ -228,51 +362,80 @@ public class ChatController {
                     modelName = modelConfig.getModelName();
                 }
             }
-            
+
+            System.out.println("调用大模型API: url=" + modelApiUrl + ", model=" + modelName);
+
             // 构建请求
             Map<String, Object> request = new HashMap<>();
             request.put("model", modelName);
             request.put("stream", false);
-            
+
             List<Map<String, String>> messages = new ArrayList<>();
             messages.add(Map.of("role", "system", "content", "你是一个有帮助的AI助手。"));
             messages.add(Map.of("role", "user", "content", content));
             request.put("messages", messages);
             request.put("temperature", 0.7);
             request.put("max_tokens", 1024);
-            
+
             // 发送请求
             String response = sendHttpRequest(modelApiUrl, "POST", request, Map.of("Authorization", "Bearer " + modelApiKey));
-            
+            System.out.println("大模型响应: " + response.substring(0, Math.min(500, response.length())));
+
             // 解析响应
             String aiContent = parseModelResponse(response);
-            
+
             // 更新消息并发送
-             aiMsg.setContent(aiContent);
-             aiMsg.setStatus("sent");
-             messageRepo.save(aiMsg);
-             try {
-                 emitter.send(SseEmitter.event().name("message").data(mapMsg(aiMsg, userId)));
-             } catch (Exception ex) {
-                 // 忽略发送异常
-             }
-             
-         } catch (Exception e) {
-             // 失败时使用默认回复
-             String defaultContent = "这是AI对\"" + content + "\"的回复。";
-             aiMsg.setContent(defaultContent);
-             aiMsg.setStatus("sent");
-             messageRepo.save(aiMsg);
-             try {
-                 emitter.send(SseEmitter.event().name("message").data(mapMsg(aiMsg, userId)));
-             } catch (Exception ex) {
-                 // 忽略发送异常
-             }
-         }
+            aiMsg.setContent(aiContent);
+            aiMsg.setStatus("sent");
+            messageRepo.save(aiMsg);
+            try {
+                emitter.send(SseEmitter.event().name("message").data(mapMsg(aiMsg, userId)));
+            } catch (Exception ex) {
+                // 忽略发送异常
+            }
+
+        } catch (java.net.SocketTimeoutException e) {
+            // 超时错误 - 明确告知用户
+            System.err.println("大模型API请求超时: " + e.getMessage());
+            String errorContent = "抱歉，AI服务响应超时，请稍后再试。如果问题持续存在，请联系管理员检查模型服务状态。";
+            aiMsg.setContent(errorContent);
+            aiMsg.setStatus("error");
+            messageRepo.save(aiMsg);
+            try {
+                emitter.send(SseEmitter.event().name("message").data(mapMsg(aiMsg, userId)));
+            } catch (Exception ex) {
+                // 忽略发送异常
+            }
+        } catch (java.net.ConnectException e) {
+            // 连接错误 - 服务不可用
+            System.err.println("大模型API连接失败: " + e.getMessage());
+            String errorContent = "抱歉，无法连接到AI服务，服务可能暂时不可用。请稍后再试。";
+            aiMsg.setContent(errorContent);
+            aiMsg.setStatus("error");
+            messageRepo.save(aiMsg);
+            try {
+                emitter.send(SseEmitter.event().name("message").data(mapMsg(aiMsg, userId)));
+            } catch (Exception ex) {
+                // 忽略发送异常
+            }
+        } catch (Exception e) {
+            // 其他错误
+            System.err.println("大模型调用失败: " + e.getMessage());
+            e.printStackTrace();
+            String errorContent = "抱歉，AI服务出现问题：" + e.getMessage() + "。请稍后再试。";
+            aiMsg.setContent(errorContent);
+            aiMsg.setStatus("error");
+            messageRepo.save(aiMsg);
+            try {
+                emitter.send(SseEmitter.event().name("message").data(mapMsg(aiMsg, userId)));
+            } catch (Exception ex) {
+                // 忽略发送异常
+            }
+        }
     }
 
     // 处理工作流流式输出
-    private void handleWorkflowStream(SseEmitter emitter, Message aiMsg, String userId, String content, String workflowId, String apiUrl, String apiKey) {
+    private void handleWorkflowStream(SseEmitter emitter, Message aiMsg, String userId, String content, String workflowId, String apiUrl, String apiKey, boolean skipGuideWord) {
         try {
             // 构建工作流请求URL
             String workflowUrl;
@@ -282,31 +445,42 @@ public class ChatController {
                 workflowUrl = apiUrl + "/api/v2/workflow/invoke";
             }
             
-            String conversationId = aiMsg.getConversation().getId();
-            java.util.Map<String, String> sessionInfo = bishengSessions.get(conversationId);
-            
+            Conversation conv = aiMsg.getConversation();
+            String conversationId = conv.getId();
+
+            // 优先从数据库获取 session 信息，其次从内存缓存获取
+            String sessionId = conv.getBishengSessionId();
+            String messageId = conv.getBishengMessageId();
+            String nodeId = conv.getBishengNodeId();
+
+            // 如果数据库没有，尝试从内存缓存获取
+            if (sessionId == null || messageId == null || nodeId == null) {
+                java.util.Map<String, String> sessionInfo = bishengSessions.get(conversationId);
+                if (sessionInfo != null) {
+                    sessionId = sessionInfo.get("sessionId");
+                    messageId = sessionInfo.get("messageId");
+                    nodeId = sessionInfo.get("nodeId");
+                }
+            }
+
             // bisheng工作流请求格式：
             // 第一次调用：{"workflow_id":"...","stream":true} - 不传user_input，工作流会返回guide_word和input事件
             // 后续调用：{"workflow_id":"...","session_id":"...","message_id":"...","input":{"node_id":{"user_input":"..."}},"stream":true}
             Map<String, Object> request = new HashMap<>();
             request.put("workflow_id", workflowId);
             request.put("stream", true);
-            
-            if (sessionInfo != null && sessionInfo.containsKey("sessionId") && sessionInfo.containsKey("messageId") && sessionInfo.containsKey("nodeId")) {
+
+            if (sessionId != null && messageId != null && nodeId != null) {
                 // 后续调用：使用input格式（用户已经输入了内容）
-                String sessionId = sessionInfo.get("sessionId");
-                String messageId = sessionInfo.get("messageId");
-                String nodeId = sessionInfo.get("nodeId");
-                
                 request.put("session_id", sessionId);
                 request.put("message_id", messageId);
-                
+
                 Map<String, Object> input = new HashMap<>();
                 Map<String, Object> nodeInput = new HashMap<>();
                 nodeInput.put("user_input", content);
                 input.put(nodeId, nodeInput);
                 request.put("input", input);
-                
+
                 System.out.println("后续调用 - session_id: " + sessionId + ", message_id: " + messageId + ", node_id: " + nodeId + ", user_input: " + content);
             } else if (content != null && !content.isEmpty()) {
                 // 第一次调用但用户已经输入了内容：使用user_input方式（bisheng支持这种方式）
@@ -404,6 +578,11 @@ public class ChatController {
                                 
                         case "guide_word":
                                 // 开场白事件：直接设置消息内容（这是工作流的初始问候语）
+                                // 如果是历史对话（skipGuideWord=true），跳过欢迎语
+                                if (skipGuideWord) {
+                                    System.out.println("跳过guide_word（历史对话）");
+                                    break;
+                                }
                                 com.fasterxml.jackson.databind.JsonNode guideOutputSchema = dataNode.path("output_schema");
                                 if (!guideOutputSchema.isMissingNode()) {
                                     com.fasterxml.jackson.databind.JsonNode guideMessageNode = guideOutputSchema.path("message");
@@ -490,12 +669,19 @@ public class ChatController {
 
                                 if (!inputSessionId.isEmpty() && !inputMessageId.isEmpty() && !inputNodeId.isEmpty()) {
                                     String convId = aiMsg.getConversation().getId();
+                                    // 保存到内存缓存
                                     java.util.Map<String, String> sessInfo = new HashMap<>();
                                     sessInfo.put("sessionId", inputSessionId);
                                     sessInfo.put("messageId", inputMessageId);
                                     sessInfo.put("nodeId", inputNodeId);
                                     bishengSessions.put(convId, sessInfo);
-                                    System.out.println("保存bisheng session信息: conversationId=" + convId + ", session_id=" + inputSessionId + ", message_id=" + inputMessageId + ", node_id=" + inputNodeId);
+                                    // 同时保存到数据库（持久化）
+                                    Conversation convToUpdate = aiMsg.getConversation();
+                                    convToUpdate.setBishengSessionId(inputSessionId);
+                                    convToUpdate.setBishengMessageId(inputMessageId);
+                                    convToUpdate.setBishengNodeId(inputNodeId);
+                                    conversationRepo.save(convToUpdate);
+                                    System.out.println("保存bisheng session信息到数据库: conversationId=" + convId + ", session_id=" + inputSessionId + ", message_id=" + inputMessageId + ", node_id=" + inputNodeId);
                                 }
 
                                 // 收到input事件表示工作流等待新输入，当前轮对话完成
@@ -678,14 +864,31 @@ public class ChatController {
         connection.setRequestProperty("Content-Type", "application/json");
         headers.forEach(connection::setRequestProperty);
         connection.setDoOutput(true);
-        
+        // 设置超时时间：连接超时10秒，读取超时30秒
+        connection.setConnectTimeout(10000);
+        connection.setReadTimeout(30000);
+
         try (java.io.OutputStream os = connection.getOutputStream()) {
             byte[] input = new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsBytes(body);
             os.write(input, 0, input.length);
         } catch (IOException e) {
             throw new IOException("Failed to write request body: " + e.getMessage(), e);
         }
-        
+
+        int responseCode = connection.getResponseCode();
+        if (responseCode != 200) {
+            // 读取错误响应
+            try (java.io.BufferedReader br = new java.io.BufferedReader(
+                new java.io.InputStreamReader(connection.getErrorStream(), java.nio.charset.StandardCharsets.UTF_8))) {
+                StringBuilder errorResponse = new StringBuilder();
+                String line;
+                while ((line = br.readLine()) != null) {
+                    errorResponse.append(line);
+                }
+                throw new IOException("HTTP error " + responseCode + ": " + errorResponse.toString());
+            }
+        }
+
         try (java.io.BufferedReader br = new java.io.BufferedReader(
             new java.io.InputStreamReader(connection.getInputStream(), java.nio.charset.StandardCharsets.UTF_8))) {
             StringBuilder response = new StringBuilder();
@@ -706,7 +909,7 @@ public class ChatController {
         return responseNode.path("choices").get(0).path("message").path("content").asText();
     }
     
-    private void sendStreamRequest(String url, Map<String, Object> body, Map<String, String> headers, 
+    private void sendStreamRequest(String url, Map<String, Object> body, Map<String, String> headers,
                                   StreamEventHandler handler) throws Exception {
         java.net.HttpURLConnection connection = (java.net.HttpURLConnection) new java.net.URL(url).openConnection();
         connection.setRequestMethod("POST");
@@ -714,6 +917,9 @@ public class ChatController {
         headers.forEach(connection::setRequestProperty);
         connection.setDoOutput(true);
         connection.setChunkedStreamingMode(0);
+        // 设置超时时间：连接超时10秒，读取超时60秒（流式请求需要更长时间）
+        connection.setConnectTimeout(10000);
+        connection.setReadTimeout(60000);
         
         try (java.io.OutputStream os = connection.getOutputStream()) {
             byte[] input = new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsBytes(body);

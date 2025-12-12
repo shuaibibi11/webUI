@@ -61,6 +61,19 @@ public class User {
     @Column(name = "ban_count")
     private Integer banCount = 0;  // 系统自动封禁次数
 
+    // 实名认证相关字段
+    @Column(name = "verification_status")
+    private Integer verificationStatus;  // 认证状态: 1=匹配, 2=手机号与姓名不匹配, 3=手机号与证件号不匹配, 4=三者不匹配, -1=非移动用户, -2=数据异常, null=未验证
+
+    @Column(name = "verification_time")
+    private Instant verificationTime;  // 认证时间
+
+    @Column(name = "verification_message", length = 500)
+    private String verificationMessage;  // 认证消息
+
+    @Column(name = "default_model_id")
+    private String defaultModelId;  // 用户默认模型/工作流ID
+
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
@@ -129,6 +142,14 @@ public class User {
     public void setBannedAt(Instant bannedAt) { this.bannedAt = bannedAt; }
     public Integer getBanCount() { return banCount != null ? banCount : 0; }
     public void setBanCount(Integer banCount) { this.banCount = banCount; }
+    public Integer getVerificationStatus() { return verificationStatus; }
+    public void setVerificationStatus(Integer verificationStatus) { this.verificationStatus = verificationStatus; }
+    public Instant getVerificationTime() { return verificationTime; }
+    public void setVerificationTime(Instant verificationTime) { this.verificationTime = verificationTime; }
+    public String getVerificationMessage() { return verificationMessage; }
+    public void setVerificationMessage(String verificationMessage) { this.verificationMessage = verificationMessage; }
+    public String getDefaultModelId() { return defaultModelId; }
+    public void setDefaultModelId(String defaultModelId) { this.defaultModelId = defaultModelId; }
     public Instant getCreatedAt() { return createdAt; }
     public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
     public Instant getUpdatedAt() { return updatedAt; }

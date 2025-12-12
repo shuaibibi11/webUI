@@ -44,6 +44,66 @@ public class AdminController {
         return ResponseEntity.ok(res);
     }
 
+    @GetMapping("/dashboard")
+    public ResponseEntity<?> dashboard() {
+        try {
+            Map<String,Object> res = new HashMap<>();
+            res.put("code", 200);
+            Map<String,Object> data = new HashMap<>();
+
+            // 用户统计
+            long totalUsers = userRepo.count();
+            long activeUsers = userRepo.countByStatus("ACTIVE");
+            long pendingUsers = userRepo.countByStatus("PENDING");
+            long bannedUsers = userRepo.countByStatus("BANNED");
+
+            data.put("totalUsers", totalUsers);
+            data.put("activeUsers", activeUsers);
+            data.put("pendingUsers", pendingUsers);
+            data.put("bannedUsers", bannedUsers);
+
+            // 对话和消息统计
+            long totalConversations = conversationRepo.count();
+            long totalMessages = messageRepo.count();
+            data.put("totalConversations", totalConversations);
+            data.put("totalMessages", totalMessages);
+
+            // 反馈统计
+            long totalFeedbacks = feedbackRepo.count();
+            long pendingFeedbacks = feedbackRepo.countByStatus("pending");
+            data.put("totalFeedbacks", totalFeedbacks);
+            data.put("pendingFeedbacks", pendingFeedbacks);
+
+            // 模型和工作流统计
+            long totalModels = modelRepo.count();
+            long enabledModels = modelRepo.countByEnabled(true);
+            long totalWorkflows = workflowRepo.count();
+            long enabledWorkflows = workflowRepo.countByEnabled(true);
+            data.put("totalModels", totalModels);
+            data.put("enabledModels", enabledModels);
+            data.put("totalWorkflows", totalWorkflows);
+            data.put("enabledWorkflows", enabledWorkflows);
+
+            // 违规统计
+            long totalViolations = violationRecordRepo.count();
+            data.put("totalViolations", totalViolations);
+
+            // 密码重置申请统计
+            long pendingPasswordResets = passwordResetRepo.countByStatus("pending");
+            data.put("pendingPasswordResets", pendingPasswordResets);
+
+            res.put("data", data);
+            return ResponseEntity.ok(res);
+        } catch (Exception e) {
+            System.err.println("获取控制台统计数据失败: " + e.getMessage());
+            e.printStackTrace();
+            Map<String, Object> errorRes = new HashMap<>();
+            errorRes.put("code", 500);
+            errorRes.put("error", "获取统计数据失败: " + e.getMessage());
+            return ResponseEntity.status(500).body(errorRes);
+        }
+    }
+
     @GetMapping("/users/stats")
     public ResponseEntity<?> userStats() {
         try {
@@ -86,8 +146,8 @@ public class AdminController {
             @RequestParam(name = "page", defaultValue = "1") int page,
             @RequestParam(name = "limit", defaultValue = "50") int limit) {
         try {
-            // 构建动态查询，包含封禁相关字段
-            StringBuilder jpql = new StringBuilder("SELECT u.id, u.username, u.phone, u.email, u.realName, u.role, u.status, u.createdAt, u.banCount, u.bannedUntil, u.bannedAt FROM User u WHERE 1=1");
+            // 构建动态查询，包含封禁相关字段和实名认证字段
+            StringBuilder jpql = new StringBuilder("SELECT u.id, u.username, u.phone, u.email, u.realName, u.role, u.status, u.createdAt, u.banCount, u.bannedUntil, u.bannedAt, u.verificationStatus, u.verificationMessage, u.verificationTime FROM User u WHERE 1=1");
             List<Object> params = new ArrayList<>();
             int paramIndex = 1;
 
@@ -121,7 +181,7 @@ public class AdminController {
             }
 
             // 获取总数（用于分页）
-            String countJpql = jpql.toString().replace("SELECT u.id, u.username, u.phone, u.email, u.realName, u.role, u.status, u.createdAt, u.banCount, u.bannedUntil, u.bannedAt", "SELECT COUNT(u.id)");
+            String countJpql = jpql.toString().replace("SELECT u.id, u.username, u.phone, u.email, u.realName, u.role, u.status, u.createdAt, u.banCount, u.bannedUntil, u.bannedAt, u.verificationStatus, u.verificationMessage, u.verificationTime", "SELECT COUNT(u.id)");
             countJpql = countJpql.replaceFirst(" ORDER BY u.createdAt DESC", "");
             var countQuery = entityManager.createQuery(countJpql, Long.class);
             for (int i = 0; i < params.size(); i++) {
@@ -137,7 +197,7 @@ public class AdminController {
             List<Map<String, Object>> users = query.getResultList()
                 .stream()
                 .map(result -> {
-                    // 转换查询结果为Map，包含用户角色、状态和封禁信息
+                    // 转换查询结果为Map，包含用户角色、状态、封禁信息和实名认证信息
                     Map<String, Object> userMap = new HashMap<>();
                     userMap.put("id", result[0]);
                     userMap.put("username", result[1]);
@@ -150,6 +210,9 @@ public class AdminController {
                     userMap.put("banCount", result[8] != null ? result[8] : 0);
                     userMap.put("bannedUntil", result[9] != null ? result[9].toString() : null);
                     userMap.put("bannedAt", result[10] != null ? result[10].toString() : null);
+                    userMap.put("verificationStatus", result[11]);
+                    userMap.put("verificationMessage", result[12]);
+                    userMap.put("verificationTime", result[13] != null ? result[13].toString() : null);
                     return userMap;
                 })
                 .collect(java.util.stream.Collectors.toList());
@@ -219,15 +282,44 @@ public class AdminController {
     @DeleteMapping("/users/{id}")
     @Transactional
     public ResponseEntity<?> delete(@PathVariable("id") String id, Authentication auth, HttpServletRequest request) {
-        if (!userRepo.existsById(id)) return ResponseEntity.status(404).body(err("用户不存在"));
-        userRepo.deleteById(id);
+        User user = userRepo.findById(id).orElse(null);
+        if (user == null) return ResponseEntity.status(404).body(err("用户不存在"));
+
+        // 级联删除用户的所有关联数据
+
+        // 1. 删除用户的所有会话和消息
+        List<Conversation> conversations = conversationRepo.findByUser(user);
+        for (Conversation conv : conversations) {
+            // 先删除会话中的所有消息
+            messageRepo.deleteByConversation(conv);
+        }
+        // 删除所有会话
+        conversationRepo.deleteByUser(user);
+
+        // 2. 删除用户的反馈
+        feedbackRepo.deleteByUser(user);
+
+        // 3. 删除用户的审计日志
+        auditRepo.deleteByUser(user);
+
+        // 4. 删除用户的密码重置记录
+        passwordResetRepo.deleteByUser(user);
+
+        // 5. 删除用户的操作日志
+        userActionLogRepo.deleteByUserId(id);
+
+        // 6. 删除用户的违规记录
+        violationRecordRepo.deleteByUser(user);
+
+        // 7. 最后删除用户
+        userRepo.delete(user);
 
         // 记录审计日志（使用独立方法，不影响主事务）
-        saveAuditLogSafe(auth, request, "user_delete", "delete:"+id);
+        saveAuditLogSafe(auth, request, "user_delete", "delete:" + id + " (级联删除所有关联数据)");
 
         Map<String,Object> res = new HashMap<>();
         res.put("code", 200);
-        res.put("message", "已删除");
+        res.put("message", "已删除（包含所有关联数据）");
         return ResponseEntity.ok(res);
     }
     
@@ -245,10 +337,10 @@ public class AdminController {
         if (patch.containsKey("role")) {
             String newRole = patch.get("role").toString();
             // 验证角色是否合法
-            if (newRole.equals("USER") || newRole.equals("ADMIN")) {
+            if (newRole.equals("USER") || newRole.equals("ADMIN") || newRole.equals("TEST")) {
                 user.setRole(newRole);
             } else {
-                return ResponseEntity.badRequest().body(err("角色只能是USER或ADMIN"));
+                return ResponseEntity.badRequest().body(err("角色只能是USER、ADMIN或TEST"));
             }
         }
         if (patch.containsKey("password")) {
@@ -1694,6 +1786,88 @@ public class AdminController {
     }
 
     // ==================== 用户封禁管理 ====================
+
+    // ==================== 创建测试/管理员账号（免实名认证）====================
+
+    @PostMapping("/users/create-test")
+    @Transactional
+    public ResponseEntity<?> createTestUser(@RequestBody Map<String, Object> body, Authentication auth, HttpServletRequest request) {
+        try {
+            String username = Objects.toString(body.get("username"), "").trim();
+            String phone = Objects.toString(body.get("phone"), "").trim();
+            String email = Objects.toString(body.get("email"), "").trim();
+            String password = Objects.toString(body.get("password"), "");
+            String role = Objects.toString(body.get("role"), "TEST").toUpperCase();
+
+            // 验证必填字段
+            if (username.isEmpty() || username.length() < 4 || username.length() > 20) {
+                return ResponseEntity.badRequest().body(err("用户名长度必须在4-20个字符之间"));
+            }
+            if (!username.matches("^[a-zA-Z0-9_]+$")) {
+                return ResponseEntity.badRequest().body(err("用户名只能包含字母、数字和下划线"));
+            }
+            if (phone.isEmpty() || !phone.matches("^1[3-9]\\d{9}$")) {
+                return ResponseEntity.badRequest().body(err("请输入正确的11位手机号"));
+            }
+            if (email.isEmpty() || !email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")) {
+                return ResponseEntity.badRequest().body(err("请输入有效的邮箱地址"));
+            }
+            if (password.length() < 8 || password.length() > 20) {
+                return ResponseEntity.badRequest().body(err("密码长度必须在8-20个字符之间"));
+            }
+
+            // 验证角色
+            if (!role.equals("TEST") && !role.equals("ADMIN") && !role.equals("USER")) {
+                return ResponseEntity.badRequest().body(err("角色只能是TEST、ADMIN或USER"));
+            }
+
+            // 检查唯一性
+            if (userRepo.findByUsername(username).isPresent()) {
+                return ResponseEntity.badRequest().body(err("用户名已存在"));
+            }
+            if (userRepo.findByPhone(phone).isPresent()) {
+                return ResponseEntity.badRequest().body(err("手机号已被注册"));
+            }
+            if (userRepo.findByEmail(email).isPresent()) {
+                return ResponseEntity.badRequest().body(err("邮箱已被注册"));
+            }
+
+            // 创建用户（免实名认证）
+            User user = new User();
+            user.setUsername(username);
+            user.setPhone(phone);
+            user.setEmail(email.toLowerCase());
+            user.setPassword(org.springframework.security.crypto.bcrypt.BCrypt.hashpw(password, org.springframework.security.crypto.bcrypt.BCrypt.gensalt(12)));
+            user.setRealName(role.equals("TEST") ? "测试用户" : (role.equals("ADMIN") ? "管理员" : "普通用户"));
+            // 生成唯一的测试身份证号（TEST开头+时间戳）
+            user.setIdCard("TEST" + System.currentTimeMillis() + new java.util.Random().nextInt(1000));
+            user.setRole(role);
+            user.setStatus("ACTIVE"); // 直接激活，无需审批
+            user.setVerificationStatus(null); // 跳过实名认证
+            user.setVerificationMessage("测试账号，跳过实名认证");
+            userRepo.save(user);
+
+            // 记录审计日志
+            saveAuditLogSafe(auth, request, "create_test_user", "创建" + role + "账号:" + username);
+
+            Map<String, Object> res = new HashMap<>();
+            res.put("code", 201);
+            res.put("message", role + "账号创建成功");
+            Map<String, Object> userInfo = new HashMap<>();
+            userInfo.put("id", user.getId());
+            userInfo.put("username", user.getUsername());
+            userInfo.put("phone", user.getPhone());
+            userInfo.put("email", user.getEmail());
+            userInfo.put("role", user.getRole());
+            userInfo.put("status", user.getStatus());
+            res.put("user", userInfo);
+            return ResponseEntity.status(201).body(res);
+        } catch (Exception e) {
+            System.err.println("创建测试账号失败: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(err("创建账号失败: " + e.getMessage()));
+        }
+    }
 
     @PutMapping("/users/{id}/temp-ban")
     @Transactional

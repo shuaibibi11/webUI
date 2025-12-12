@@ -1,6 +1,7 @@
 package com.example.webui.common.repo;
 
 import com.example.webui.common.entity.ViolationRecord;
+import com.example.webui.common.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -35,4 +36,6 @@ public interface ViolationRecordRepository extends JpaRepository<ViolationRecord
     // 按用户名模糊搜索
     @Query("SELECT v FROM ViolationRecord v WHERE v.user.username LIKE %:username% ORDER BY v.createdAt DESC")
     Page<ViolationRecord> findByUsernameContaining(@Param("username") String username, Pageable pageable);
+
+    void deleteByUser(User user);
 }

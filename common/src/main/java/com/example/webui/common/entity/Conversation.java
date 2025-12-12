@@ -29,6 +29,28 @@ public class Conversation {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
+    @Column(name = "model_id")
+    private String modelId;
+
+    @Column(name = "model_name")
+    private String modelName;
+
+    @Column(name = "workflow_id")
+    private String workflowId;
+
+    @Column(name = "workflow_name")
+    private String workflowName;
+
+    // Bisheng session 信息（用于工作流对话续接）
+    @Column(name = "bisheng_session_id")
+    private String bishengSessionId;
+
+    @Column(name = "bisheng_message_id")
+    private String bishengMessageId;
+
+    @Column(name = "bisheng_node_id")
+    private String bishengNodeId;
+
     @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Message> messages = new ArrayList<>();
 
@@ -56,6 +78,20 @@ public class Conversation {
     public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
     public Instant getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(Instant updatedAt) { this.updatedAt = updatedAt; }
+    public String getModelId() { return modelId; }
+    public void setModelId(String modelId) { this.modelId = modelId; }
+    public String getModelName() { return modelName; }
+    public void setModelName(String modelName) { this.modelName = modelName; }
+    public String getWorkflowId() { return workflowId; }
+    public void setWorkflowId(String workflowId) { this.workflowId = workflowId; }
+    public String getWorkflowName() { return workflowName; }
+    public void setWorkflowName(String workflowName) { this.workflowName = workflowName; }
     public List<Message> getMessages() { return messages; }
     public void setMessages(List<Message> messages) { this.messages = messages; }
+    public String getBishengSessionId() { return bishengSessionId; }
+    public void setBishengSessionId(String bishengSessionId) { this.bishengSessionId = bishengSessionId; }
+    public String getBishengMessageId() { return bishengMessageId; }
+    public void setBishengMessageId(String bishengMessageId) { this.bishengMessageId = bishengMessageId; }
+    public String getBishengNodeId() { return bishengNodeId; }
+    public void setBishengNodeId(String bishengNodeId) { this.bishengNodeId = bishengNodeId; }
 }

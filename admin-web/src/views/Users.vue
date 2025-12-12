@@ -31,9 +31,14 @@
         </div>
       </div>
       <div class="header-right">
-        <n-button type="primary" @click="handleExport" :icon="downloadIcon" class="export-btn">
-          导出用户数据
-        </n-button>
+        <n-space>
+          <n-button type="success" @click="showCreateTestModal = true" class="create-test-btn">
+            创建测试账号
+          </n-button>
+          <n-button type="primary" @click="handleExport" :icon="downloadIcon" class="export-btn">
+            导出用户数据
+          </n-button>
+        </n-space>
       </div>
     </div>
 
@@ -175,7 +180,7 @@
           </n-space>
         </div>
       </div>
-      <n-data-table :columns="columns" :data="tableData" :pagination="pagination" :loading="loading" :scroll-x="1400"
+      <n-data-table :columns="columns" :data="tableData" :pagination="pagination" :loading="loading" :scroll-x="1600"
         :row-key="rowKey" :checked-row-keys="selectedRowKeys" @update:checked-row-keys="handleSelectionChange"
         @update:page="handlePageChange" @update:page-size="handlePageSizeChange" class="user-table">
         <template #body-cell-actions="{ row }">
@@ -202,6 +207,14 @@
               @click="handleUnban(row.id)" class="action-btn unban-btn">
               解封
             </n-button>
+            <n-popconfirm @positive-click="handleDelete(row.id)" positive-text="确认删除" negative-text="取消">
+              <template #trigger>
+                <n-button size="small" type="error" class="action-btn delete-btn">
+                  删除
+                </n-button>
+              </template>
+              确定要删除用户 "{{ row.username }}" 吗？此操作不可撤销！
+            </n-popconfirm>
           </div>
         </template>
       </n-data-table>
@@ -324,6 +337,42 @@
         </div>
       </div>
     </n-modal>
+
+    <!-- 创建测试账号模态框 -->
+    <n-modal v-model:show="showCreateTestModal" preset="dialog" title="创建测试账号" class="create-test-modal">
+      <n-form ref="createTestFormRef" :model="createTestForm" :rules="createTestFormRules" label-placement="left"
+        label-width="80" require-mark-placement="right-hanging" class="create-test-form">
+        <n-alert type="info" style="margin-bottom: 16px">
+          测试账号/管理员账号可跳过实名认证，创建后直接激活，无需审批。
+        </n-alert>
+        <n-form-item label="用户名" path="username">
+          <n-input v-model:value="createTestForm.username" placeholder="4-20个字符，只能包含字母、数字和下划线"
+            class="form-input" />
+        </n-form-item>
+        <n-form-item label="手机号" path="phone">
+          <n-input v-model:value="createTestForm.phone" placeholder="请输入11位手机号" class="form-input" />
+        </n-form-item>
+        <n-form-item label="邮箱" path="email">
+          <n-input v-model:value="createTestForm.email" placeholder="请输入邮箱地址" class="form-input" />
+        </n-form-item>
+        <n-form-item label="密码" path="password">
+          <n-input v-model:value="createTestForm.password" placeholder="8-20个字符" type="password"
+            show-password-on="mousedown" class="form-input" />
+        </n-form-item>
+        <n-form-item label="角色" path="role">
+          <n-select v-model:value="createTestForm.role" placeholder="请选择账号角色" :options="createTestRoleOptions"
+            class="form-select" />
+        </n-form-item>
+      </n-form>
+      <template #action>
+        <n-space>
+          <n-button @click="showCreateTestModal = false" class="cancel-btn">取消</n-button>
+          <n-button type="primary" @click="handleCreateTest" :loading="createTestLoading" class="save-btn">
+            创建账号
+          </n-button>
+        </n-space>
+      </template>
+    </n-modal>
   </div>
 </template>
 
@@ -335,7 +384,7 @@ import {
   Search as SearchIcon,
   Refresh as RefreshIcon
 } from '@vicons/tabler'
-import { get, post, put } from '../utils/api'
+import { get, post, put, del } from '../utils/api'
 
 const message = useMessage()
 const dialog = useDialog()
@@ -362,6 +411,18 @@ const detailModalVisible = ref(false)
 const editModalTitle = ref('编辑用户')
 const saveLoading = ref(false)
 const formRef = ref()
+
+// 创建测试账号
+const showCreateTestModal = ref(false)
+const createTestLoading = ref(false)
+const createTestFormRef = ref()
+const createTestForm = reactive({
+  username: '',
+  phone: '',
+  email: '',
+  password: '',
+  role: 'TEST'
+})
 
 // 选中行
 const selectedRowKeys = ref<string[]>([])
@@ -417,6 +478,7 @@ const statusOptions = [
 // 角色选项
 const roleOptions = [
   { label: '普通用户', value: 'USER' },
+  { label: '测试账号', value: 'TEST' },
   { label: '管理员', value: 'ADMIN' }
 ]
 
@@ -500,8 +562,10 @@ const getStatusText = (status: string) => {
 const getRoleType = (role: string) => {
   const roleMap: { [key: string]: string } = {
     USER: 'info',
+    TEST: 'warning',
     ADMIN: 'primary',
     user: 'info',
+    test: 'warning',
     admin: 'primary'
   }
   return roleMap[role] || 'default'
@@ -633,12 +697,52 @@ const columns = [
     render(row: any) {
       const roleMap: { [key: string]: { type: string; text: string } } = {
         USER: { type: 'info', text: '用户' },
+        TEST: { type: 'warning', text: '测试' },
         ADMIN: { type: 'primary', text: '管理员' },
         user: { type: 'info', text: '用户' },
+        test: { type: 'warning', text: '测试' },
         admin: { type: 'primary', text: '管理员' }
       }
       const role = roleMap[row.role] || { type: 'default', text: '未知' }
       return h(NTag, { type: role.type, size: 'small' }, () => role.text)
+    }
+  },
+  {
+    title: '实名认证',
+    key: 'verificationStatus',
+    width: 130,
+    render(row: any) {
+      const status = row.verificationStatus
+      if (status === null || status === undefined) {
+        return h(NTag, { type: 'default', size: 'small' }, () => '未验证')
+      }
+
+      const statusMap: { [key: number]: { type: string; text: string; color?: string } } = {
+        1: { type: 'success', text: '三要素匹配' },
+        2: { type: 'warning', text: '姓名不匹配' },
+        3: { type: 'warning', text: '证件不匹配' },
+        4: { type: 'error', text: '三者不匹配' },
+        [-1]: { type: 'default', text: '非移动用户' },
+        [-2]: { type: 'error', text: '数据异常' }
+      }
+
+      const verifyStatus = statusMap[status] || { type: 'default', text: `未知(${status})` }
+
+      const elements = [
+        h(NTag, { type: verifyStatus.type, size: 'small' }, () => verifyStatus.text)
+      ]
+
+      // 如果有验证时间，显示在下方
+      if (row.verificationTime) {
+        const verifyTime = new Date(row.verificationTime)
+        elements.push(
+          h('div', { style: { fontSize: '11px', color: '#999', marginTop: '2px' } },
+            verifyTime.toLocaleString('zh-CN', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })
+          )
+        )
+      }
+
+      return h('div', { style: { lineHeight: '1.3' } }, elements)
     }
   },
   {
@@ -702,6 +806,15 @@ const columns = [
         )
       }
 
+      // 添加删除按钮（所有状态都显示）
+      buttons.push(
+        h(NButton, {
+          size: 'small',
+          type: 'error',
+          onClick: () => confirmDelete(row)
+        }, () => '删除')
+      )
+
       return h('div', { style: { display: 'flex', flexWrap: 'wrap', gap: '2px' } }, buttons)
     }
   }
@@ -729,12 +842,38 @@ const formRules = {
   ]
 }
 
+// 创建测试账号表单验证规则
+const createTestFormRules = {
+  username: [
+    { required: true, message: '请输入用户名', trigger: 'blur' },
+    { min: 4, max: 20, message: '用户名长度在 4 到 20 个字符', trigger: 'blur' },
+    { pattern: /^[a-zA-Z0-9_]+$/, message: '用户名只能包含字母、数字和下划线', trigger: 'blur' }
+  ],
+  phone: [
+    { required: true, message: '请输入手机号', trigger: 'blur' },
+    { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的11位手机号', trigger: 'blur' }
+  ],
+  email: [
+    { required: true, message: '请输入邮箱', trigger: 'blur' },
+    { type: 'email', message: '请输入正确的邮箱格式', trigger: 'blur' }
+  ],
+  password: [
+    { required: true, message: '请输入密码', trigger: 'blur' },
+    { min: 8, max: 20, message: '密码长度在 8 到 20 个字符', trigger: 'blur' }
+  ],
+  role: [
+    { required: true, message: '请选择角色', trigger: 'change' }
+  ]
+}
+
 // 获取角色文本
 const getRoleText = (role: string) => {
   const roleMap: { [key: string]: string } = {
     USER: '普通用户',
+    TEST: '测试账号',
     ADMIN: '管理员',
     user: '普通用户',
+    test: '测试账号',
     admin: '管理员'
   }
   return roleMap[role] || '未知'
@@ -1188,10 +1327,83 @@ const handleExport = async () => {
   }
 }
 
+// 确认删除用户
+const confirmDelete = (row: any) => {
+  dialog.warning({
+    title: '确认删除',
+    content: `确定要删除用户 "${row.username}" 吗？此操作不可撤销，将删除该用户的所有数据！`,
+    positiveText: '确认删除',
+    negativeText: '取消',
+    onPositiveClick: () => handleDelete(row.id)
+  })
+}
+
+// 删除用户
+const handleDelete = async (id: string) => {
+  try {
+    const response = await del(`/admin/users/${id}`)
+    if (response.code === 200) {
+      message.success('删除成功')
+      fetchUsers()
+      fetchUserStats()
+    } else {
+      message.error(response.message || '删除失败')
+    }
+  } catch (error: any) {
+    console.error('删除失败', error)
+    message.error(error.message || '删除失败')
+  }
+}
+
 // 图标定义
 const downloadIcon = () => h(DownloadIcon)
 const searchIcon = () => h(SearchIcon)
 const refreshIcon = () => h(RefreshIcon)
+
+// 创建测试账号角色选项
+const createTestRoleOptions = [
+  { label: '测试账号', value: 'TEST' },
+  { label: '管理员', value: 'ADMIN' },
+  { label: '普通用户', value: 'USER' }
+]
+
+// 创建测试账号
+const handleCreateTest = async () => {
+  try {
+    await createTestFormRef.value?.validate()
+    createTestLoading.value = true
+
+    const response = await post('/admin/users/create-test', {
+      username: createTestForm.username,
+      phone: createTestForm.phone,
+      email: createTestForm.email,
+      password: createTestForm.password,
+      role: createTestForm.role
+    })
+
+    if (response.code === 201) {
+      message.success(response.message || '账号创建成功')
+      showCreateTestModal.value = false
+      // 重置表单
+      createTestForm.username = ''
+      createTestForm.phone = ''
+      createTestForm.email = ''
+      createTestForm.password = ''
+      createTestForm.role = 'TEST'
+      fetchUsers()
+      fetchUserStats()
+    } else {
+      message.error(response.error || response.message || '创建失败')
+    }
+  } catch (error: any) {
+    console.error('创建测试账号失败', error)
+    if (error.message) {
+      message.error(error.message)
+    }
+  } finally {
+    createTestLoading.value = false
+  }
+}
 
 // 组件挂载时获取数据
 onMounted(() => {

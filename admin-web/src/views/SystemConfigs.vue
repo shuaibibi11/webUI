@@ -1,6 +1,6 @@
 <template>
   <div class="system-configs-container">
-    <n-card title="系统配置管理">
+    <n-card title="禁言配置管理">
       <template #header-extra>
         <n-button type="primary" @click="showCreateModal = true">
           <template #icon>
@@ -43,7 +43,7 @@
     </n-modal>
 
     <!-- 违规配置说明卡片 -->
-    <n-card title="违规检测配置说明" style="margin-top: 16px">
+    <n-card title="禁言配置说明" style="margin-top: 16px">
       <n-descriptions :column="1" bordered>
         <n-descriptions-item label="violation_tip">
           <n-text>违规提示词，当AI返回的内容包含此提示词时，会记录为违规。支持部分匹配。</n-text>

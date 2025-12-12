@@ -1,70 +1,58 @@
 <template>
   <div class="feedback-container">
-    <!-- 背景动画元素 -->
-    <div class="bg-animation">
-      <div class="floating-shapes">
-        <div class="shape shape-1"></div>
-        <div class="shape shape-2"></div>
-        <div class="shape shape-3"></div>
-        <div class="shape shape-4"></div>
-        <div class="shape shape-5"></div>
-      </div>
+    <!-- 顶部返回按钮 -->
+    <div class="top-nav">
+      <n-button text type="primary" @click="handleBack" class="nav-btn back-btn">
+        <template #icon>
+          <n-icon size="18">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+            </svg>
+          </n-icon>
+        </template>
+        返回
+      </n-button>
     </div>
 
     <div class="feedback-content">
-      <div class="feedback-header">
-        <div class="header-left">
-          <n-button quaternary @click="handleBack" :icon="ArrowBackIcon" class="back-btn" size="large">
-            返回
-          </n-button>
-        </div>
-        <div class="header-center">
-          <div class="feedback-icon">
-            <n-icon size="36">
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <path
-                  d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z" />
-              </svg>
-            </n-icon>
-          </div>
-          <h1 class="feedback-title">投诉 / 反馈 / 建议</h1>
-          <p class="feedback-subtitle">我们重视您的每一条反馈，帮助我们不断改进</p>
-        </div>
+      <div class="feedback-logo">
+        <img src="@/assets/logo.png" alt="Logo" class="logo-image" />
       </div>
 
       <div class="feedback-form-wrapper">
-        <n-form :model="form" :rules="rules" ref="formRef" class="feedback-form" label-placement="top" label-width="auto">
+        <div class="feedback-header">
+          <n-icon size="24" class="feedback-icon">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z" />
+            </svg>
+          </n-icon>
+          <h1 class="feedback-title">投诉 / 反馈 / 建议</h1>
+        </div>
+
+        <n-form :model="form" :rules="rules" ref="formRef" class="feedback-form" label-placement="top">
           <n-form-item label="反馈类型" path="type">
-            <n-select v-model:value="form.type" placeholder="请选择反馈类型" :options="feedbackTypes" class="feedback-input"
-              size="large" />
+            <n-select v-model:value="form.type" placeholder="请选择反馈类型" :options="feedbackTypes" />
           </n-form-item>
 
           <n-form-item label="反馈内容" path="content">
-            <n-input v-model:value="form.content" type="textarea" placeholder="请详细描述您的问题或建议，您的反馈对我们非常重要..."
-              :autosize="{ minRows: 5, maxRows: 10 }" class="feedback-input" size="large" show-count maxlength="500" />
+            <n-input v-model:value="form.content" type="textarea" placeholder="请详细描述您的问题或建议..."
+              :autosize="{ minRows: 4, maxRows: 6 }" show-count maxlength="500" />
           </n-form-item>
 
           <n-form-item label="联系方式" path="contact">
-            <n-input v-model:value="form.contact" placeholder="请输入邮箱、手机号或微信号" class="feedback-input" size="large" />
+            <n-input v-model:value="form.contact" placeholder="请输入邮箱、手机号或微信号" />
           </n-form-item>
 
           <n-form-item>
-            <n-button type="primary" block @click="handleSubmit" :loading="loading" class="submit-button" size="large">
+            <n-button type="primary" block @click="handleSubmit" :loading="loading" class="submit-button">
               提交反馈
             </n-button>
           </n-form-item>
-        </n-form>
 
-        <div class="feedback-footer">
-          <div class="footer-text">
-            <n-icon>
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
-              </svg>
-            </n-icon>
-            您的反馈将被安全处理，我们承诺保护您的隐私
+          <div class="feedback-notice">
+            收到您的意见反馈后，我们将在7个工作日内回复您！
           </div>
-        </div>
+        </n-form>
       </div>
     </div>
   </div>
@@ -197,365 +185,162 @@ const handleSubmit = () => {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: #f5f7fa;
+  justify-content: center;
+  align-items: center;
+  background-image: url('@/assets/login-bg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   position: relative;
-  overflow: hidden;
+  padding: 60px 20px;
 }
 
-/* 背景动画 */
-.bg-animation {
+/* 顶部导航 */
+.top-nav {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  overflow: hidden;
+  right: 0;
+  display: flex;
+  justify-content: flex-start;
+  padding: 16px 24px;
+  z-index: 100;
 }
 
-.floating-shapes {
-  position: absolute;
-  width: 100%;
-  height: 100%;
+.nav-btn {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1677FF;
+  transition: all 0.3s ease;
 }
 
-.shape {
-  position: absolute;
-  border-radius: 50%;
-  opacity: 0.1;
-  filter: blur(40px);
-  animation: float 20s infinite ease-in-out;
+.nav-btn:hover {
+  opacity: 0.8;
 }
 
-.shape-1 {
-  width: 300px;
-  height: 300px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  top: 10%;
-  left: 10%;
-  animation-delay: 0s;
-}
-
-.shape-2 {
-  width: 200px;
-  height: 200px;
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  top: 60%;
-  right: 10%;
-  animation-delay: 3s;
-}
-
-.shape-3 {
-  width: 150px;
-  height: 150px;
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-  bottom: 20%;
-  left: 20%;
-  animation-delay: 5s;
-}
-
-.shape-4 {
-  width: 250px;
-  height: 250px;
-  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-  top: 30%;
-  right: 30%;
-  animation-delay: 7s;
-}
-
-.shape-5 {
-  width: 180px;
-  height: 180px;
-  background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-  bottom: 10%;
-  right: 20%;
-  animation-delay: 10s;
-}
-
-@keyframes float {
-
-  0%,
-  100% {
-    transform: translate(0, 0) rotate(0deg);
-  }
-
-  25% {
-    transform: translate(30px, -30px) rotate(90deg);
-  }
-
-  50% {
-    transform: translate(-20px, 20px) rotate(180deg);
-  }
-
-  75% {
-    transform: translate(-30px, -20px) rotate(270deg);
-  }
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .feedback-content {
-  flex: 1;
+  width: 100%;
+  max-width: 500px;
   display: flex;
   flex-direction: column;
+  align-items: center;
   position: relative;
   z-index: 1;
+}
+
+.feedback-logo {
+  text-align: center;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.feedback-logo .logo-image {
+  width: 100%;
+  max-width: 240px;
+  height: auto;
+  object-fit: contain;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
 }
 
 .feedback-header {
   display: flex;
   align-items: center;
-  padding: 20px;
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-.header-left {
-  flex: 0 0 auto;
-}
-
-.header-center {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 20px;
 }
 
 .feedback-icon {
-  margin-bottom: 8px;
-  color: #5e72e4;
+  color: #1677FF;
 }
 
 .feedback-title {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 600;
-  color: #2d3748;
+  color: #1D2129;
   margin: 0;
-  text-align: center;
-}
-
-.feedback-subtitle {
-  font-size: 14px;
-  color: #718096;
-  margin: 0;
-  text-align: center;
-}
-
-.back-btn {
-  color: #5e72e4;
 }
 
 .feedback-form-wrapper {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 20px;
-  max-width: 600px;
-  margin: 0 auto;
   width: 100%;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 28px 32px;
+  box-shadow: 0 6px 30px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .feedback-form {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border-radius: 16px;
-  padding: 30px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  transition: all 0.3s ease;
-}
-
-.feedback-form:hover {
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-  transform: translateY(-2px);
-}
-
-.form-label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 16px;
-  font-weight: 600;
-  color: #2d3748;
-  margin-bottom: 10px;
-}
-
-.label-icon {
-  color: #5e72e4;
-  font-size: 18px;
-}
-
-.feedback-input {
-  transition: all 0.3s ease;
-}
-
-.feedback-input:focus-within {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(94, 114, 228, 0.15);
-}
-
-.input-hint {
-  font-size: 12px;
-  color: #718096;
-  margin-top: 6px;
-  margin-left: 2px;
+  width: 100%;
 }
 
 .submit-button {
-  height: 50px;
-  font-size: 16px;
-  font-weight: 600;
+  height: 42px;
+  font-size: 15px;
+  font-weight: 500;
   border-radius: 8px;
-  background: linear-gradient(135deg, #5e72e4 0%, #825ee4 100%);
   border: none;
-  transition: all 0.3s ease;
-  margin-top: 10px;
+  margin-top: 4px;
 }
 
-.submit-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(94, 114, 228, 0.3);
-}
-
-.feedback-footer {
-  margin-top: 20px;
+.feedback-notice {
   text-align: center;
-}
-
-.footer-text {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
   font-size: 12px;
-  color: #718096;
-  padding: 10px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(5px);
-}
-
-.footer-text .n-icon {
-  color: #5e72e4;
-  font-size: 14px;
+  color: #86909C;
+  margin-top: 12px;
+  line-height: 1.5;
 }
 
 /* 表单项样式优化 */
 :deep(.n-form-item) {
-  margin-bottom: 20px;
+  margin-bottom: 12px;
 }
 
 :deep(.n-form-item-label) {
-  font-size: 15px;
-  font-weight: 600;
-  color: #2d3748;
-  margin-bottom: 8px;
-}
-
-:deep(.n-form-item-blank) {
-  display: block;
-  width: 100%;
-}
-:deep(.n-select) {
-  .n-base-selection-input__content {
-    height: 40px;
-
-    .select-option {
-      width: 20px;
-      height: 100%;
-      display: flex;
-      align-items: center;
-    }
-  }
-}
-
-/* 自定义选择器样式 */
-:deep(.n-base-selection) {
-  border-radius: 8px;
-  transition: all 0.3s ease;
-
-}
-
-:deep(.n-base-selection:hover) {
-  border-color: #5e72e4;
-}
-
-:deep(.n-base-selection:focus-within) {
-  border-color: #5e72e4;
-  box-shadow: 0 0 0 2px rgba(94, 114, 228, 0.2);
+  font-size: 13px;
+  font-weight: 500;
+  color: #1D2129;
+  margin-bottom: 6px;
 }
 
 :deep(.n-input) {
   border-radius: 8px;
-  transition: all 0.3s ease;
-
 }
 
-:deep(.n-input:hover) {
-  border-color: #5e72e4;
-}
-
-:deep(.n-input:focus-within) {
-  border-color: #5e72e4;
-  box-shadow: 0 0 0 2px rgba(94, 114, 228, 0.2);
-}
-
-:deep(.n-form-item-feedback-wrapper) {
-  min-height: 24px;
-}
-
-:deep(.n-form-item-feedback.n-form-item-feedback--error) {
-  color: #f56565;
-  font-size: 12px;
+:deep(.n-base-selection) {
+  border-radius: 8px;
 }
 
 /* 响应式设计 */
 @media (max-width: 768px) {
-  .feedback-form-wrapper {
-    padding: 15px;
+  .feedback-content {
+    max-width: 100%;
   }
 
   .feedback-form {
-    padding: 20px;
+    padding: 24px;
   }
 
   .feedback-title {
     font-size: 20px;
   }
-
-  .shape {
-    filter: blur(30px);
-  }
-
-  .shape-1,
-  .shape-2 {
-    width: 200px;
-    height: 200px;
-  }
-
-  .shape-3,
-  .shape-4,
-  .shape-5 {
-    width: 120px;
-    height: 120px;
-  }
-
-
 }
 
 @media (max-width: 480px) {
-  .feedback-header {
-    padding: 15px;
-  }
-
-  .feedback-form-wrapper {
-    padding: 10px;
+  .feedback-container {
+    padding: 40px 16px;
   }
 
   .feedback-form {
-    padding: 15px;
+    padding: 20px;
   }
 
   .feedback-title {
@@ -565,7 +350,5 @@ const handleSubmit = () => {
   .feedback-subtitle {
     font-size: 12px;
   }
-
-
 }
 </style>

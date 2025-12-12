@@ -30,6 +30,9 @@
         <n-form-item label="模型名称">
           <n-input v-model:value="form.modelName" placeholder="请输入模型名称" />
         </n-form-item>
+        <n-form-item label="显示名称">
+          <n-input v-model:value="form.tag" placeholder="请输入显示名称（用户可见）" />
+        </n-form-item>
         <n-form-item label="端点">
           <n-input v-model:value="form.endpoint" placeholder="请输入API端点" />
         </n-form-item>
@@ -77,6 +80,7 @@ interface Model {
   id: string
   provider: string
   modelName: string
+  tag: string
   endpoint: string
   apiKey: string
   enabled: boolean
@@ -90,6 +94,7 @@ const form = reactive({
   id: '',
   provider: 'Bisheng',
   modelName: '',
+  tag: '',
   endpoint: '',
   apiKey: '',
   enabled: true
@@ -99,6 +104,7 @@ const columns = [
   { title: 'ID', key: 'id', width: 100 },
   { title: '提供商', key: 'provider', width: 150 },
   { title: '模型名称', key: 'modelName', width: 150 },
+  { title: '显示名称', key: 'tag', width: 150 },
   { title: '端点', key: 'endpoint', width: 250 },
   { title: 'API Key', key: 'apiKey', width: 200, render: (row: Model) => {
     return row.apiKey ? '••••••••' : ''
@@ -160,6 +166,7 @@ const handleAddModel = () => {
     id: '',
     provider: 'Bisheng',
     modelName: '',
+    tag: '',
     endpoint: '',
     apiKey: '',
     enabled: true

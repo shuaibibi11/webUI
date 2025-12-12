@@ -28,12 +28,21 @@
         </n-button>
       </div>
       <div class="sidebar-content" v-if="!sidebarCollapsed">
-        <!-- 当前模型/工作流信息 -->
+        <!-- 当前模型信息 -->
         <div class="current-model">
-          <div class="model-label">当前模型/工作流</div>
+          <div class="model-label">当前模型</div>
           <div class="model-selector">
             <n-select v-model:value="selectedModelId" :options="modelOptions" placeholder="选择模型或工作流" size="small"
               @update:value="handleModelChange" />
+          </div>
+          <div class="default-model-info" v-if="defaultModelName">
+            <n-icon size="14" color="#52C41A"><CheckmarkCircle /></n-icon>
+            <span class="default-model-text">默认: {{ defaultModelName }}</span>
+          </div>
+          <div class="model-actions">
+            <n-button size="tiny" @click="setAsDefaultModel" :disabled="!selectedModelId || isCurrentDefault" type="primary" ghost>
+              {{ isCurrentDefault ? '已是默认' : '设为默认' }}
+            </n-button>
           </div>
           <div class="model-status">
             <n-tag type="success" size="small">在线</n-tag>
@@ -49,6 +58,11 @@
             <div class="conv-avatar" :style="{ background: getAvatarGradient(conv.title, index) }">{{ getConversationAvatar(conv.title) }}</div>
             <div class="conv-content">
               <div class="conv-title">{{ conv.title }}</div>
+              <div class="conv-model" v-if="conv.workflowName || conv.modelName">
+                <n-tag size="tiny" :type="conv.workflowName ? 'warning' : 'info'" round>
+                  {{ conv.workflowName || conv.modelName }}
+                </n-tag>
+              </div>
               <div class="conv-time">{{ formatTime(conv.updatedAt) }}</div>
             </div>
             <div class="conv-actions" @click.stop>
@@ -72,6 +86,11 @@
             <div class="conv-avatar" :style="{ background: getAvatarGradient(conv.title, index + 100) }">{{ getConversationAvatar(conv.title) }}</div>
             <div class="conv-content">
               <div class="conv-title">{{ conv.title }}</div>
+              <div class="conv-model" v-if="conv.workflowName || conv.modelName">
+                <n-tag size="tiny" :type="conv.workflowName ? 'warning' : 'info'" round>
+                  {{ conv.workflowName || conv.modelName }}
+                </n-tag>
+              </div>
               <div class="conv-time">{{ formatTime(conv.updatedAt) }}</div>
             </div>
             <div class="conv-actions" @click.stop>
@@ -95,6 +114,11 @@
             <div class="conv-avatar" :style="{ background: getAvatarGradient(conv.title, index + 200) }">{{ getConversationAvatar(conv.title) }}</div>
             <div class="conv-content">
               <div class="conv-title">{{ conv.title }}</div>
+              <div class="conv-model" v-if="conv.workflowName || conv.modelName">
+                <n-tag size="tiny" :type="conv.workflowName ? 'warning' : 'info'" round>
+                  {{ conv.workflowName || conv.modelName }}
+                </n-tag>
+              </div>
               <div class="conv-time">{{ formatTime(conv.updatedAt) }}</div>
             </div>
             <div class="conv-actions" @click.stop>
@@ -314,8 +338,8 @@
 import { ref, computed, onMounted, onUnmounted, nextTick, h } from 'vue'
 import { useRouter } from 'vue-router'
 import { NButton, NAvatar, NIcon, NSelect, NTag, NTooltip, NCheckbox, useMessage, useDialog } from 'naive-ui'
-import { Person, ChatboxEllipsesOutline, ThumbsUp, ThumbsDown, Copy, Share } from '@vicons/ionicons5'
-import { get, post, del, sseRequest } from '../utils/api'
+import { Person, ChatboxEllipsesOutline, ThumbsUp, ThumbsDown, Copy, Share, CheckmarkCircle } from '@vicons/ionicons5'
+import { get, post, put, del, sseRequest } from '../utils/api'
 
 const router = useRouter()
 const message = useMessage()
@@ -326,6 +350,10 @@ interface Conversation {
   id: string
   title: string
   updatedAt: string
+  modelId?: string
+  modelName?: string
+  workflowId?: string
+  workflowName?: string
 }
 
 interface Message {
@@ -364,8 +392,21 @@ const selectedModelId = ref<string>('')
 const modelOptions = ref<ModelOption[]>([])
 const sidebarCollapsed = ref(false)
 const currentTime = ref('')
+const defaultModelId = ref<string>('') // 默认模型ID
 let abortController: AbortController | null = null
 let timeInterval: ReturnType<typeof setInterval> | null = null
+
+// 计算默认模型名称
+const defaultModelName = computed(() => {
+  if (!defaultModelId.value) return ''
+  const model = modelOptions.value.find(m => m.value === defaultModelId.value)
+  return model?.label || ''
+})
+
+// 判断当前选择的是否为默认模型
+const isCurrentDefault = computed(() => {
+  return !!(selectedModelId.value && selectedModelId.value === defaultModelId.value)
+})
 
 // 多选分享相关
 const selectMode = ref(false)
@@ -486,6 +527,54 @@ const isViolationResponse = (content: string): boolean => {
   return cleanContent.includes(cleanTip) || content.includes(violationConfig.value.violationTip)
 }
 
+// 检测并显示AI服务错误弹窗
+const showAIServiceErrorDialog = (errorContent: string) => {
+  // 判断错误类型
+  const isTimeout = errorContent.includes('超时') || errorContent.includes('timeout') || errorContent.includes('响应超时')
+  const isConnectionError = errorContent.includes('连接') || errorContent.includes('connect') || errorContent.includes('不可用') || errorContent.includes('无法连接')
+  const isServiceError = errorContent.includes('服务') || errorContent.includes('service') || errorContent.includes('AI')
+  const isBanned = errorContent.includes('封禁') || errorContent.includes('禁用') || errorContent.includes('违规')
+
+  let title = '服务异常'
+  let content = errorContent
+
+  if (isBanned) {
+    title = '⚠️ 账号受限'
+    content = errorContent + '\n\n如有疑问，请联系管理员。'
+    // 如果是封禁错误，显示警告对话框并提供登出选项
+    dialog.warning({
+      title: title,
+      content: content,
+      positiveText: '重新登录',
+      negativeText: '我知道了',
+      closable: true,
+      onPositiveClick: () => {
+        localStorage.removeItem('token')
+        localStorage.removeItem('username')
+        localStorage.removeItem('role')
+        router.push('/login')
+      }
+    })
+    return
+  } else if (isTimeout) {
+    title = '⏱️ 响应超时'
+    content = 'AI服务响应时间过长，可能服务繁忙或网络不稳定。\n\n建议：\n• 请稍后重试\n• 如问题持续，请联系管理员'
+  } else if (isConnectionError) {
+    title = '🔌 连接失败'
+    content = '无法连接到AI服务，服务可能暂时不可用。\n\n建议：\n• 检查网络连接\n• 稍后重试\n• 联系管理员检查服务状态'
+  } else if (isServiceError) {
+    title = '⚠️ 服务异常'
+    content = 'AI服务出现问题，请稍后再试。\n\n如果问题持续存在，请联系管理员。'
+  }
+
+  dialog.error({
+    title: title,
+    content: content,
+    positiveText: '我知道了',
+    closable: true
+  })
+}
+
 // 报告违规并检查是否需要封禁（仅对普通用户启用，管理员跳过）
 const reportViolation = async (messageContent: string, aiResponse: string, messageId?: string) => {
   // 管理员账号跳过违规检测
@@ -573,6 +662,28 @@ const fetchConversations = async () => {
     console.error('获取会话列表失败', error)
     // 确保会话列表在错误情况下仍然是数组
     conversations.value = []
+  }
+}
+
+// 更新会话标题（使用第一句话作为标题）
+const updateConversationTitle = async (conversationId: string, newTitle: string) => {
+  if (!conversationId || !newTitle) return
+
+  // 截取前20个字符作为标题
+  const title = newTitle.length > 20 ? newTitle.substring(0, 20) + '...' : newTitle
+
+  try {
+    const response = await put(`/conversations/${conversationId}`, { title })
+    if (response && response.code === 200) {
+      // 更新本地会话列表中的标题
+      const conv = conversations.value.find(c => c.id === conversationId)
+      if (conv) {
+        conv.title = title
+      }
+      console.log('会话标题已更新为:', title)
+    }
+  } catch (error) {
+    console.error('更新会话标题失败:', error)
   }
 }
 
@@ -982,9 +1093,34 @@ const fetchModels = async () => {
     // 合并所有选项
     modelOptions.value = [...modelItems, ...workflowItems]
 
-    // 如果没有选择模型，默认选择第一个
-    if (!selectedModelId.value && modelOptions.value.length > 0) {
+    // 尝试从服务器获取用户默认模型
+    try {
+      const defaultModelResponse = await get('/users/default-model')
+      if (defaultModelResponse && defaultModelResponse.code === 200 && defaultModelResponse.data?.defaultModelId) {
+        const serverDefaultModelId = defaultModelResponse.data.defaultModelId
+        // 检查该模型是否在可用列表中
+        if (modelOptions.value.find(m => m.value === serverDefaultModelId)) {
+          // 保存默认模型ID用于显示
+          defaultModelId.value = serverDefaultModelId
+          selectedModelId.value = serverDefaultModelId
+          localStorage.setItem('selectedModelId', serverDefaultModelId)
+          console.log('从服务器恢复默认模型:', serverDefaultModelId)
+          return
+        }
+      }
+    } catch (error) {
+      console.log('获取服务器默认模型失败，将使用本地设置:', error)
+    }
+
+    // 如果服务器没有默认模型，尝试从localStorage恢复
+    const savedModelId = localStorage.getItem('selectedModelId')
+    if (savedModelId && modelOptions.value.find(m => m.value === savedModelId)) {
+      selectedModelId.value = savedModelId
+      console.log('从localStorage恢复模型:', savedModelId)
+    } else if (modelOptions.value.length > 0) {
+      // 如果都没有，默认选择第一个
       selectedModelId.value = modelOptions.value[0].value
+      console.log('默认选择第一个模型:', selectedModelId.value)
     }
   } catch (error) {
     console.error('获取模型列表失败', error)
@@ -997,7 +1133,7 @@ const fetchModels = async () => {
 }
 
 // 切换模型
-const handleModelChange = (modelId: string) => {
+const handleModelChange = async (modelId: string) => {
   console.log('切换模型/工作流:', modelId, '当前选项:', modelOptions.value.find(m => m.value === modelId))
   const selectedModel = modelOptions.value.find(m => m.value === modelId)
   const isWorkflow = selectedModel?.type === 'workflow'
@@ -1032,6 +1168,30 @@ const handleModelChange = (modelId: string) => {
   }
 }
 
+// 将当前模型设为默认
+const setAsDefaultModel = async () => {
+  if (!selectedModelId.value) {
+    message.warning('请先选择一个模型')
+    return
+  }
+
+  try {
+    const response = await put('/users/default-model', { modelId: selectedModelId.value })
+    if (response && response.code === 200) {
+      const selectedModel = modelOptions.value.find(m => m.value === selectedModelId.value)
+      // 更新默认模型ID
+      defaultModelId.value = selectedModelId.value
+      message.success(`已将 "${selectedModel?.label || selectedModelId.value}" 设为默认模型`)
+      localStorage.setItem('selectedModelId', selectedModelId.value)
+    } else {
+      throw new Error(response?.message || '设置失败')
+    }
+  } catch (error: any) {
+    console.error('设置默认模型失败:', error)
+    message.error('设置默认模型失败：' + (error?.message || '请稍后重试'))
+  }
+}
+
 // 切换会话
 const switchConversation = async (conversationId: string) => {
   // 验证会话ID有效性
@@ -1055,6 +1215,36 @@ const switchConversation = async (conversationId: string) => {
     }
   }
 
+  // 根据会话的模型/工作流配置更新当前选择的模型
+  const conv = targetConversation || conversations.value.find(c => c.id === conversationId)
+
+  // 如果会话使用的是工作流，立即发送预热请求（不等待结果）
+  if (conv?.workflowId) {
+    console.log('切换到工作流会话，发送预热请求:', conv.workflowId)
+    post('/chat/warmup', { workflowId: conv.workflowId }).catch(() => {
+      console.log('预热请求已发送')
+    })
+  }
+
+  // 优先使用工作流ID，其次使用模型ID
+  if (conv?.workflowId) {
+    // 检查工作流ID是否在可用选项中
+    const workflowOption = modelOptions.value.find(m => m.value === conv.workflowId)
+    if (workflowOption) {
+      selectedModelId.value = conv.workflowId
+      localStorage.setItem('selectedModelId', conv.workflowId)
+      console.log('切换会话时更新选择的工作流:', conv.workflowId, conv.workflowName)
+    }
+  } else if (conv?.modelId) {
+    // 检查模型ID是否在可用选项中
+    const modelOption = modelOptions.value.find(m => m.value === conv.modelId)
+    if (modelOption) {
+      selectedModelId.value = conv.modelId
+      localStorage.setItem('selectedModelId', conv.modelId)
+      console.log('切换会话时更新选择的模型:', conv.modelId, conv.modelName)
+    }
+  }
+
   currentConversationId.value = conversationId
   // 保存当前会话ID到localStorage（用于刷新后恢复）
   localStorage.setItem('currentConversationId', conversationId)
@@ -1067,13 +1257,15 @@ const switchConversation = async (conversationId: string) => {
     abortController = null
   }
 
-  // 注意：不要在这里清空消息，让fetchMessages来处理
-  // 这样可以避免在切换会话时出现闪烁
-
-  // 加载消息
+  // 加载消息（不清空旧消息，让fetchMessages自己处理）
   console.log('切换会话，开始加载消息，会话ID:', conversationId)
   await fetchMessages(conversationId)
   console.log('切换会话完成，消息数量:', messages.value.length)
+
+  // 确保滚动到底部
+  nextTick(() => {
+    scrollToBottom()
+  })
 }
 
 // 页面初始化
@@ -1097,18 +1289,11 @@ onMounted(async () => {
     userInfo.value.role = savedRole
   }
 
-  // 获取模型列表（必须先获取，因为后面需要用到）
+  // 获取模型列表（必须先获取，因为后面需要用到，同时会自动恢复用户默认模型）
   await fetchModels()
 
   // 获取违规配置
   await fetchViolationConfig()
-
-  // 从localStorage恢复选择的模型
-  const savedModelId = localStorage.getItem('selectedModelId')
-  if (savedModelId && modelOptions.value.find(m => m.value === savedModelId)) {
-    selectedModelId.value = savedModelId
-    console.log('恢复选择的模型:', savedModelId)
-  }
 
   // 从localStorage恢复侧边栏状态
   const savedSidebarState = localStorage.getItem('sidebarCollapsed')
@@ -1177,6 +1362,9 @@ const handleSend = async () => {
   const content = inputContent.value.trim()
   inputContent.value = ''
 
+  // 检查是否是第一条用户消息（用于更新会话标题）
+  const isFirstUserMessage = messages.value.filter(m => m.role === 'user').length === 0
+
   // 添加用户消息
   const userMsg: Message = {
     id: Date.now().toString(),
@@ -1189,6 +1377,15 @@ const handleSend = async () => {
   }
   messages.value.push(userMsg)
 
+  // 如果是第一条用户消息，更新会话标题为用户的第一句话
+  if (isFirstUserMessage && currentConversationId.value) {
+    // 检查当前会话标题是否为默认标题
+    const currentConv = conversations.value.find(c => c.id === currentConversationId.value)
+    if (currentConv && (currentConv.title === '新会话' || currentConv.title === '新对话')) {
+      updateConversationTitle(currentConversationId.value, content)
+    }
+  }
+
   // 滚动到底部
   nextTick(() => scrollToBottom())
 
@@ -1198,7 +1395,7 @@ const handleSend = async () => {
     id: (Date.now() + 1).toString(),
     conversationId: currentConversationId.value,
     role: 'assistant',
-    content: '',
+    content: '正在思考...',
     status: 'sending',
     feedbackStatus: 'none',
     createdAt: new Date().toISOString()
@@ -1210,20 +1407,25 @@ const handleSend = async () => {
 
   try {
     // 根据模型类型选择输出方式
+    // 优先检查当前会话是否有workflowId（历史会话可能有工作流配置）
+    const currentConv = conversations.value.find(c => c.id === currentConversationId.value)
+    const convWorkflowId = currentConv?.workflowId
     const selectedModel = modelOptions.value.find(m => m.value === selectedModelId.value)
-    const isWorkflow = selectedModel?.type === 'workflow'
+    // 如果会话有workflowId，或者选择的模型是工作流类型，则使用工作流模式
+    const isWorkflow = !!convWorkflowId || selectedModel?.type === 'workflow'
+    const workflowIdToUse = convWorkflowId || (isWorkflow ? selectedModelId.value : null)
 
-    console.log('发送消息 - 选择的模型:', selectedModel, 'isWorkflow:', isWorkflow, 'selectedModelId:', selectedModelId.value)
+    console.log('发送消息 - 选择的模型:', selectedModel, 'isWorkflow:', isWorkflow, 'selectedModelId:', selectedModelId.value, 'convWorkflowId:', convWorkflowId)
 
     if (isWorkflow) {
       // Bisheng工作流配置：采用流式输出方式
       // 注意：工作流时传workflowId，让后端识别为工作流模式
-      console.log('使用工作流模式，workflowId:', selectedModelId.value)
+      console.log('使用工作流模式，workflowId:', workflowIdToUse)
       abortController = sseRequest(
         {
           url: `/chat/stream`,
           method: 'POST',
-          data: { content, conversationId: currentConversationId.value, workflowId: selectedModelId.value }
+          data: { content, conversationId: currentConversationId.value, workflowId: workflowIdToUse }
         },
         (data) => {
           // 后端返回的是完整的消息对象，包含id, conversationId, role, senderId, content, status, createdAt
@@ -1315,6 +1517,11 @@ const handleSend = async () => {
               }
               console.log('工作流消息生成完成（通过data.status），重置generating状态')
 
+              // 如果是error状态，显示错误弹窗提醒用户
+              if (data.status === 'error' && data.content) {
+                showAIServiceErrorDialog(data.content)
+              }
+
               // 检测是否为违规响应
               if (data.status === 'sent' && data.content && isViolationResponse(data.content)) {
                 console.log('检测到违规响应，上报违规')
@@ -1354,24 +1561,30 @@ const handleSend = async () => {
             console.log('收到用户消息:', data)
           } else if (data.type === 'error' || (data.code && data.code !== 200)) {
             const msgIndex = messages.value.findIndex(m => m.id === aiMsg.id)
+            const errorMessage = data.error || data.message || '生成过程中发生错误，请稍后重试'
             if (msgIndex !== -1) {
               messages.value[msgIndex].status = 'error'
-              messages.value[msgIndex].content = data.error || data.message || '生成过程中发生错误，请稍后重试'
+              messages.value[msgIndex].content = errorMessage
             }
             generating.value = false
-            console.error(data.error || data.message || '生成失败')
+            console.error(errorMessage)
+            // 显示错误弹窗提醒用户
+            showAIServiceErrorDialog(errorMessage)
             abortController?.abort()
             abortController = null
           }
         },
         () => {
           const msgIndex = messages.value.findIndex(m => m.id === aiMsg.id)
+          const errorMessage = '连接失败，请稍后重试'
           if (msgIndex !== -1) {
             messages.value[msgIndex].status = 'error'
-            messages.value[msgIndex].content = '连接失败，请稍后重试'
+            messages.value[msgIndex].content = errorMessage
           }
           generating.value = false
-          console.error('连接失败，请稍后重试')
+          console.error(errorMessage)
+          // 显示连接失败弹窗提醒用户
+          showAIServiceErrorDialog(errorMessage)
           abortController?.abort()
           abortController = null
         }
@@ -1454,13 +1667,26 @@ const handleSend = async () => {
 
       generating.value = false
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error('发送消息失败:', error)
     const msgIndex = messages.value.findIndex(m => m.id === aiMsg.id)
+    // 根据错误类型构建更详细的错误信息
+    let errorMessage = '发送失败，请稍后重试'
+    if (error?.message) {
+      if (error.message.includes('timeout') || error.message.includes('超时')) {
+        errorMessage = '抱歉，AI服务响应超时，请稍后再试。'
+      } else if (error.message.includes('connect') || error.message.includes('network') || error.message.includes('连接')) {
+        errorMessage = '抱歉，无法连接到AI服务，请检查网络连接后重试。'
+      } else {
+        errorMessage = '抱歉，发送消息失败：' + error.message
+      }
+    }
     if (msgIndex !== -1) {
       messages.value[msgIndex].status = 'error'
-      messages.value[msgIndex].content = '发送失败，请稍后重试'
+      messages.value[msgIndex].content = errorMessage
     }
+    // 显示错误弹窗提醒用户
+    showAIServiceErrorDialog(errorMessage)
     generating.value = false
   }
 }
@@ -1930,6 +2156,12 @@ const scrollToBottom = () => {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
+.model-actions {
+  margin-top: 8px;
+  display: flex;
+  justify-content: flex-end;
+}
+
 .model-label {
   font-size: 12px;
   color: #86909C;
@@ -1938,6 +2170,23 @@ const scrollToBottom = () => {
 
 .model-selector {
   margin-bottom: 8px;
+}
+
+.default-model-info {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 8px;
+  background-color: #F6FFED;
+  border: 1px solid #B7EB8F;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.default-model-text {
+  font-size: 12px;
+  color: #52C41A;
+  font-weight: 500;
 }
 
 .model-name {
@@ -2021,6 +2270,11 @@ const scrollToBottom = () => {
 .conv-time {
   font-size: 12px;
   color: #86909C;
+}
+
+.conv-model {
+  margin-top: 2px;
+  margin-bottom: 2px;
 }
 
 .conv-actions {

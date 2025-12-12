@@ -64,7 +64,6 @@ services:
 
   mysql:
     image: mysql:8.0
-    # 不映射端口到宿主机，容器内通过服务名 mysql:3306 访问即可
     expose:
       - "3306"
     environment:
@@ -72,9 +71,22 @@ services:
       - MYSQL_DATABASE=chatbot
     volumes:
       - mysql-data:/var/lib/mysql
+      - ./mysql/conf:/etc/mysql/conf.d:ro
     networks:
       - app-network
     restart: unless-stopped
+    command: >
+      --max_connections=500
+      --innodb_buffer_pool_size=1G
+      --innodb_buffer_pool_instances=4
+      --thread_cache_size=100
+      --table_open_cache=4000
+      --innodb_log_file_size=256M
+      --innodb_flush_log_at_trx_commit=2
+      --innodb_flush_method=O_DIRECT
+      --max_allowed_packet=64M
+      --wait_timeout=28800
+      --interactive_timeout=28800
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s

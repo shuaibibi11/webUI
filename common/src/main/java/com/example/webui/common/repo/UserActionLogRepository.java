@@ -33,4 +33,6 @@ public interface UserActionLogRepository extends JpaRepository<UserActionLog, St
 
     // 统计方法
     long countByAction(String action);
+
+    void deleteByUserId(String userId);
 }

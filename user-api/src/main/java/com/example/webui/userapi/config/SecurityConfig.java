@@ -42,13 +42,18 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/users/login", "/users/register", "/users/password-reset/**",
-                            "/api/users/login", "/api/users/register", "/api/users/password-reset/**",
-                            "/user/auth/login", "/api/user/auth/login",
-                            "/users/bootstrap-admin", "/api/users/bootstrap-admin",
-                            "/users/check-username", "/users/check-phone", "/users/check-idcard",
-                            "/api/users/check-username", "/api/users/check-phone", "/api/users/check-idcard",
-                            "/health", "/api/health").permitAll()
+                // 公开的协议接口（必须放在前面，因为规则按顺序匹配）
+                .requestMatchers("/users/agreements", "/users/agreements/**").permitAll()
+                .requestMatchers("/api/users/agreements", "/api/users/agreements/**").permitAll()
+                // 其他公开接口
+                .requestMatchers("/users/login", "/users/register", "/users/password-reset/**").permitAll()
+                .requestMatchers("/api/users/login", "/api/users/register", "/api/users/password-reset/**").permitAll()
+                .requestMatchers("/user/auth/login", "/api/user/auth/login").permitAll()
+                .requestMatchers("/users/bootstrap-admin", "/api/users/bootstrap-admin").permitAll()
+                .requestMatchers("/users/check-username", "/users/check-phone", "/users/check-idcard", "/users/check-email").permitAll()
+                .requestMatchers("/api/users/check-username", "/api/users/check-phone", "/api/users/check-idcard", "/api/users/check-email").permitAll()
+                .requestMatchers("/health", "/api/health").permitAll()
+                // 需要认证的接口
                 .requestMatchers("/api/messages/**", "/api/conversations/**", "/api/feedbacks/**").authenticated()
                 .requestMatchers("/users/**", "/api/users/**").authenticated()
                 .anyRequest().permitAll())

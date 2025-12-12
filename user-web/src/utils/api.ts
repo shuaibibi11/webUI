@@ -115,17 +115,21 @@ export const handleError = (error: any): never => {
   throw new Error(errorMessage)
 }
 
+// 默认超时时间（5分钟，支持长时间AI问答）
+const DEFAULT_TIMEOUT = 300000
+
 // 基础请求函数
 export const request = async <T = any>(config: RequestConfig): Promise<T> => {
   try {
     // 应用请求拦截器
     const processedConfig = requestInterceptor(config)
-    
+
+    const timeout = processedConfig.timeout || DEFAULT_TIMEOUT
     const response = await fetch(`${API_BASE_URL}${processedConfig.url}`, {
       method: processedConfig.method || 'GET',
       headers: processedConfig.headers,
       body: processedConfig.data ? JSON.stringify(processedConfig.data) : undefined,
-      signal: processedConfig.timeout ? AbortSignal.timeout(processedConfig.timeout) : undefined
+      signal: AbortSignal.timeout(timeout)
     })
     
     // 应用响应拦截器

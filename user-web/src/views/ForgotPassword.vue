@@ -125,7 +125,7 @@
           </n-input>
         </n-form-item>
 
-        <n-form-item path="contact" label="联系方式（选填）">
+        <n-form-item path="contact" label="联系方式">
           <n-input
             v-model:value="form.contact"
             placeholder="请输入手机号或邮箱，方便工作人员联系您"
@@ -251,6 +251,14 @@ const rules: FormRules = {
         }
         return true
       },
+      trigger: 'blur'
+    }
+  ],
+  contact: [
+    { required: true, message: '请输入联系方式', trigger: 'blur' },
+    {
+      pattern: /^(?:[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}|1[3-9]\d{9})$/,
+      message: '请输入有效的邮箱或手机号',
       trigger: 'blur'
     }
   ]

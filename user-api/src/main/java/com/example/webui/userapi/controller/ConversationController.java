@@ -25,6 +25,7 @@ public class ConversationController {
     @Autowired private UserRepository userRepo;
 
     @GetMapping
+    @Transactional(readOnly = true)
     public ResponseEntity<?> list(Authentication auth,
                                   @RequestParam(name = "page", defaultValue = "1") int page,
                                   @RequestParam(name = "limit", defaultValue = "20") int limit) {
@@ -71,6 +72,11 @@ public class ConversationController {
             m.put("createdAt", toStr(c.getCreatedAt()));
             m.put("updatedAt", toStr(c.getUpdatedAt()));
             m.put("unreadCount", 0);
+            // 添加模型和工作流信息
+            m.put("modelId", c.getModelId());
+            m.put("modelName", c.getModelName());
+            m.put("workflowId", c.getWorkflowId());
+            m.put("workflowName", c.getWorkflowName());
             List<Message> msgs = c.getMessages();
             Message last = msgs.stream().max(Comparator.comparing(Message::getCreatedAt)).orElse(null);
             if (last != null) {
@@ -138,6 +144,11 @@ public class ConversationController {
         conv.put("createdAt", toStr(c.getCreatedAt()));
         conv.put("updatedAt", toStr(c.getUpdatedAt()));
         conv.put("unreadCount", 0);
+        // 添加模型和工作流信息
+        conv.put("modelId", c.getModelId());
+        conv.put("modelName", c.getModelName());
+        conv.put("workflowId", c.getWorkflowId());
+        conv.put("workflowName", c.getWorkflowName());
         Map<String,Object> res = new HashMap<>();
         res.put("code", 201);
         res.put("conversation", conv);
@@ -145,6 +156,7 @@ public class ConversationController {
     }
 
     @GetMapping("/{id}")
+    @Transactional(readOnly = true)
     public ResponseEntity<?> detail(Authentication auth, @PathVariable String id) {
         // 检查认证信息
         if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getName())) {
@@ -185,6 +197,11 @@ public class ConversationController {
         conv.put("title", c.getTitle());
         conv.put("createdAt", toStr(c.getCreatedAt()));
         conv.put("updatedAt", toStr(c.getUpdatedAt()));
+        // 添加模型和工作流信息
+        conv.put("modelId", c.getModelId());
+        conv.put("modelName", c.getModelName());
+        conv.put("workflowId", c.getWorkflowId());
+        conv.put("workflowName", c.getWorkflowName());
 
         // 手动构建消息列表，避免循环引用
         List<Map<String,Object>> messagesList = new ArrayList<>();

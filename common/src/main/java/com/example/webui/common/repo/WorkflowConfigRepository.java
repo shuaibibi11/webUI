@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface WorkflowConfigRepository extends JpaRepository<WorkflowConfig, String> {
     List<WorkflowConfig> findByEnabledTrueOrderByUpdatedAtDesc();
+    long countByEnabled(Boolean enabled);
 }

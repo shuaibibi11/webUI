@@ -3,6 +3,7 @@ package com.example.webui.userapi.controller;
 import com.example.webui.common.entity.User;
 import com.example.webui.common.entity.AuditLog;
 import com.example.webui.common.repo.UserRepository;
+import com.example.webui.userapi.service.RealNameVerificationService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 // validation annotations not used directly; remove jakarta imports for Java 11
@@ -39,6 +40,8 @@ public class UserController {
     private com.example.webui.common.repo.SystemConfigRepository systemConfigRepo;
     @Autowired
     private com.example.webui.common.repo.ViolationRecordRepository violationRecordRepo;
+    @Autowired
+    private RealNameVerificationService verificationService;
 
     @Value("${jwt.secret}")
     private String jwtSecret;
@@ -97,6 +100,21 @@ public class UserController {
         u.setIdCard(idCard.trim());
         u.setStatus("PENDING"); // 注册后状态为待审核
         userRepo.save(u);
+
+        // 异步调用实名认证
+        try {
+            RealNameVerificationService.VerificationResult result = verificationService.verify(phone.trim(), idCard.trim(), realName.trim());
+            u.setVerificationStatus(result.getStatus());
+            u.setVerificationMessage(result.getMessage());
+            u.setVerificationTime(Instant.now());
+            userRepo.save(u);
+        } catch (Exception e) {
+            // 实名认证失败不影响注册流程
+            u.setVerificationStatus(-2);
+            u.setVerificationMessage("验证服务异常: " + e.getMessage());
+            u.setVerificationTime(Instant.now());
+            userRepo.save(u);
+        }
 
         Map<String, Object> res = new HashMap<>();
         res.put("code", 201);
@@ -450,6 +468,23 @@ public class UserController {
         return ResponseEntity.ok(res);
     }
 
+    // 检查邮箱唯一性
+    @GetMapping("/check-email")
+    public ResponseEntity<?> checkEmail(@RequestParam String email) {
+        if (email == null || email.trim().isEmpty()) {
+            return ResponseEntity.badRequest().body(err("邮箱不能为空"));
+        }
+        // 检查是否有相同邮箱的用户
+        boolean exists = userRepo.existsByEmail(email.trim());
+        if (exists) {
+            return ResponseEntity.status(409).body(err("邮箱已被使用"));
+        }
+        Map<String, Object> res = new HashMap<>();
+        res.put("code", 200);
+        res.put("available", true);
+        return ResponseEntity.ok(res);
+    }
+
     @GetMapping("/models")
     public ResponseEntity<?> getAvailableModels() {
         // 获取所有启用的模型配置
@@ -489,6 +524,87 @@ public class UserController {
         data.put("workflows", workflows);
         response.put("data", data);
 
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * 获取用户默认模型设置
+     */
+    @GetMapping("/default-model")
+    public ResponseEntity<?> getDefaultModel(Authentication auth) {
+        if (auth == null || auth.getDetails() == null) {
+            return ResponseEntity.status(401).body(err("未提供认证令牌"));
+        }
+        Map<?,?> claims = (Map<?,?>) auth.getDetails();
+        String userId = java.util.Objects.toString(claims.get("userId"), null);
+        Optional<User> userOpt = userRepo.findById(userId);
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.status(404).body(err("用户不存在"));
+        }
+
+        User user = userOpt.get();
+        Map<String, Object> response = new HashMap<>();
+        response.put("code", 200);
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("defaultModelId", user.getDefaultModelId());
+
+        // 如果有默认模型，获取其详细信息
+        if (user.getDefaultModelId() != null) {
+            // 先尝试查找模型
+            var modelConfig = modelConfigRepo.findById(user.getDefaultModelId());
+            if (modelConfig.isPresent()) {
+                data.put("defaultModelName", modelConfig.get().getTag() != null ?
+                    modelConfig.get().getTag() : modelConfig.get().getModelName());
+                data.put("type", "model");
+            } else {
+                // 再尝试查找工作流
+                var workflowConfig = workflowConfigRepo.findById(user.getDefaultModelId());
+                if (workflowConfig.isPresent()) {
+                    data.put("defaultModelName", workflowConfig.get().getName());
+                    data.put("type", "workflow");
+                }
+            }
+        }
+
+        response.put("data", data);
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * 设置用户默认模型
+     */
+    @PutMapping("/default-model")
+    @Transactional
+    public ResponseEntity<?> setDefaultModel(@RequestBody Map<String, String> body, Authentication auth) {
+        if (auth == null || auth.getDetails() == null) {
+            return ResponseEntity.status(401).body(err("未提供认证令牌"));
+        }
+        Map<?,?> claims = (Map<?,?>) auth.getDetails();
+        String userId = java.util.Objects.toString(claims.get("userId"), null);
+        Optional<User> userOpt = userRepo.findById(userId);
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.status(404).body(err("用户不存在"));
+        }
+
+        User user = userOpt.get();
+        String modelId = body.get("modelId");
+
+        // 验证模型/工作流是否存在
+        if (modelId != null && !modelId.isEmpty()) {
+            boolean exists = modelConfigRepo.findById(modelId).isPresent() ||
+                           workflowConfigRepo.findById(modelId).isPresent();
+            if (!exists) {
+                return ResponseEntity.badRequest().body(err("指定的模型或工作流不存在"));
+            }
+        }
+
+        user.setDefaultModelId(modelId);
+        userRepo.save(user);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("code", 200);
+        response.put("message", "默认模型设置成功");
         return ResponseEntity.ok(response);
     }
 
@@ -577,6 +693,18 @@ public class UserController {
 
         // 当前会话违规次数+1后是否达到阈值
         if (sessionViolations + 1 >= threshold) {
+            // 检查是否是测试账号，测试账号只提示不执行封禁
+            if ("TEST".equals(user.getRole())) {
+                violation.setResultedInBan(false);
+                violationRecordRepo.save(violation);
+
+                response.put("banned", false);
+                response.put("isTestAccount", true);
+                response.put("violationCount", sessionViolations + 1);
+                response.put("message", "【测试账号】违规次数已达到阈值，正式账号将被封禁" + banMinutes + "分钟");
+                return ResponseEntity.ok(response);
+            }
+
             // 触发封禁
             violation.setResultedInBan(true);
 
@@ -654,5 +782,119 @@ public class UserController {
 
         response.put("data", data);
         return ResponseEntity.ok(response);
+    }
+
+    /**
+     * 获取协议内容（公开接口，无需登录）
+     * @param type 协议类型：service（用户服务协议）或 privacy（隐私协议）
+     */
+    @GetMapping("/agreements/{type}")
+    public ResponseEntity<?> getAgreement(@PathVariable("type") String type) {
+        String configKey;
+        String title;
+
+        if ("service".equals(type)) {
+            configKey = "user_service_agreement";
+            title = "用户服务协议";
+        } else if ("privacy".equals(type)) {
+            configKey = "privacy_agreement";
+            title = "隐私协议";
+        } else {
+            return ResponseEntity.badRequest().body(err("无效的协议类型"));
+        }
+
+        Optional<com.example.webui.common.entity.SystemConfig> configOpt = systemConfigRepo.findByConfigKey(configKey);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("code", 200);
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("type", type);
+        data.put("title", title);
+
+        if (configOpt.isPresent()) {
+            com.example.webui.common.entity.SystemConfig config = configOpt.get();
+            data.put("content", config.getConfigValue() != null ? config.getConfigValue() : "");
+            data.put("enabled", config.getEnabled() != null ? config.getEnabled() : true);
+            data.put("updatedAt", config.getUpdatedAt() != null ? config.getUpdatedAt().toString() : null);
+        } else {
+            // 返回默认内容
+            data.put("content", getDefaultAgreementContent(type));
+            data.put("enabled", true);
+            data.put("updatedAt", null);
+        }
+
+        response.put("data", data);
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * 获取所有协议（公开接口，无需登录）
+     */
+    @GetMapping("/agreements")
+    public ResponseEntity<?> getAllAgreements() {
+        Map<String, Object> response = new HashMap<>();
+        response.put("code", 200);
+
+        Map<String, Object> data = new HashMap<>();
+
+        // 获取用户服务协议
+        Optional<com.example.webui.common.entity.SystemConfig> serviceOpt = systemConfigRepo.findByConfigKey("user_service_agreement");
+        Map<String, Object> serviceAgreement = new HashMap<>();
+        serviceAgreement.put("type", "service");
+        serviceAgreement.put("title", "用户服务协议");
+        if (serviceOpt.isPresent()) {
+            com.example.webui.common.entity.SystemConfig config = serviceOpt.get();
+            serviceAgreement.put("content", config.getConfigValue() != null ? config.getConfigValue() : "");
+            serviceAgreement.put("enabled", config.getEnabled() != null ? config.getEnabled() : true);
+        } else {
+            serviceAgreement.put("content", getDefaultAgreementContent("service"));
+            serviceAgreement.put("enabled", true);
+        }
+
+        // 获取隐私协议
+        Optional<com.example.webui.common.entity.SystemConfig> privacyOpt = systemConfigRepo.findByConfigKey("privacy_agreement");
+        Map<String, Object> privacyAgreement = new HashMap<>();
+        privacyAgreement.put("type", "privacy");
+        privacyAgreement.put("title", "隐私协议");
+        if (privacyOpt.isPresent()) {
+            com.example.webui.common.entity.SystemConfig config = privacyOpt.get();
+            privacyAgreement.put("content", config.getConfigValue() != null ? config.getConfigValue() : "");
+            privacyAgreement.put("enabled", config.getEnabled() != null ? config.getEnabled() : true);
+        } else {
+            privacyAgreement.put("content", getDefaultAgreementContent("privacy"));
+            privacyAgreement.put("enabled", true);
+        }
+
+        data.put("serviceAgreement", serviceAgreement);
+        data.put("privacyAgreement", privacyAgreement);
+
+        response.put("data", data);
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * 获取默认协议内容
+     */
+    private String getDefaultAgreementContent(String type) {
+        if ("service".equals(type)) {
+            return "用户服务协议\n\n" +
+                   "欢迎使用和元智擎平台服务。请您在使用本平台服务前，仔细阅读以下条款。\n\n" +
+                   "一、服务内容\n" +
+                   "本平台为用户提供企业级大模型应用开发服务。\n\n" +
+                   "二、用户责任\n" +
+                   "用户应遵守相关法律法规，不得利用本平台从事违法违规活动。\n\n" +
+                   "三、隐私保护\n" +
+                   "我们重视用户的隐私保护，详情请参阅《隐私协议》。";
+        } else {
+            return "隐私协议\n\n" +
+                   "我们非常重视您的隐私保护。本协议旨在说明我们如何收集、使用和保护您的个人信息。\n\n" +
+                   "一、信息收集\n" +
+                   "我们会收集您注册时提供的基本信息，包括用户名、手机号、邮箱等。\n\n" +
+                   "二、信息使用\n" +
+                   "收集的信息仅用于提供服务和改善用户体验。\n\n" +
+                   "三、信息保护\n" +
+                   "我们采取严格的安全措施保护您的个人信息安全。";
+        }
     }
 }

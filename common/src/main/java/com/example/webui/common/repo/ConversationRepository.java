@@ -18,4 +18,6 @@ public interface ConversationRepository extends JpaRepository<Conversation, Stri
     List<Conversation> findByUserAndIsDeletedFalseOrderByUpdatedAtDesc(User user);
     Page<Conversation> findByTitleContainingIgnoreCase(String title, Pageable pageable);
     List<Conversation> findByTitleContainingIgnoreCase(String title);
+    List<Conversation> findByUser(User user);
+    void deleteByUser(User user);
 }

@@ -131,6 +131,7 @@ const currentMenu = ref('dashboard')
 const pageTitles = ref({
   dashboard: '控制台',
   users: '用户管理',
+  registrations: '注册审批',
   models: '模型配置',
   workflows: '工作流配置',
   logs: '日志管理',
@@ -138,7 +139,8 @@ const pageTitles = ref({
   conversations: '对话历史',
   'password-resets': '密码重置审批',
   'action-logs': '用户操作日志',
-  'system-configs': '系统配置'
+  'mute-configs': '禁言配置',
+  'agreements': '协议管理'
 })
 
 const currentPageTitle = computed(() => pageTitles.value[currentMenu.value as keyof typeof pageTitles.value] || '控制台')
@@ -175,9 +177,14 @@ const menuOptions = [
         icon: () => h(NIcon, null, { default: () => h(Settings) })
       },
       {
-        label: '系统配置',
-        key: 'system-configs',
+        label: '禁言配置',
+        key: 'mute-configs',
         icon: () => h(NIcon, null, { default: () => h(Settings) })
+      },
+      {
+        label: '协议管理',
+        key: 'agreements',
+        icon: () => h(NIcon, null, { default: () => h(DocumentText) })
       }
     ]
   },
@@ -186,6 +193,11 @@ const menuOptions = [
     key: 'approvals',
     icon: () => h(NIcon, null, { default: () => h(KeyOutline) }),
     children: [
+      {
+        label: '注册审批',
+        key: 'registrations',
+        icon: () => h(NIcon, null, { default: () => h(PersonCircle) })
+      },
       {
         label: '密码重置审批',
         key: 'password-resets',

@@ -27,4 +27,6 @@ public interface PasswordResetRepository extends JpaRepository<PasswordReset, St
     // 根据用户名或联系方式模糊搜索
     @Query("SELECT pr FROM PasswordReset pr JOIN pr.user u WHERE u.username LIKE %:keyword% OR pr.contact LIKE %:keyword%")
     Page<PasswordReset> searchByKeyword(String keyword, Pageable pageable);
+
+    void deleteByUser(User user);
 }

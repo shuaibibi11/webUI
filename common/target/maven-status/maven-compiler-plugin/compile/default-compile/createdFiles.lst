@@ -5,12 +5,14 @@ com/example/webui/common/entity/WorkflowConfig.class
 com/example/webui/common/entity/ModelConfig.class
 com/example/webui/common/repo/ModelConfigRepository.class
 com/example/webui/common/entity/Message.class
+com/example/webui/common/util/DES3Util.class
 com/example/webui/common/repo/SystemConfigRepository.class
 com/example/webui/common/repo/UserActionLogRepository.class
 com/example/webui/common/client/BishengClient.class
 com/example/webui/common/repo/UserRepository$UserProjection.class
 com/example/webui/common/entity/AuditLog.class
 com/example/webui/common/entity/Feedback.class
+com/example/webui/common/util/SM3Util.class
 com/example/webui/common/entity/PasswordReset.class
 com/example/webui/common/entity/ViolationRecord.class
 com/example/webui/common/client/BishengClient$2.class

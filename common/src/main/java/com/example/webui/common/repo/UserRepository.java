@@ -13,7 +13,10 @@ public interface UserRepository extends JpaRepository<User, String> {
     Optional<User> findByPhone(String phone);
     Optional<User> findByRealNameAndIdCard(String realName, String idCard);
     List<User> findByRole(String role);
-    
+
+    // 检查邮箱是否已存在
+    boolean existsByEmail(String email);
+
     // 按状态统计用户数量
     long countByStatus(String status);
     

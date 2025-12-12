@@ -1,0 +1,114 @@
+server:
+  port: 11031
+  servlet:
+    context-path: /api
+
+spring:
+  datasource:
+    url: jdbc:mysql://172.17.0.5:3306/chatbot?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&useUnicode=true
+    username: root
+    password: tvi888TVI
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      pool-name: UserApiHikariCP
+      minimum-idle: 20
+      maximum-pool-size: 100
+      idle-timeout: 300000
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      leak-detection-threshold: 60000
+      connection-test-query: SELECT 1
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: false
+        jdbc:
+          batch_size: 50
+        order_inserts: true
+        order_updates: true
+    show-sql: false
+    open-in-view: false
+
+# JWT配置
+jwt:
+  secret: your-secret-key-change-in-production
+  expiresIn: 7d
+
+# CORS配置
+cors:
+  allowed-origins: http://localhost:11000,http://localhost:11010,http://localhost:11025,http://localhost:12020,http://localhost:12025,http://localhost:3000,http://localhost:5173,http://localhost:13080,http://localhost:13085,http://localhost:13086,http://localhost:13082,http://localhost:13088,http://localhost:13089,http://192.168.3.52:11031,http://192.168.3.52:11025,http://192.168.3.52:13085,http://192.168.3.52:13086,http://192.168.3.52:13088,http://192.168.3.52:13089
+# ws:
+#   port: 11032
+
+logging:
+  level:
+    '[com.example.webui]': DEBUG
+    '[org.springframework.security]': DEBUG
+    '[org.springframework.web]': DEBUG
+    '[org.springframework.boot.autoconfigure]': DEBUG
+    '[org.springframework.context.annotation]': DEBUG
+    '[org.springframework.boot.autoconfigure.web.servlet]': DEBUG
+    '[org.hibernate.SQL]': DEBUG
+    '[org.hibernate.type.descriptor.sql.BasicBinder]': TRACE
+
+# 监控配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'  # 暴露所有监控端点
+  endpoint:
+    health:
+      show-details: always  # 显示健康检查详细信息
+      probes:
+        enabled: true
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  metrics:
+    tags:
+      application: user-api  # 为指标添加应用标签
+    web:
+      server:
+        request:
+          autotime:
+            enabled: false  # 自动记录API响应时间(已弃用，设置为false)
+    distribution:
+      percentiles-histogram:
+        '[http.server.requests]': true  # 启用HTTP请求的百分位直方图
+      percentiles:
+        '[http.server.requests]': 0.5, 0.9, 0.95, 0.99  # 记录HTTP请求的百分位
+
+# 大模型API配置
+model:
+  api:
+    url: http://43.192.114.202:8000/v1/chat/completions
+    key: 123
+    name: Qwen3-4B-Instruct-2507-FP8
+
+# bisheng工作流配置
+bisheng:
+  api:
+    url: http://192.168.3.52:3001
+    key: 123
+  workflow:
+    id: 359c0fdb94574688ba53a5c4632f7e82
+
+# 实名认证API配置
+verification:
+  api:
+    enabled: true
+    url: http://39.105.171.251:28888/risk/dataMark
+    secretId: 147a7492185f4b05906b4e8d317de0eb
+    secretKey: 6d2478cf4b064eb7bc826882bea5225d
+    productCode: TE013001
+    timeout: 60000
+    encodeType: md5

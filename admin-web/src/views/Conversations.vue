@@ -112,7 +112,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted, h } from 'vue'
+import { ref, reactive, onMounted, onUnmounted, h } from 'vue'
 import { useMessage, useDialog } from 'naive-ui'
 import {
   Eye as ViewIcon,
@@ -154,6 +154,7 @@ const tableData = ref<Conversation[]>([])
 const messages = ref<Message[]>([])
 const messageModalVisible = ref(false)
 const currentConversation = ref<Conversation>({} as Conversation)
+let refreshTimer: ReturnType<typeof setInterval> | null = null
 
 // 搜索表单
 const searchForm = reactive({
@@ -440,9 +441,21 @@ const formatDateForApi = (date: number) => {
   return d.toISOString().split('T')[0]
 }
 
-// 组件挂载时获取数据
+// 组件挂载时获取数据并启动自动刷新
 onMounted(() => {
   fetchConversations()
+  // 每5秒自动刷新一次对话列表
+  refreshTimer = setInterval(() => {
+    fetchConversations()
+  }, 5000)
+})
+
+// 组件卸载时清理定时器
+onUnmounted(() => {
+  if (refreshTimer) {
+    clearInterval(refreshTimer)
+    refreshTimer = null
+  }
 })
 </script>
 

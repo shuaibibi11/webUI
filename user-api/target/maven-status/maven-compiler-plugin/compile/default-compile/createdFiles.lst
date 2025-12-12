@@ -3,8 +3,10 @@ com/example/webui/userapi/controller/ModelController.class
 com/example/webui/userapi/config/BootstrapAdmin.class
 com/example/webui/userapi/config/SecurityConfig.class
 com/example/webui/userapi/config/WebMvcConfig.class
+com/example/webui/userapi/service/RealNameVerificationService.class
 com/example/webui/userapi/controller/HealthController.class
 com/example/webui/userapi/WebUiUserApplication.class
+com/example/webui/userapi/service/RealNameVerificationService$VerificationResult.class
 com/example/webui/userapi/controller/FeedbackController.class
 com/example/webui/userapi/service/ModelService.class
 com/example/webui/userapi/controller/ChatController$StreamEventHandler.class

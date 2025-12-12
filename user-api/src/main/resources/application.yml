@@ -5,18 +5,32 @@ server:
 
 spring:
   datasource:
-    url: jdbc:mysql://172.17.0.5:3306/chatbot?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://172.17.0.5:3306/chatbot?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&useUnicode=true
     username: root
     password: tvi888TVI
     driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      pool-name: UserApiHikariCP
+      minimum-idle: 20
+      maximum-pool-size: 100
+      idle-timeout: 300000
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      leak-detection-threshold: 60000
+      connection-test-query: SELECT 1
   jpa:
     hibernate:
       ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
-        format_sql: true
-    show-sql: true
+        format_sql: false
+        jdbc:
+          batch_size: 50
+        order_inserts: true
+        order_updates: true
+    show-sql: false
+    open-in-view: false
 
 # JWT配置
 jwt:
@@ -87,3 +101,14 @@ bisheng:
     key: 123
   workflow:
     id: 359c0fdb94574688ba53a5c4632f7e82
+
+# 实名认证API配置
+verification:
+  api:
+    enabled: true
+    url: http://39.105.171.251:28888/risk/dataMark
+    secretId: 147a7492185f4b05906b4e8d317de0eb
+    secretKey: 6d2478cf4b064eb7bc826882bea5225d
+    productCode: TE013001
+    timeout: 60000
+    encodeType: md5
